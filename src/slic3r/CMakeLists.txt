@@ -384,6 +384,8 @@ set(SLIC3R_GUI_SOURCES
     GUI/KBShortcutsDialog.cpp
     Utils/Http.cpp
     Utils/Http.hpp
+    Utils/ION.cpp
+    Utils/ION.hpp
     Utils/FixModelByWin10.cpp
     Utils/FixModelByWin10.hpp
     Utils/Bonjour.cpp
