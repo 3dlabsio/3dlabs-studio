@@ -159,9 +159,9 @@ void AMSSetting::create()
 
      m_button_auto_demarcate = new Button(m_panel_img, _L("Auto Calibration"));
      StateColor btn_bg_green(std::pair<wxColour, int>(wxColour(27, 136, 68), StateColor::Pressed), std::pair<wxColour, int>(wxColour(61, 203, 115), StateColor::Hovered),
-                             std::pair<wxColour, int>(wxColour(0, 174, 66), StateColor::Normal));
+                             std::pair<wxColour, int>(wxColour(72, 94, 112), StateColor::Normal));
      m_button_auto_demarcate->SetBackgroundColor(btn_bg_green);
-     m_button_auto_demarcate->SetBorderColor(wxColour(0, 174, 66));
+     m_button_auto_demarcate->SetBorderColor(wxColour(72, 94, 112));
      m_button_auto_demarcate->SetTextColor(AMS_SETTING_GREY200);
      m_button_auto_demarcate->SetMinSize(AMS_SETTING_BUTTON_SIZE);
      m_button_auto_demarcate->SetCornerRadius(12);
