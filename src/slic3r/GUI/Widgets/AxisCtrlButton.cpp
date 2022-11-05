@@ -3,7 +3,7 @@
 
 #include <wx/dcgraph.h>
 
-static const wxColour bd = wxColour(0, 174, 66);
+static const wxColour bd = wxColour(72, 94, 112);
 static const wxColour BUTTON_BG_COL = wxColour(238, 238, 238);
 static const wxColour BUTTON_IN_BG_COL = wxColour(206, 206, 206);
 static const wxColour blank_bg = wxColour(0xFFFFFF);

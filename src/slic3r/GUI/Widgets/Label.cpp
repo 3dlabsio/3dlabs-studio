@@ -114,7 +114,7 @@ void Label::SetWindowStyleFlag(long style)
     wxStaticText::SetWindowStyleFlag(style);
     if (style & LB_HYPERLINK) {
         this->color = GetForegroundColour();
-        static wxColor clr_url("#00AE42");
+        static wxColor clr_url("#485E70");
         SetForegroundColour(clr_url);
     } else {
         SetForegroundColour(this->color);
