@@ -162,7 +162,6 @@ private:
     wxBoxSizer* m_scrolled_sizer = nullptr;
     ComboBox* m_bed_type_list = nullptr;
     ScalableButton* connection_btn = nullptr;
-    ScalableButton* ams_btn = nullptr;
 };
 
 class Plater: public wxPanel
