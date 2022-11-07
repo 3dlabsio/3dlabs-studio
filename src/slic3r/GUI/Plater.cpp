@@ -291,16 +291,12 @@ struct Sidebar::priv
     wxStaticLine* m_staticline1;
     StaticBox* m_panel_filament_title;
     wxStaticText* m_staticText_filament_settings;
-    ScalableButton *  m_bpButton_add_filament;
-    ScalableButton *  m_bpButton_del_filament;
-    ScalableButton *  m_bpButton_ams_filament;
     ScalableButton *  m_bpButton_set_filament;
     wxPanel* m_panel_filament_content;
     wxScrolledWindow* m_scrolledWindow_filament_content;
     wxStaticLine* m_staticline2;
     wxPanel* m_panel_project_title;
     ScalableButton* m_filament_icon = nullptr;
-    Button * m_flushing_volume_btn = nullptr;
 
     // BBS printer config
     StaticBox* m_panel_printer_title = nullptr;
@@ -589,7 +585,7 @@ Sidebar::Sidebar(Plater *parent)
     wxBoxSizer* bSizer39;
     bSizer39 = new wxBoxSizer( wxHORIZONTAL );
     p->m_filament_icon = new ScalableButton(p->m_panel_filament_title, wxID_ANY, "filament");
-    p->m_staticText_filament_settings = new Label(p->m_panel_filament_title, _L("Filament"));
+    p->m_staticText_filament_settings = new Label(p->m_panel_filament_title, _L("Extruder"));
     bSizer39->Add(p->m_filament_icon, 0, wxALIGN_CENTER | wxLEFT | wxRIGHT, FromDIP(10));
     bSizer39->Add( p->m_staticText_filament_settings, 0, wxALIGN_CENTER );
     bSizer39->Add(FromDIP(10), 0, 0, 0, 0);
@@ -610,116 +606,7 @@ Sidebar::Sidebar(Plater *parent)
     // BBS
     // add wiping dialog
     //wiping_dialog_button->SetFont(wxGetApp().normal_font());
-    p->m_flushing_volume_btn = new Button(p->m_panel_filament_title, _L("Flushing volumes"));
-    p->m_flushing_volume_btn->SetFont(Label::Body_10);
-    p->m_flushing_volume_btn->SetPaddingSize(wxSize(FromDIP(8),FromDIP(3)));
-    p->m_flushing_volume_btn->SetCornerRadius(FromDIP(8));
-
-    StateColor flush_bg_col(std::pair<wxColour, int>(wxColour(219, 253, 231), StateColor::Pressed),
-                            std::pair<wxColour, int>(wxColour(238, 238, 238), StateColor::Hovered),
-                            std::pair<wxColour, int>(wxColour(238, 238, 238), StateColor::Normal));
-
-    StateColor flush_fg_col(std::pair<wxColour, int>(wxColour(107, 107, 107), StateColor::Pressed),
-                            std::pair<wxColour, int>(wxColour(107, 107, 107), StateColor::Hovered),
-                            std::pair<wxColour, int>(wxColour(107, 107, 107), StateColor::Normal));
-
-    StateColor flush_bd_col(std::pair<wxColour, int>(wxColour(72, 94, 112), StateColor::Pressed),
-                            std::pair<wxColour, int>(wxColour(72, 94, 112), StateColor::Hovered),
-                            std::pair<wxColour, int>(wxColour(172, 172, 172), StateColor::Normal));
-
-    p->m_flushing_volume_btn->SetBackgroundColor(flush_bg_col);
-    p->m_flushing_volume_btn->SetBorderColor(flush_bd_col);
-    p->m_flushing_volume_btn->SetTextColor(flush_fg_col);
-    p->m_flushing_volume_btn->SetFocus();
-    p->m_flushing_volume_btn->SetId(wxID_RESET);
-    p->m_flushing_volume_btn->Rescale();
-
-    p->m_flushing_volume_btn->Bind(wxEVT_BUTTON, ([parent](wxCommandEvent &e)
-        {
-            auto& project_config = wxGetApp().preset_bundle->project_config;
-            auto& printer_config = wxGetApp().preset_bundle->printers.get_edited_preset().config;
-            const std::vector<double>& init_matrix = (project_config.option<ConfigOptionFloats>("flush_volumes_matrix"))->values;
-            const std::vector<double>& init_extruders = (project_config.option<ConfigOptionFloats>("flush_volumes_vector"))->values;
-            ConfigOption* extra_flush_volume_opt = printer_config.option("nozzle_volume");
-            int extra_flush_volume = extra_flush_volume_opt ? (int)extra_flush_volume_opt->getFloat() : 0;
-            ConfigOption* flush_multi_opt = project_config.option("flush_multiplier");
-            float flush_multiplier = flush_multi_opt ? flush_multi_opt->getFloat() : 1.f;
-
-            const std::vector<std::string> extruder_colours = wxGetApp().plater()->get_extruder_colors_from_plater_config();
-
-            WipingDialog dlg(parent, cast<float>(init_matrix), cast<float>(init_extruders), extruder_colours, extra_flush_volume, flush_multiplier);
-
-            if (dlg.ShowModal() == wxID_OK) {
-                std::vector<float> matrix = dlg.get_matrix();
-                std::vector<float> extruders = dlg.get_extruders();
-                (project_config.option<ConfigOptionFloats>("flush_volumes_matrix"))->values = std::vector<double>(matrix.begin(), matrix.end());
-                (project_config.option<ConfigOptionFloats>("flush_volumes_vector"))->values = std::vector<double>(extruders.begin(), extruders.end());
-// #if !BBL_RELEASE_TO_PUBLIC
-                (project_config.option<ConfigOptionFloat>("flush_multiplier"))->set(new ConfigOptionFloat(dlg.get_flush_multiplier()));
-// #endif
-
-                wxGetApp().plater()->update_project_dirty_from_presets();
-                wxPostEvent(parent, SimpleEvent(EVT_SCHEDULE_BACKGROUND_PROCESS, parent));
-            }
-        }));
-    bSizer39->Add(p->m_flushing_volume_btn, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, FromDIP(5));
-    bSizer39->Hide(p->m_flushing_volume_btn);
-    bSizer39->Add(FromDIP(10), 0, 0, 0, 0 );
-
-    ScalableButton* add_btn = new ScalableButton(p->m_panel_filament_title, wxID_ANY, "add_filament");
-    add_btn->SetToolTip(_L("Add one filament"));
-    add_btn->Bind(wxEVT_BUTTON, [this, scrolled_sizer](wxCommandEvent& e){
-        // BBS: limit filament choices to 16
-        if (p->combos_filament.size() >= 16)
-            return;
-
-        int filament_count = p->combos_filament.size() + 1;
-        wxColour new_col = Plater::get_next_color_for_filament();
-        std::string new_color = new_col.GetAsString(wxC2S_HTML_SYNTAX).ToStdString();
-        wxGetApp().preset_bundle->set_num_filaments(filament_count, new_color);
-        wxGetApp().plater()->on_filaments_change(filament_count);
-        wxGetApp().get_tab(Preset::TYPE_PRINT)->update();
-    });
-    p->m_bpButton_add_filament = add_btn;
-
-    bSizer39->Add(add_btn, 0, wxALIGN_CENTER|wxALL, FromDIP(5));
-    bSizer39->Add(FromDIP(10), 0, 0, 0, 0 );
-
-    ScalableButton* del_btn = new ScalableButton(p->m_panel_filament_title, wxID_ANY, "delete_filament");
-    del_btn->SetToolTip(_L("Remove last filament"));
-    del_btn->Bind(wxEVT_BUTTON, [this, scrolled_sizer](wxCommandEvent &e) {
-        if (p->combos_filament.size() <= 1)
-            return;
-
-        size_t filament_count = p->combos_filament.size() - 1;
-        if (wxGetApp().preset_bundle->is_the_only_edited_filament(filament_count) || (filament_count == 1)) {
-            wxGetApp().get_tab(Preset::TYPE_FILAMENT)->select_preset(wxGetApp().preset_bundle->filament_presets[0], false, "", true);
-        }
-
-        if (p->editing_filament >= filament_count) {
-            p->editing_filament = 0;
-        }
-
-        wxGetApp().preset_bundle->set_num_filaments(filament_count);
-        wxGetApp().plater()->on_filaments_change(filament_count);
-        wxGetApp().get_tab(Preset::TYPE_PRINT)->update();
-    });
-    p->m_bpButton_del_filament = del_btn;
-
-    bSizer39->Add(del_btn, 0, wxALIGN_CENTER_VERTICAL, FromDIP(5));
-    bSizer39->Add(FromDIP(20), 0, 0, 0, 0);
-
-    ams_btn = new ScalableButton(p->m_panel_filament_title, wxID_ANY, "ams_fila_sync", wxEmptyString, wxDefaultSize, wxDefaultPosition,
-                                                 wxBU_EXACTFIT | wxNO_BORDER, false, 18);
-    ams_btn->SetToolTip(_L("Sync material list from AMS"));
-    ams_btn->Bind(wxEVT_BUTTON, [this, scrolled_sizer](wxCommandEvent &e) {
-        sync_ams_list();
-    });
-    p->m_bpButton_ams_filament = ams_btn;
-
-    bSizer39->Add(ams_btn, 0, wxALIGN_CENTER|wxALL, FromDIP(5));
-    bSizer39->Add(FromDIP(10), 0, 0, 0, 0 );
-
+    
     ScalableButton* set_btn = new ScalableButton(p->m_panel_filament_title, wxID_ANY, "settings");
     set_btn->SetToolTip(_L("Set filaments to use"));
     set_btn->Bind(wxEVT_BUTTON, [this](wxCommandEvent &e) {
@@ -918,7 +805,6 @@ void Sidebar::update_all_preset_comboboxes()
         //only show connection button for not-BBL printer
         connection_btn->Hide();
         //only show sync-ams button for BBL printer
-        ams_btn->Show();
         //update print button default value for bbl or third-party printer
         p_mainframe->set_print_button_to_default(MainFrame::PrintSelectType::ePrintPlate);
         m_bed_type_list->Enable();
@@ -926,7 +812,6 @@ void Sidebar::update_all_preset_comboboxes()
 
     } else {
         connection_btn->Show();
-        ams_btn->Hide();
         p_mainframe->set_print_button_to_default(MainFrame::PrintSelectType::eSendGcode);
         wxString host_url = preset_bundle.printers.get_edited_preset().config.opt_string("print_host");
         if(!host_url.empty()) 
@@ -1069,11 +954,7 @@ void Sidebar::msw_rescale()
     p->m_printer_icon->msw_rescale();
     p->m_printer_setting->msw_rescale();
     p->m_filament_icon->msw_rescale();
-    p->m_bpButton_add_filament->msw_rescale();
-    p->m_bpButton_del_filament->msw_rescale();
-    p->m_bpButton_ams_filament->msw_rescale();
     p->m_bpButton_set_filament->msw_rescale();
-    p->m_flushing_volume_btn->Rescale();
     //BBS
     m_bed_type_list->Rescale();
     m_bed_type_list->SetMinSize({-1, 3 * wxGetApp().em_unit()});
@@ -1226,14 +1107,6 @@ void Sidebar::on_filaments_change(size_t num_filaments)
 
     // remove unused choices if any
     remove_unused_filament_combos(num_filaments);
-
-    auto sizer = p->m_panel_filament_title->GetSizer();
-    if (p->m_flushing_volume_btn != nullptr && sizer != nullptr) {
-        if (num_filaments > 1)
-            sizer->Show(p->m_flushing_volume_btn);
-        else
-            sizer->Hide(p->m_flushing_volume_btn);
-    }
 
     p->m_panel_filament_title->Layout();
     p->m_panel_filament_title->Refresh();
