@@ -306,7 +306,7 @@ wxBoxSizer *StatusBasePanel::create_project_task_page(wxWindow *parent)
     #ifdef __WXOSX_MAC__
     m_staticText_subtask_value->SetFont(::Label::Body_13);
     #else
-    m_staticText_subtask_value->SetFont(wxFont(13, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("HarmonyOS Sans SC")));
+    m_staticText_subtask_value->SetFont(wxFont(13, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Rubik")));
     #endif
     m_staticText_subtask_value->SetForegroundColour(wxColour(44, 44, 46));
 
@@ -353,7 +353,7 @@ wxBoxSizer *StatusBasePanel::create_project_task_page(wxWindow *parent)
     #ifdef __WXOSX_MAC__
     m_printing_stage_value->SetFont(::Label::Body_11);
     #else 
-    m_printing_stage_value->SetFont(wxFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("HarmonyOS Sans SC")));
+    m_printing_stage_value->SetFont(wxFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Rubik")));
     #endif
     
     m_printing_stage_value->SetForegroundColour(STAGE_TEXT_COL);
@@ -467,7 +467,7 @@ wxBoxSizer *StatusBasePanel::create_project_task_page(wxWindow *parent)
    
     m_staticText_progress_left = new wxStaticText(penel_text, wxID_ANY, L("N/A"), wxDefaultPosition, wxDefaultSize, 0);
     m_staticText_progress_left->Wrap(-1);
-    m_staticText_progress_left->SetFont(wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("HarmonyOS Sans SC")));
+    m_staticText_progress_left->SetFont(wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Rubik")));
     m_staticText_progress_left->SetForegroundColour(wxColour(146, 146, 146));
 
     //fgSizer_task->Add(bSizer_buttons, 0, wxEXPAND, 0);
