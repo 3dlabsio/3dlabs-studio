@@ -104,12 +104,6 @@
     "xy_contour_compensation": "0",
     "enable_arc_fitting": "0",
     "compatible_printers": [
-      "3D Labs 2.4 250 0.4 nozzle",
-      "3D Labs HTX nozzle",
-      "3D Labs 2.4 350 0.4 nozzle",
-      "3D Labs Trident 250 0.4 nozzle",
-      "3D Labs Trident 300 0.4 nozzle",
-      "3D Labs Trident 350 0.4 nozzle",
-      "3D Labs 0.1 0.4 nozzle"
+      "3D Labs HTX 0.4 nozzle"
     ]
 }
