@@ -60,8 +60,8 @@ function HandleModelList( pVal )
 		if($(".OneVendorBlock[vendor='"+strVendor+"']").length==0)
 		{
 			let sVV=strVendor;
-			if( sVV=="BBL" )
-				sVV="Bambu Lab";			
+			if( sVV=="3DLabs" )
+				sVV="3D Labs";			
 			
 			let HtmlNewVendor='<div class="OneVendorBlock" Vendor="'+strVendor+'">'+
 '<div class="BlockBanner">'+
