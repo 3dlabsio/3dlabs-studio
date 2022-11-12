@@ -1,0 +1,12 @@
+{
+    "type": "machine_model",
+    "name": "3D Labs X400",
+    "model_id": "X400",
+    "nozzle_diameter": "0.4",
+    "machine_tech": "FFF",
+    "family": "3D Labs",
+    "bed_model": "",
+    "bed_texture": "",
+    "hotend_model": "hotend.stl",
+    "default_materials": "ABS;PLA;PLA-CF;PETG;TPU;ASA;PC;PVA;PA;PA-CF"
+}

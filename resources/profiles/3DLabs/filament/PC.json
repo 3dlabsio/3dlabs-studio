@@ -13,6 +13,7 @@
         "0.94"
     ],
     "compatible_printers": [
-        "3D Labs HTX 0.4 nozzle"
+        "3D Labs HTX 0.4 nozzle",
+        "3D Labs X400 0.4 nozzle"
       ]
 }
