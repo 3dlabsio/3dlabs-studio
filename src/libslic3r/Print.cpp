@@ -715,7 +715,7 @@ static std::map<std::string, bool> filament_is_high_temp {
         {"ASA",     true}
 };
 
-//BBS: this function is used to check whether multi filament can be printed
+// 3dlabs: change function to warn user about possible high temperature vs low temp hotend
 StringObjectException Print::check_multi_filament_valid(const Print& print)
 {
     bool has_high_temperature_filament = false;
