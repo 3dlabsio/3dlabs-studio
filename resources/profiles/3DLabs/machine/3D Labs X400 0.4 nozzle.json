@@ -4,7 +4,7 @@
   "name": "3D Labs X400 0.4 nozzle",
   "from": "system",
   "instantiation": "true",
-  "inherits": "fdm_klipper_common",
+  "inherits": "fdm_common",
   "printer_model": "3D Labs X400",
   "nozzle_diameter": [
     "0.4"

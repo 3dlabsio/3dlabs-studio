@@ -4,10 +4,9 @@
   "name": "3D Labs HTX 0.4 nozzle",
   "from": "system",
   "instantiation": "true",
-  "inherits": "fdm_klipper_common",
+  "inherits": "fdm_common",
   "printer_model": "3D Labs HTX",
   "nozzle_diameter": [
-    "0.4",
     "0.4"
   ],
   "printable_area": [

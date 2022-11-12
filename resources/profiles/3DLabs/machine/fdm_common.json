@@ -9,37 +9,48 @@
     "#E38C1F"
   ],
   "machine_max_acceleration_e": [
-    "5000"
+    "2150",
+    "2150"
   ],
   "machine_max_acceleration_extruding": [
-    "5000"
+    "2150",
+    "2150"
   ],
   "machine_max_acceleration_retracting": [
-    "5000"
+    "2150",
+    "2150"
   ],
   "machine_max_acceleration_travel": [
-    "5000"
+    "2150",
+    "2150"
   ],
   "machine_max_acceleration_x": [
-    "5000"
+    "2150",
+    "2150"
   ],
   "machine_max_acceleration_y": [
-    "5000"
+    "2150",
+    "2150"
   ],
   "machine_max_acceleration_z": [
-    "500"
+    "450",
+    "450"
   ],
   "machine_max_speed_e": [
-    "25"
+    "120",
+    "120"
   ],
   "machine_max_speed_x": [
-    "500"
+    "150",
+    "150"
   ],
   "machine_max_speed_y": [
-    "500"
+    "150",
+    "150"
   ],
   "machine_max_speed_z": [
-    "12"
+    "10",
+    "10"
   ],
   "machine_max_jerk_e": [
     "2.5"
