@@ -60,8 +60,8 @@ function HandleModelList( pVal )
 		if($(".OneVendorBlock[vendor='"+strVendor+"']").length==0)
 		{
 			let sVV=strVendor;
-			if( sVV=="BBL" )
-				sVV="Bambu Lab";
+			if( sVV=="3DLabs" )
+				sVV="3D Labs";
 			
 			let HtmlNewVendor='<div class="OneVendorBlock" Vendor="'+strVendor+'">'+
 '<div class="BlockBanner">'+
@@ -133,7 +133,7 @@ function HandleModelList( pVal )
 	let nSelect=AlreadySelect.length;
 	if(nSelect==0)
 	{
-		$("input[nozzel='0.4'][vendor='BBL']").prop("checked", true);
+		$("input[nozzel='0.4'][vendor='3DLabs']").prop("checked", true);
 	}
 	
 	TranslatePage();

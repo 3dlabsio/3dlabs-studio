@@ -2426,7 +2426,7 @@ wxColour Plater::get_next_color_for_filament()
 {
     static int curr_color_filamenet = 0;
     wxColour colors[7] = {
-        *wxYELLOW,
+        wxColour(227,140,31),
         * wxRED,
         *wxBLUE,
         *wxCYAN,

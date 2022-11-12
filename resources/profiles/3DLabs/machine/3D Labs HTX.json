@@ -1,0 +1,12 @@
+{
+    "type": "machine_model",
+    "name": "3D Labs HTX",
+    "model_id": "HTX",
+    "nozzle_diameter": "0.4",
+    "machine_tech": "FFF",
+    "family": "3D Labs",
+    "bed_model": "",
+    "bed_texture": "3dlabs_logo.png",
+    "hotend_model": "hotend.stl",
+    "default_materials": "ABS;PLA;PLA-CF;PETG;TPU;ASA;PC;PVA;PA;PA-CF"
+}
