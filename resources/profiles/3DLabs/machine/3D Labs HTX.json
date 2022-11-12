@@ -6,7 +6,7 @@
     "machine_tech": "FFF",
     "family": "3D Labs",
     "bed_model": "",
-    "bed_texture": "voron_logo.png",
+    "bed_texture": "3dlabs_logo.png",
     "hotend_model": "hotend.stl",
     "default_materials": "ABS;PLA;PLA-CF;PETG;TPU;ASA;PC;PVA;PA;PA-CF"
 }
