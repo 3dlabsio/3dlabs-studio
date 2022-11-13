@@ -1180,16 +1180,26 @@ void PrintConfigDef::init_fff_params()
     def->gui_type = ConfigOptionDef::GUIType::f_enum_open;
     def->gui_flags = "show_value";
     def->enum_values.push_back("PLA");
+    def->enum_values.push_back("PET");
     def->enum_values.push_back("ABS");
     def->enum_values.push_back("ASA");
-    def->enum_values.push_back("PETG");
-    def->enum_values.push_back("TPU");
-    def->enum_values.push_back("PC");
-    def->enum_values.push_back("PA");
-    def->enum_values.push_back("PA-CF");
-    def->enum_values.push_back("PLA-CF");
-    def->enum_values.push_back("PET-CF");
+    def->enum_values.push_back("FLEX");
+    def->enum_values.push_back("HIPS");
+    def->enum_values.push_back("EDGE");
+    def->enum_values.push_back("NGEN");
+    def->enum_values.push_back("NYLON");
     def->enum_values.push_back("PVA");
+    def->enum_values.push_back("BVOH");
+    def->enum_values.push_back("PC");
+    def->enum_values.push_back("PP");
+    def->enum_values.push_back("PEI");
+    def->enum_values.push_back("PEEK");
+    def->enum_values.push_back("PEKK");
+    def->enum_values.push_back("POM");
+    def->enum_values.push_back("PSU");
+    def->enum_values.push_back("PVDF");
+    def->enum_values.push_back("SCAFF");
+
     def->mode = comSimple;
     def->set_default_value(new ConfigOptionStrings { "PLA" });
 
