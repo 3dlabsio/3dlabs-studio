@@ -2379,7 +2379,7 @@ void PrintConfigDef::init_fff_params()
     def = this->add("single_extruder_multi_material", coBool);
     //def->label = L("Single Extruder Multi Material");
     //def->tooltip = L("Use single nozzle to print multi filament");
-    def->mode = comDevelop;
+    def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(false));
 
     def = this->add("wipe_tower_no_sparse_layers", coBool);
