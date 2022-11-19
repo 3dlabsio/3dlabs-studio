@@ -578,6 +578,7 @@ public:
 	void		extruders_count_changed(size_t extruders_count);
 	PageShp		build_kinematics_page();
 	void		build_unregular_pages(bool from_initial_build = false);
+	void		build_unregular_pages2(bool from_initial_build = false);
 	void		on_preset_loaded() override;
 	void		init_options_list() override;
 	void		msw_rescale() override;
