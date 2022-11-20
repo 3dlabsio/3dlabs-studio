@@ -3528,13 +3528,11 @@ void TabPrinter::build_unregular_pages2(bool from_initial_build/* = false*/)
 void TabPrinter::on_preset_loaded()
 {
     // BBS
-#if 1
     // update the extruders count field
     auto   *nozzle_diameter = dynamic_cast<const ConfigOptionFloats*>(m_config->option("nozzle_diameter"));
     size_t extruders_count = nozzle_diameter->values.size();
     // update the GUI field according to the number of nozzle diameters supplied
     extruders_count_changed(extruders_count);
-#endif
 }
 
 void TabPrinter::update_pages()
