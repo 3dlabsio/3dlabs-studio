@@ -3221,7 +3221,7 @@ void TabPrinter::build_unregular_pages(bool from_initial_build/* = false*/)
         auto page = add_options_page(page_name, "empty", true);
         m_pages.insert(m_pages.begin() + n_before_extruders + extruder_idx, page);
 
-            auto optgroup = page->new_optgroup(L("Size"), L"param_diameter", -1, true);
+            auto optgroup = page->new_optgroup(L("Size"));
             optgroup->append_single_option_line("nozzle_diameter", "", extruder_idx);
 
             optgroup->m_on_change = [this, extruder_idx](const t_config_option_key& opt_key, boost::any value)
@@ -3410,7 +3410,7 @@ void TabPrinter::build_unregular_pages2(bool from_initial_build/* = false*/)
         m_pages.insert(m_pages.begin() + n_before_extruders + extruder_idx, page);
 
 
-        auto optgroup = page->new_optgroup(L("Size"), L"param_diameter", -1, true);
+        auto optgroup = page->new_optgroup(L("Size"));
         optgroup->append_single_option_line("nozzle_diameter", "", extruder_idx);
 
         optgroup->m_on_change = [this, extruder_idx](const t_config_option_key& opt_key, const boost::any& value)
@@ -3450,11 +3450,11 @@ void TabPrinter::build_unregular_pages2(bool from_initial_build/* = false*/)
             update();
         };
 
-        optgroup = page->new_optgroup(L("Layer height limits"), L"param_layer_height", -1, true);
+        optgroup = page->new_optgroup(L("Layer height limits"));
         optgroup->append_single_option_line("min_layer_height", "", extruder_idx);
         optgroup->append_single_option_line("max_layer_height", "", extruder_idx);
 
-        optgroup = page->new_optgroup(L("Position"), L"param_retraction", -1, true);
+        optgroup = page->new_optgroup(L("Position"));
         optgroup->append_single_option_line("extruder_offset", "", extruder_idx);
 
         //BBS: don't show retract related config menu in machine page
@@ -3471,7 +3471,7 @@ void TabPrinter::build_unregular_pages2(bool from_initial_build/* = false*/)
         optgroup->append_single_option_line("wipe_distance", "", extruder_idx);
         optgroup->append_single_option_line("retract_before_wipe", "", extruder_idx);
 
-        optgroup = page->new_optgroup(L("Retraction when switching material"), L"param_retraction", -1, true);
+        optgroup = page->new_optgroup(L("Retraction when switching material"));
         optgroup->append_single_option_line("retract_length_toolchange", "", extruder_idx);
         optgroup->append_single_option_line("retract_restart_extra_toolchange", "", extruder_idx);
 
