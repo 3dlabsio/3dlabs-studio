@@ -459,7 +459,6 @@ std::string AppConfig::load()
                 for (auto iter = it.value().begin(); iter != it.value().end(); iter++) {
                     if (iter.key() == "filaments") {
                         // BBS: filament presets is now considered as project config instead of app config
-#if 0
                         int idx = 0;
                         for(auto& element: iter.value()) {
                             if (idx == 0)
@@ -468,7 +467,6 @@ std::string AppConfig::load()
                                 m_storage[it.key()]["filament_" + std::to_string(idx)] = element;
                             idx++;
                         }
-#endif
                     } else {
                         m_storage[it.key()][iter.key()] = iter.value().get<std::string>();
                     }
@@ -533,8 +531,10 @@ void AppConfig::save()
     {
         // Returns "undefined" if the thread naming functionality is not supported by the operating system.
         std::optional<std::string> current_thread_name = get_current_thread_name();
-        if (current_thread_name && *current_thread_name != "bambustu_main")
-            throw CriticalException("Calling AppConfig::save() from a worker thread!");
+        if (current_thread_name && *current_thread_name != "bambustu_main") {
+            BOOST_LOG_TRIVIAL(error) << __FUNCTION__<<", current_thread_name is " << *current_thread_name;
+            throw CriticalException("Calling AppConfig::save() from a worker thread, thread name: " + *current_thread_name);
+        }
     }
 
     // The config is first written to a file with a PID suffix and then moved

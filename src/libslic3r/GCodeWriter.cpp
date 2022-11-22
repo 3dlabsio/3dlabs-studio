@@ -209,6 +209,26 @@ std::string GCodeWriter::set_jerk_xy(unsigned int jerk)
 
 }
 
+std::string GCodeWriter::set_pressure_advance(double pa) const
+{
+    std::ostringstream gcode;
+    if (pa < 0)
+        return gcode.str();
+    if(m_is_bbl_printers){
+        //SoftFever: set L1000 to use linear model
+        gcode << "M900 K" <<std::setprecision(4)<< pa << " L1000 M10 ; Override pressure advance value\n";
+    }
+    else{
+        if (FLAVOR_IS(gcfKlipper))
+            gcode << "SET_PRESSURE_ADVANCE ADVANCE=" << std::setprecision(4) << pa << "; Override pressure advance value\n";
+        else
+            gcode << "M900 K" <<std::setprecision(4)<< pa << "; Override pressure advance value\n";
+    }
+    return gcode.str();
+}
+
+
+
 std::string GCodeWriter::reset_e(bool force)
 {
     if (FLAVOR_IS(gcfMach3)

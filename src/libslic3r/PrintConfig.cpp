@@ -1025,7 +1025,7 @@ void PrintConfigDef::init_fff_params()
     def = this->add("extruder_clearance_height_to_rod", coFloat);
     def->label = L("Height to rod");
     def->tooltip = L("Distance of the nozzle tip to the lower rod. "
-        "Used as input of auto-arranging to avoid collision when printing by object");
+        "Used for collision avoidance in by-object printing.");
     def->sidetext = L("mm");
     def->min = 0;
     def->mode = comAdvanced;
@@ -1035,7 +1035,7 @@ void PrintConfigDef::init_fff_params()
     def = this->add("extruder_clearance_height_to_lid", coFloat);
     def->label = L("Height to lid");
     def->tooltip = L("Distance of the nozzle tip to the lid. "
-        "Used as input of auto-arranging to avoid collision when printing by object");
+        "Used for collision avoidance in by-object printing.");
     def->sidetext = L("mm");
     def->min = 0;
     def->mode = comAdvanced;
@@ -1043,11 +1043,19 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("extruder_clearance_radius", coFloat);
     def->label = L("Radius");
-    def->tooltip = L("Clearance radius around extruder. Used as input of auto-arranging to avoid collision when printing by object");
+    def->tooltip = L("Clearance radius around extruder. Used for collision avoidance in by-object printing.");
     def->sidetext = L("mm");
     def->min = 0;
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(40));
+
+    def           = this->add("extruder_clearance_max_radius", coFloat);
+    def->label    = L("Max Radius");
+    def->tooltip  = L("Max clearance radius around extruder. Used for collision avoidance in by-object printing.");
+    def->sidetext = L("mm");
+    def->min      = 0;
+    def->mode     = comAdvanced;
+    def->set_default_value(new ConfigOptionFloat(68));
 
     def = this->add("extruder_colour", coStrings);
     def->label = L("Extruder Color");
@@ -1077,10 +1085,10 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloats { 1. });
 
-    def = this->add("enable_pressure_advance", coBool);
+    def = this->add("enable_pressure_advance", coBools);
     def->label = L("Enable pressure advance");
     def->tooltip = L("Enable pressure advance, auto calibration result will be overwriten once enabled.");
-    def->set_default_value(new ConfigOptionBool(false));
+    def->set_default_value(new ConfigOptionBools{ false });
 
     def = this->add("pressure_advance", coFloats);
     def->label = L("Pressure advance");
@@ -1105,7 +1113,7 @@ void PrintConfigDef::init_fff_params()
                      "at minimum speed to reduce the frequency of starting and stoping");
     def->set_default_value(new ConfigOptionBools { false });
 
-    def = this->add("fan_cooling_layer_time", coInts);
+    def = this->add("fan_cooling_layer_time", coFloats);
     def->label = L("Layer time");
     def->tooltip = L("Part cooling fan will be enabled for layers of which estimated time is shorter than this value. "
                      "Fan speed is interpolated between the minimum and maximum fan speeds according to layer printing time");
@@ -1113,7 +1121,7 @@ void PrintConfigDef::init_fff_params()
     def->min = 0;
     def->max = 1000;
     def->mode = comSimple;
-    def->set_default_value(new ConfigOptionInts { 60 });
+    def->set_default_value(new ConfigOptionFloats{ 60.0f });
 
     def = this->add("filament_colour", coStrings);
     def->label = L("Color");
@@ -1498,6 +1506,13 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(0.8));
 
+    def = this->add("filter_out_gap_fill", coFloat);
+    def->label = L("Filter out tiny gaps");
+    def->category = L("Layers and Perimeters");
+    def->tooltip = L("Filter out gaps smaller than the threshold specified. This setting won't affact top/bottom layers");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionFloat(0));
+    
     def = this->add("gap_infill_speed", coFloat);
     def->label = L("Gap infill");
     def->category = L("Speed");
@@ -2282,7 +2297,7 @@ void PrintConfigDef::init_fff_params()
     def->mode = comSimple;
     def->set_default_value(new ConfigOptionInt(1));
 
-    def = this->add("slow_down_layer_time", coInts);
+    def = this->add("slow_down_layer_time", coFloats);
     def->label = L("Layer time");
     def->tooltip = L("The printing speed in exported gcode will be slowed down, when the estimated layer time is shorter than this value, to "
                      "get better cooling for these layers");
@@ -2290,7 +2305,7 @@ void PrintConfigDef::init_fff_params()
     def->min = 0;
     def->max = 1000;
     def->mode = comSimple;
-    def->set_default_value(new ConfigOptionInts { 5 });
+    def->set_default_value(new ConfigOptionFloats { 5.0f });
 
     def = this->add("minimum_sparse_infill_area", coFloat);
     def->label = L("Minimum sparse infill threshold");
