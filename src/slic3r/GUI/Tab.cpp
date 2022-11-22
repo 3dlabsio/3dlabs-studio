@@ -3140,7 +3140,7 @@ void TabPrinter::build_unregular_pages(bool from_initial_build/* = false*/)
 {
     size_t		n_before_extruders = 2;			//	Count of pages before Extruder pages
     auto        flavor = m_config->option<ConfigOptionEnum<GCodeFlavor>>("gcode_flavor")->value;
-    bool		show_mach_limits = (flavor == gcfMarlinLegacy || flavor == gcfMarlinFirmware || flavor == gcfRepRapFirmware);
+    bool		show_mach_limits = (flavor == gcfMarlinLegacy || flavor == gcfMarlinFirmware || flavor == gcfKlipper);
 
     /* ! Freeze/Thaw in this function is needed to avoid call OnPaint() for erased pages
      * and be cause of application crash, when try to change Preset in moment,
@@ -3151,7 +3151,7 @@ void TabPrinter::build_unregular_pages(bool from_initial_build/* = false*/)
     // Add/delete Kinematics page according to show_mach_limits
     size_t existed_page = 0;
     for (size_t i = n_before_extruders; i < m_pages.size(); ++i) // first make sure it's not there already
-        if (m_pages[i]->title().find(L("Machine limits")) != std::string::npos) {
+        if (m_pages[i]->title().find(L("Motion ability")) != std::string::npos) {
             if (!show_mach_limits || m_rebuild_kinematics_page)
                 m_pages.erase(m_pages.begin() + i);
             else

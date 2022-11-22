@@ -139,6 +139,7 @@
     "0"
   ],
   "default_filament_profile": [
+    "ABS",
     "ABS"
   ],
   "default_print_profile": "0.20mm Standard @3D Labs",

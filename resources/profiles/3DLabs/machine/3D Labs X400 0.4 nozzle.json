@@ -40,5 +40,9 @@
     "0.4",
     "0.4"
   ],
+  "default_filament_profile": [
+    "ABS",
+    "ABS"
+  ],
   "printable_height": "300"
 }
