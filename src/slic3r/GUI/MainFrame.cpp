@@ -941,11 +941,15 @@ void MainFrame::init_tabpanel()
         auto full_config = wxGetApp().preset_bundle->full_config();
         m_plater->on_config_change(full_config);
 
-        // 3dlabs set two filaments regardless.
-        wxColour new_col = Plater::get_next_color_for_filament();
-        std::string new_color = new_col.GetAsString(wxC2S_HTML_SYNTAX).ToStdString();
-        wxGetApp().preset_bundle->set_num_filaments(2, new_color);
-        m_plater->on_filaments_change(2);
+        // Show a correct number of filament fields.
+        // nozzle_diameter is undefined when SLA printer is selected
+        if (full_config.has("nozzle_diameter")) {
+            auto num_extruders = full_config.option<ConfigOptionFloats>("nozzle_diameter")->values.size();
+            wxColour new_col = Plater::get_next_color_for_filament();
+            std::string new_color = new_col.GetAsString(wxC2S_HTML_SYNTAX).ToStdString();
+            wxGetApp().preset_bundle->set_num_filaments(num_extruders, new_color);
+            m_plater->on_filaments_change(num_extruders);
+        }
     }
 }
 

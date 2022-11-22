@@ -853,14 +853,9 @@ void Sidebar::update_presets(Preset::Type preset_type)
     switch (preset_type) {
     case Preset::TYPE_FILAMENT:
     {
-        // BBS
-#if 0
         const size_t extruder_cnt = print_tech != ptFFF ? 1 :
                                 dynamic_cast<ConfigOptionFloats*>(preset_bundle.printers.get_edited_preset().config.option("nozzle_diameter"))->values.size();
         const size_t filament_cnt = p->combos_filament.size() > extruder_cnt ? extruder_cnt : p->combos_filament.size();
-#else
-        const size_t filament_cnt = p->combos_filament.size();
-#endif
         const std::string &name = preset_bundle.filaments.get_selected_preset_name();
         if (p->editing_filament >= 0) {
             preset_bundle.set_filament_preset(p->editing_filament, name);

@@ -3005,7 +3005,6 @@ void PresetBundle::update_multi_material_filament_presets()
         return;
 
     // BBS
-#if 0
     // Verify and select the filament presets.
     auto   *nozzle_diameter = static_cast<const ConfigOptionFloats*>(printers.get_edited_preset().config.option("nozzle_diameter"));
     size_t  num_extruders   = nozzle_diameter->values.size();
@@ -3014,9 +3013,7 @@ void PresetBundle::update_multi_material_filament_presets()
         this->filament_presets[i] = this->filaments.find_preset(this->filament_presets[i], true)->name;
     // Append the rest of filament presets.
     this->filament_presets.resize(num_extruders, this->filament_presets.empty() ? this->filaments.first_visible().name : this->filament_presets.back());
-#else
     size_t num_filaments = this->filament_presets.size();
-#endif
 
     // Now verify if flush_volumes_matrix has proper size (it is used to deduce number of extruders in wipe tower generator):
     std::vector<double> old_matrix = this->project_config.option<ConfigOptionFloats>("flush_volumes_matrix")->values;
