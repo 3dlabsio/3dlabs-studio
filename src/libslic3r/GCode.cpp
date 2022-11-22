@@ -435,6 +435,11 @@ bool GCode::gcode_label_objects = true;
         gcode += tcr_gcode;
         check_add_eol(toolchange_gcode_str);
 
+        //SoftFever: set new PA for new filament
+        if (gcodegen.config().enable_pressure_advance.get_at(new_extruder_id)) {
+            gcode += gcodegen.writer().set_pressure_advance(gcodegen.config().pressure_advance.get_at(new_extruder_id));
+        }
+
         // A phony move to the end position at the wipe tower.
         gcodegen.writer().travel_to_xy(end_pos.cast<double>());
         gcodegen.set_last_pos(wipe_tower_point_to_object_point(gcodegen, end_pos + plate_origin_2d));
@@ -1301,6 +1306,8 @@ void GCode::_do_export(Print& print, GCodeOutputStream &file, ThumbnailsGenerato
 #if ENABLE_GCODE_VIEWER_DATA_CHECKING
     m_last_mm3_per_mm = 0.;
 #endif // ENABLE_GCODE_VIEWER_DATA_CHECKING
+    
+    m_writer.set_is_bbl_machine(is_bbl_printers);
 
     // How many times will be change_layer() called?
     // change_layer() in turn increments the progress bar status.
@@ -1641,19 +1648,6 @@ void GCode::_do_export(Print& print, GCodeOutputStream &file, ThumbnailsGenerato
     if (is_bbl_printers) {
       // if (print.config().spaghetti_detector.value)
       file.write("M981 S1 P20000 ;open spaghetti detector\n");
-      file.write_format("M900 K%.3f M%0.3f ; Override pressure advance value\n",
-                        m_config.pressure_advance.values.front(),
-                        outer_wall_volumetric_speed / (1.75 * 1.75 / 4 * 3.14) *
-                            m_config.pressure_advance.values.front());
-    } else {
-      if (m_config.enable_pressure_advance.value) {
-        if(print.config().gcode_flavor.value == gcfKlipper)
-            file.write_format("SET_PRESSURE_ADVANCE ADVANCE=%.3f ; Override pressure advance value\n",
-                          m_config.pressure_advance.values.front());
-        else
-            file.write_format("M900 K%.3f ; Override pressure advance value\n",
-                          m_config.pressure_advance.values.front());
-      }
     }
 
     // Do all objects for each layer.
@@ -1891,6 +1885,7 @@ void GCode::_do_export(Print& print, GCodeOutputStream &file, ThumbnailsGenerato
       file.write_format(
           "; first_layer_height = %.3f\n",
           print.config().initial_layer_print_height.value);
+      file.write_format("; variable_layer_height = %d\n", m_config.adaptive_layer_height ? 1 : 0);
    
       file.write("; CONFIG_BLOCK_END\n\n");
 
@@ -4073,6 +4068,10 @@ std::string GCode::set_extruder(unsigned int extruder_id, double print_z)
             gcode += this->placeholder_parser_process("filament_start_gcode", filament_start_gcode, extruder_id);
             check_add_eol(gcode);
         }
+        if (m_config.enable_pressure_advance.get_at(extruder_id)) {
+            gcode += m_writer.set_pressure_advance(m_config.pressure_advance.get_at(extruder_id));
+        }
+
         gcode += m_writer.toolchange(extruder_id);
         return gcode;
     }
@@ -4225,6 +4224,10 @@ std::string GCode::set_extruder(unsigned int extruder_id, double print_z)
     // Set the new extruder to the operating temperature.
     if (m_ooze_prevention.enable)
         gcode += m_ooze_prevention.post_toolchange(*this);
+
+    if (m_config.enable_pressure_advance.get_at(extruder_id)) {
+        gcode += m_writer.set_pressure_advance(m_config.pressure_advance.get_at(extruder_id));
+    }
 
     return gcode;
 }

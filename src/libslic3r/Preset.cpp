@@ -346,6 +346,7 @@ void Preset::normalize(DynamicPrintConfig &config)
         }
     }
 
+
     handle_legacy_sla(config);
 }
 
@@ -697,7 +698,7 @@ static std::vector<std::string> s_Preset_print_options {
 #endif /* HAS_PRESSURE_EQUALIZER */
     "inner_wall_speed", "outer_wall_speed", "small_perimeter_speed", "small_perimeter_threshold", "sparse_infill_speed", "internal_solid_infill_speed",
     "top_surface_speed", "support_speed", "support_object_xy_distance", "support_interface_speed",
-    "bridge_speed", "bridge_angle", "gap_infill_speed", "travel_speed", "travel_speed_z", "initial_layer_speed",
+    "bridge_speed", "bridge_angle", "filter_out_gap_fill", "gap_infill_speed", "travel_speed", "travel_speed_z", "initial_layer_speed",
     "outer_wall_acceleration", "inner_wall_acceleration", "initial_layer_acceleration", "top_surface_acceleration", "default_acceleration", "travel_acceleration", "skirt_loops", "skirt_distance", "skirt_height", "draft_shield",
     "default_jerk", "outer_wall_jerk", "inner_wall_jerk", "top_surface_jerk", "initial_layer_jerk","travel_jerk",
     "brim_width", "brim_object_gap", "brim_type", "enable_support", "support_type", "support_threshold_angle", "enforce_support_layers",
@@ -763,7 +764,7 @@ static std::vector<std::string> s_Preset_printer_options {
     "printer_technology",
     "printable_area", "bed_exclude_area", "gcode_flavor","z_lift_type",
     "single_extruder_multi_material", "machine_start_gcode", "machine_end_gcode", "before_layer_change_gcode", "layer_change_gcode", "change_filament_gcode",
-    "printer_model", "printer_variant", "printable_height", "extruder_clearance_radius", "extruder_clearance_height_to_lid", "extruder_clearance_height_to_rod",
+    "printer_model", "printer_variant", "printable_height", "extruder_clearance_radius",  "extruder_clearance_max_radius","extruder_clearance_height_to_lid", "extruder_clearance_height_to_rod",
     "default_print_profile", "inherits",
     "silent_mode",
     // BBS

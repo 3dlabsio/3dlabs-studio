@@ -838,7 +838,19 @@ void MainFrame::init_tabpanel()
     m_tabpanel->Bind(wxEVT_NOTEBOOK_PAGE_CHANGING, [this](wxBookCtrlEvent& e) {
         int old_sel = e.GetOldSelection();
         int new_sel = e.GetSelection();
-        if (new_sel == tp3DEditor) {
+        if (wxGetApp().preset_bundle &&
+            wxGetApp().preset_bundle->printers.get_edited_preset().is_bbl_vendor_preset(wxGetApp().preset_bundle) &&
+            new_sel == tpMonitor) {
+            if (!wxGetApp().getAgent()) {
+                e.Veto();
+                BOOST_LOG_TRIVIAL(info) << boost::format("skipped tab switch from %1% to %2%, lack of network plugins")%old_sel %new_sel;
+                if (m_plater) {
+                    wxCommandEvent *evt = new wxCommandEvent(EVT_INSTALL_PLUGIN_HINT);
+                    wxQueueEvent(m_plater, evt);
+                }
+            }
+        }
+        else if (new_sel == tp3DEditor) {
             if (m_plater && (m_plater->only_gcode_mode() || (m_plater->using_exported_file()))) {
                 e.Veto();
                 BOOST_LOG_TRIVIAL(info) << boost::format("skipped tab switch from %1% to %2% in preview mode")%old_sel %new_sel;

@@ -1805,6 +1805,7 @@ void TabPrint::build()
         optgroup->append_single_option_line("sparse_infill_pattern", "fill-patterns#infill types and their properties of sparse");
         optgroup->append_single_option_line("top_surface_pattern", "fill-patterns#Infill of the top surface and bottom surface");
         optgroup->append_single_option_line("bottom_surface_pattern", "fill-patterns#Infill of the top surface and bottom surface");
+        optgroup->append_single_option_line("filter_out_gap_fill");
 
         optgroup = page->new_optgroup(L("Advanced"), L"param_advanced");
         optgroup->append_single_option_line("infill_wall_overlap");
@@ -2673,7 +2674,7 @@ void TabFilament::toggle_options()
     }
     if (m_active_page->title() == "Filament")
     {
-        bool pa = m_config->opt_bool("enable_pressure_advance");
+        bool pa = m_config->opt_bool("enable_pressure_advance", 0);
         toggle_option("pressure_advance", pa);
 
         toggle_line("cool_plate_temp_initial_layer", is_BBL_printer);
