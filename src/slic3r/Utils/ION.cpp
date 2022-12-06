@@ -33,7 +33,7 @@ ION::ION(DynamicPrintConfig *config) :
     port(config->opt_string("printhost_port"))
 {}
 
-const char* ION::get_name() const { return "ION"; }
+const char* ION::get_name() const { return "3D Labs ION"; }
 
 bool ION::test(wxString &msg) const
 {
@@ -62,15 +62,15 @@ bool ION::test(wxString &msg) const
                 std::stringstream ss(body);
                 pt::ptree ptree;
                 pt::read_json(ss, ptree);
+                
+                /*
+                const auto text = ptree.get_optional<std::string>("name");
 
-                res = ptree.get_optional<std::string>("name").has_value();
-                if (!res)
-                    msg = GUI::from_u8((boost::format(_u8L("Can't process the ION return message: missing field '%s'")) % ("name")).str());
-                else {
-                    res = ptree.get_optional<std::string>("printers").has_value();
-                    if (!res)
-                        msg = GUI::from_u8((boost::format(_u8L("Can't process the ION return message: missing field '%s'")) % ("printers")).str());
+                res = validate_version_text(text);
+                if (! res) {
+                    msg = GUI::from_u8((boost::format(_utf8(L("Mismatched type of print host: %s"))) % (text ? *text : "???")).str());
                 }
+                */
             }
             catch (const std::exception &) {
                 res = false;
@@ -82,12 +82,17 @@ bool ION::test(wxString &msg) const
     return res;
 }
 
+wxString ION::get_test_ok_msg () const
+{
+    return _(L("Connection to 3D Labs ION works correctly."));
+}
+
 wxString ION::get_test_failed_msg (wxString &msg) const
 {
         return GUI::from_u8((boost::format("%s: %s\n\n%s")
-        % (boost::format(_u8L("Could not connect to %s")) % get_name())
+        % _utf8(L("Could not connect to ION"))
         % std::string(msg.ToUTF8())
-        % _u8L("Note: ION 2.0.0 or higher is required. Please make sure you have the latest ION firmware installed.")).str());
+        % _utf8(L("Note: ION version at least 1.3 is required."))).str());
 }
 
 bool ION::upload(PrintHostUpload upload_data, ProgressFn prorgess_fn, ErrorFn error_fn) const

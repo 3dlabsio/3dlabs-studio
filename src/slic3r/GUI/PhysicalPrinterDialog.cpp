@@ -416,7 +416,7 @@ void PhysicalPrinterDialog::update(bool printer_change)
             m_optgroup->show_field("printhost_apikey", true);
             for (const std::string& opt_key : std::vector<std::string>{ "printhost_user", "printhost_password" })
                 m_optgroup->hide_field(opt_key);
-            supports_multiple_printers = opt && opt->value == htRepetier;
+            supports_multiple_printers = opt && opt->value == htION;
         }
         
     }

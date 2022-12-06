@@ -935,7 +935,7 @@ void MainFrame::init_tabpanel()
 
         //BBS add pages
     m_monitor = new MonitorPanel(m_tabpanel, wxID_ANY, wxDefaultPosition, wxDefaultSize);
-    m_tabpanel->AddPage(m_monitor, _L("Device"), std::string("tab_monitor_active"), std::string("tab_monitor_active"));
+    m_tabpanel->AddPage(m_monitor, _L("3D Printer"), std::string("tab_monitor_active"), std::string("tab_monitor_active"));
 
     m_printer_view = new PrinterWebView(m_tabpanel);
     Bind(EVT_LOAD_PRINTER_URL, [this](wxCommandEvent &evt) {
@@ -975,14 +975,14 @@ void MainFrame::show_device(bool bBBLPrinter) {
   if (bBBLPrinter) {
     if (m_tabpanel->GetPage(3) != m_monitor) {
       m_tabpanel->RemovePage(3);
-      m_tabpanel->InsertPage(3, m_monitor, _L("Device"),
+      m_tabpanel->InsertPage(3, m_monitor, _L("3D Printer"),
                              std::string("tab_monitor_active"),
                              std::string("tab_monitor_active"));
     }
   } else {
     if (m_tabpanel->GetPage(3) != m_printer_view) {
       m_tabpanel->RemovePage(3);
-      m_tabpanel->InsertPage(3, m_printer_view, _L("Device"),
+      m_tabpanel->InsertPage(3, m_printer_view, _L("3D Printer"),
                           std::string("tab_monitor_active"),
                           std::string("tab_monitor_active"));
         m_printer_view->Show();
