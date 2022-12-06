@@ -294,12 +294,12 @@ public:
 
         // load bitmap for logo
         BitmapCache bmp_cache;
-        int logo_margin = FromDIP(72 * m_scale);
-        int logo_size = FromDIP(122 * m_scale);
+        int logo_margin = FromDIP(32 * m_scale);
+        int logo_size = FromDIP(200 * m_scale);
         wxBitmap logo_bmp = *bmp_cache.load_svg("3dlabs/splash_logo", logo_size, logo_size);
         int logo_y = top_margin + title_rect.GetHeight() + logo_margin;
-        memDc.DrawBitmap(logo_bmp, (width - logo_size) / 2, logo_y, true);
-
+        //memDc.DrawBitmap(logo_bmp, (width - logo_size) / 2, logo_y, true);
+	memDc.DrawBitmap(logo_bmp, 10, logo_y, true);
         // calculate position for the dynamic text
         int text_margin = FromDIP(80 * m_scale);
         m_action_line_y_position = logo_y + logo_size + text_margin;
