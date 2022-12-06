@@ -12,7 +12,7 @@ wxDEFINE_EVENT(EVT_CONFIRM_HINT, wxCommandEvent);
 ConfirmHintDialog::ConfirmHintDialog(wxWindow* parent, wxWindowID id, const wxString& title, enum ButtonStyle btn_style, const wxPoint& pos, const wxSize& size, long style)
       : DPIDialog(parent, id, title, pos, size, style)
 {
-    std::string icon_path = (boost::format("%1%/images/BambuStudioTitle.ico") % resources_dir()).str();
+    std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
     SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
 
     auto* main_sizer = new wxBoxSizer(wxVERTICAL);

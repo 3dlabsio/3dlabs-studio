@@ -887,6 +887,7 @@ PRINT_CONFIG_CLASS_DERIVED_DEFINE(
     ((ConfigOptionFloats,             slow_down_layer_time))
     ((ConfigOptionBool,               spiral_mode))
     ((ConfigOptionInt,                standby_temperature_delta))
+    ((ConfigOptionInts,               nozzle_standby_temperature))
     ((ConfigOptionInts,               nozzle_temperature))
     ((ConfigOptionInt ,               chamber_temperature))
     ((ConfigOptionBools,              wipe))

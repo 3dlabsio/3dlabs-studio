@@ -26,7 +26,7 @@ namespace Slic3r { namespace GUI {
 ReleaseNoteDialog::ReleaseNoteDialog(Plater *plater /*= nullptr*/)
     : DPIDialog(static_cast<wxWindow *>(wxGetApp().mainframe), wxID_ANY, _L("Release Note"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX)
 {
-    std::string icon_path = (boost::format("%1%/images/BambuStudioTitle.ico") % resources_dir()).str();
+    std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
     SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
 
     SetBackgroundColour(*wxWHITE);
@@ -100,7 +100,7 @@ void UpdateVersionDialog::alter_choice(wxCommandEvent& event)
 UpdateVersionDialog::UpdateVersionDialog(wxWindow *parent)
     : DPIDialog(parent, wxID_ANY, _L("New version of Bambu Studio"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX)
 {
-    std::string icon_path = (boost::format("%1%/images/BambuStudioTitle.ico") % resources_dir()).str();
+    std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
     SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
 
     SetBackgroundColour(*wxWHITE);
@@ -341,7 +341,7 @@ void UpdateVersionDialog::update_version_info(wxString release_note, wxString ve
 SecondaryCheckDialog::SecondaryCheckDialog(wxWindow* parent)
     :DPIDialog(parent, wxID_ANY, _L("Confirm"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX)
 {
-    std::string icon_path = (boost::format("%1%/images/BambuStudioTitle.ico") % resources_dir()).str();
+    std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
     SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
 
     SetBackgroundColour(*wxWHITE);

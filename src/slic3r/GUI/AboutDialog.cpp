@@ -53,7 +53,7 @@ CopyrightsDialog::CopyrightsDialog()
 	this->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 #endif
 
-    std::string icon_path = (boost::format("%1%/images/BambuStudioTitle.ico") % resources_dir()).str();
+    std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
     SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
 
     wxStaticLine *staticline1 = new wxStaticLine( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
@@ -149,7 +149,7 @@ wxString CopyrightsDialog::get_html_text()
                 "<font size=\"3\">",
          bgr_clr_str, text_clr_str, text_clr_str,
         _L("License"),
-        _L("Bambu Studio is licensed under "),
+        _L("3DLabs Studio is licensed under "),
         "https://www.gnu.org/licenses/agpl-3.0.html",_L("GNU Affero General Public License, version 3"),
         _L("Bambu Studio is based on PrusaSlicer by Prusa Research, which is from Slic3r by Alessandro Ranellucci and the RepRap community"),
         _L("Libraries"),
@@ -218,7 +218,7 @@ AboutDialog::AboutDialog()
     wxColour bgr_clr = wxGetApp().get_window_default_clr();//wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
 	SetBackgroundColour(bgr_clr);
 
-    std::string icon_path = (boost::format("%1%/images/BambuStudioTitle.ico") % resources_dir()).str();
+    std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
     SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
 
     wxPanel *m_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(FromDIP(560), FromDIP(237)), wxTAB_TRAVERSAL);
@@ -235,7 +235,7 @@ AboutDialog::AboutDialog()
     main_sizer->Add(ver_sizer, 0, wxEXPAND | wxALL, 0);
 
     // logo
-    m_logo_bitmap = ScalableBitmap(this, "BambuStudio_about", 250);
+    m_logo_bitmap = ScalableBitmap(this, "3dlabs/3DLabsStudio_about", 250);
     m_logo = new wxStaticBitmap(this, wxID_ANY, m_logo_bitmap.bmp(), wxDefaultPosition,wxDefaultSize, 0);
     m_logo->SetSizer(vesizer);
 
@@ -245,9 +245,9 @@ AboutDialog::AboutDialog()
     {
         vesizer->Add(0, FromDIP(165), 1, wxEXPAND, FromDIP(5));
 
-        auto version_string = _L("SoftFever Version") + " " + std::string(SoftFever_VERSION);
+        auto version_string = _L("Version") + " " + std::string(SoftFever_VERSION);
         wxStaticText* version = new wxStaticText(this, wxID_ANY, version_string.c_str(), wxDefaultPosition, wxDefaultSize);
-        wxFont version_font = GetFont();
+	wxFont version_font = GetFont();
         #ifdef __WXMSW__
         version_font.SetPointSize(version_font.GetPointSize()-1);
         #else
@@ -266,7 +266,7 @@ AboutDialog::AboutDialog()
     text_sizer_horiz->Add( 0, 0, 0, wxLEFT, FromDIP(23));
 
     std::vector<wxString> text_list;
-    text_list.push_back(_L("Bambu Studio is based on PrusaSlicer by PrusaResearch and SuperSlicer by Merill(supermerill)."));
+    text_list.push_back(_L("3DLabs Studio is based on Bambu Studio by Bambu Labs, PrusaSlicer by PrusaResearch and SuperSlicer by Merill(supermerill)."));
     text_list.push_back(_L("PrusaSlicer is originally based on Slic3r by Alessandro Ranellucci."));
     text_list.push_back(_L("Slic3r was created by Alessandro Ranellucci with the help of many other contributors."));
     text_list.push_back(_L("Bambu Studio also referenced some ideas from Cura by Ultimaker."));
@@ -312,7 +312,7 @@ AboutDialog::AboutDialog()
     copyright_hor_sizer->Add(copyright_ver_sizer, 0, wxALL,5);
     copyright_hor_sizer->Add( 0, 0, 0, wxLEFT, FromDIP(120));
 
-    wxStaticText *html_text = new wxStaticText(this, wxID_ANY, "Copyright(C) 2021-2022 Bambu Lab", wxDefaultPosition, wxDefaultSize);
+    wxStaticText *html_text = new wxStaticText(this, wxID_ANY, "Copyright(C) 2021-2023 3D Laboratories LLC", wxDefaultPosition, wxDefaultSize);
     html_text->SetForegroundColour(wxColour(107, 107, 107));
 
     copyright_ver_sizer->Add(html_text, 0, wxALL , 0);
@@ -329,7 +329,7 @@ AboutDialog::AboutDialog()
               (boost::format(
               "<html>"
               "<body>"
-              "<p style=\"text-align:left\"><a  href=\"www.bambulab.com\">www.bambulab.com</ a></p>"
+              "<p style=\"text-align:left\"><a  href=\"www.3dlabs.io\">www.3dlabs.io</ a></p>"
               "</body>"
               "</html>")
             ).str());

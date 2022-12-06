@@ -2469,6 +2469,7 @@ void TabFilament::build()
         optgroup->append_line(line);
 
         line = { L("Nozzle"), L("Nozzle temperature when printing") };
+        line.append_option(optgroup->get_option("nozzle_standby_temperature"));
         line.append_option(optgroup->get_option("nozzle_temperature_initial_layer"));
         line.append_option(optgroup->get_option("nozzle_temperature"));
         optgroup->append_line(line);

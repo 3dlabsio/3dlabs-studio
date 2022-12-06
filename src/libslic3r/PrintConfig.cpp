@@ -1225,8 +1225,8 @@ void PrintConfigDef::init_fff_params()
 
     // BBS
     def = this->add("temperature_vitrification", coInts);
-    def->label = L("Temperature of vitrificaiton");
-    def->tooltip = L("Material becomes soft at this temperature. Thus the heatbed cannot be hotter than this tempature");
+    def->label = L("Temperature of vitrification");
+    def->tooltip = L("Material becomes soft at this temperature. Thus the heated bed cannot be hotter than this temperature");
     def->mode = comSimple;
     def->set_default_value(new ConfigOptionInts{ 100 });
 
@@ -2169,7 +2169,7 @@ void PrintConfigDef::init_fff_params()
     def->set_default_value(new ConfigOptionPercents { 100 });
 
     def = this->add("retract_when_changing_layer", coBools);
-    def->label = L("Retract when change layer");
+    def->label = L("Retract on layer change");
     def->tooltip = L("Force a retraction when changes layer");
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBools { false });
@@ -2755,6 +2755,15 @@ void PrintConfigDef::init_fff_params()
     def->min = 0;
     def->max = max_temp;
     def->set_default_value(new ConfigOptionInt(0));
+
+    def = this->add("nozzle_standby_temperature", coInts);
+    def->label = L("Standby temperature");
+    def->tooltip = L("Nozzle standby temperature");
+    def->sidetext = L("°C");
+    def->full_label = L("Nozzle standby temperature");
+    def->min = 0;
+    def->max = max_temp;
+    def->set_default_value(new ConfigOptionInts { 200 });
 
     def = this->add("nozzle_temperature", coInts);
     def->label = L("Other layers");

@@ -734,7 +734,7 @@ static std::vector<std::string> s_Preset_print_options {
 static std::vector<std::string> s_Preset_filament_options {
     /*"filament_colour", */"filament_diameter", "filament_type", "filament_soluble", "filament_is_support", "filament_max_volumetric_speed",
     "filament_flow_ratio", "enable_pressure_advance", "pressure_advance", "filament_density", "filament_cost", "filament_minimal_purge_on_wipe_tower",
-    "chamber_temperature", "nozzle_temperature", "nozzle_temperature_initial_layer",
+    "chamber_temperature", "nozzle_standby_temperature", "nozzle_temperature", "nozzle_temperature_initial_layer",
     // BBS
     "cool_plate_temp", "eng_plate_temp", "hot_plate_temp", "textured_plate_temp", "cool_plate_temp_initial_layer", "eng_plate_temp_initial_layer", "hot_plate_temp_initial_layer","textured_plate_temp_initial_layer",
     // "bed_type",

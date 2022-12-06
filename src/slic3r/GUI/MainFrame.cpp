@@ -136,7 +136,7 @@ static wxIcon main_frame_icon(GUI_App::EAppMode app_mode)
     }
     return wxIcon(path, wxBITMAP_TYPE_ICO);
 #else // _WIN32
-    return wxIcon(Slic3r::var("BambuStudio_128px.png"), wxBITMAP_TYPE_PNG);
+    return wxIcon(Slic3r::var("3dlabs/3DLabsStudio_about.png"), wxBITMAP_TYPE_PNG);
 #endif // _WIN32
 }
 

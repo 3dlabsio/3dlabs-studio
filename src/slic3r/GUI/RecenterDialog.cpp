@@ -16,7 +16,7 @@ namespace Slic3r { namespace GUI {
 RecenterDialog::RecenterDialog(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
       : DPIDialog(parent, id, _L("Confirm"), pos, size, style)
 {
-    std::string icon_path = (boost::format("%1%/images/BambuStudioTitle.ico") % resources_dir()).str();
+    std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
     SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
 
     init_bitmap();

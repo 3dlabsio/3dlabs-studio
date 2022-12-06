@@ -117,8 +117,8 @@ endif (MINGW)
 
 if (NOT WIN32 AND NOT APPLE)
     # Binary name on unix like systems (Linux, Unix)
-    set_target_properties(BambuStudio PROPERTIES OUTPUT_NAME "bambu-studio")
-    set(SLIC3R_APP_CMD "bambu-studio")
+    set_target_properties(BambuStudio PROPERTIES OUTPUT_NAME "3dlabs-studio")
+    set(SLIC3R_APP_CMD "3dlabs-studio")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/unix/BuildLinuxImage.sh.in ${CMAKE_CURRENT_BINARY_DIR}/BuildLinuxImage.sh @ONLY)
 endif ()
 
@@ -171,7 +171,7 @@ if (WIN32)
     endif()
     target_compile_definitions(BambuStudio_app_gui PRIVATE -DSLIC3R_WRAPPER_NOCONSOLE)
     add_dependencies(BambuStudio_app_gui BambuStudio)
-    set_target_properties(BambuStudio_app_gui PROPERTIES OUTPUT_NAME "bambu-studio")
+    set_target_properties(BambuStudio_app_gui PROPERTIES OUTPUT_NAME "3dlabs-studio")
     target_link_libraries(BambuStudio_app_gui PRIVATE boost_headeronly)
 endif ()
 
@@ -219,7 +219,7 @@ else ()
     if (APPLE AND NOT CMAKE_MACOSX_BUNDLE)
         # On OSX, the name of the binary matches the name of the Application.
         add_custom_command(TARGET BambuStudio POST_BUILD
-            COMMAND ln -sf BambuStudio bambu-studio
+            COMMAND ln -sf BambuStudio 3dlabs-studio
             WORKING_DIRECTORY "$<TARGET_FILE_DIR:BambuStudio>"
             VERBATIM)
     else ()

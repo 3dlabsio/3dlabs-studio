@@ -126,7 +126,7 @@ int CLI::run(int argc, char **argv)
         BOOST_LOG_TRIVIAL(info) << "index="<< index <<", arg is "<< argv[index] <<std::endl;
     int debug_argc = 9;
     char *debug_argv[] = {
-        "E:\work\projects\bambu_studio\bamboo_slicer\build\src\Debug\bambu-studio.exe",
+        "E:\work\projects\bambu_studio\bamboo_slicer\build\src\Debug\3dlabs-studio.exe",
         "--slice",
         "0",
         "--export-3mf=output.3mf",
@@ -1577,7 +1577,7 @@ void CLI::print_help(bool include_print_options, PrinterTechnology printer_techn
     boost::nowide::cout
         << SLIC3R_BUILD_ID << ":"
         << std::endl
-        << "Usage: bambu-studio [ OPTIONS ] [ file.3mf/file.stl ... ]" << std::endl
+        << "Usage: 3dlabs-studio [ OPTIONS ] [ file.3mf/file.stl ... ]" << std::endl
         << std::endl
         << "OPTIONS:" << std::endl;
     cli_misc_config_def.print_cli_help(boost::nowide::cout, false);

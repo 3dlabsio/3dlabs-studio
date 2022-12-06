@@ -179,6 +179,7 @@ bool Print::invalidate_state_by_config_options(const ConfigOptionResolver & /* n
             || opt_key == "filament_max_volumetric_speed"
             || opt_key == "gcode_flavor"
             || opt_key == "single_extruder_multi_material"
+            || opt_key == "nozzle_standby_temperature"
             || opt_key == "nozzle_temperature"
             // BBS
             || opt_key == "cool_plate_temp"
@@ -790,14 +791,14 @@ static StringObjectException layered_print_cleareance_valid(const Print &print, 
 static std::map<std::string, bool> filament_is_high_temp {
         {"PLA",     false},
         {"PLA-CF",  false},
-        {"PETG",    true},
-        {"ABS",     true},
+        {"PETG",    false},
+        {"ABS",     false},
         {"TPU",     false},
-        {"PA",      true},
-        {"PA-CF",   true},
-        {"PET-CF",  true},
+        {"PA",      false},
+        {"PA-CF",   false},
+        {"PET-CF",  false},
         {"PC",      true},
-        {"ASA",     true}
+        {"ASA",     false}
 };
 
 // 3dlabs: change function to warn user about possible high temperature vs low temp hotend
