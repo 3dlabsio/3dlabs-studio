@@ -281,20 +281,22 @@ public:
         memDc.DrawLabel(m_constant_text.version, version_rect, wxALIGN_LEFT | wxALIGN_BOTTOM);
 
 // #if BBL_INTERNAL_TESTING
-        auto sf_version = wxString::Format("SoftFever %s",std::string(SoftFever_VERSION)).ToStdString();
+        /* 
+	auto sf_version = wxString::Format("SoftFever %s",std::string(SoftFever_VERSION)).ToStdString();
         wxSize text_rect = memDc.GetTextExtent(sf_version);
         int start_x = (title_rect.GetLeft() + version_rect.GetRight()) / 2 - text_rect.GetWidth();
         int start_y = version_rect.GetBottom() + 10;
         wxRect internal_sign_rect(wxPoint(start_x, start_y), wxSize(text_rect));
         memDc.SetFont(m_constant_text.version_font);
         memDc.DrawLabel(sf_version, internal_sign_rect, wxALIGN_CENTER);
-// #endif
+	*/
+	// #endif
 
         // load bitmap for logo
         BitmapCache bmp_cache;
         int logo_margin = FromDIP(72 * m_scale);
         int logo_size = FromDIP(122 * m_scale);
-        wxBitmap logo_bmp = *bmp_cache.load_svg("splash_logo", logo_size, logo_size);
+        wxBitmap logo_bmp = *bmp_cache.load_svg("3dlabs/splash_logo", logo_size, logo_size);
         int logo_y = top_margin + title_rect.GetHeight() + logo_margin;
         memDc.DrawBitmap(logo_bmp, (width - logo_size) / 2, logo_y, true);
 
@@ -2131,7 +2133,7 @@ bool GUI_App::on_init_inner()
                /* wxString tips = wxString::Format(_L("Click to download new version in default browser: %s"), version_info.version_str);
                 DownloadDialog dialog(this->mainframe,
                     tips,
-                    _L("New version of Bambu Studio"),
+                    _L("New version of 3DLabs Studio"),
                     false,
                     wxCENTER | wxICON_INFORMATION);
 
@@ -2179,7 +2181,7 @@ bool GUI_App::on_init_inner()
                 wxString tips = wxString::Format(_L("Click to download new version in default browser: %s"), version_str);
                 DownloadDialog dialog(this->mainframe,
                     tips,
-                    _L("The Bambu Studio needs an upgrade"),
+                    _L("3DLabs Studio needs an upgrade"),
                     false,
                     wxCENTER | wxICON_INFORMATION);
                 dialog.SetExtendedMessage(description_text);
@@ -4178,14 +4180,14 @@ bool GUI_App::load_language(wxString language, bool initial)
 
     if (! wxLocale::IsAvailable(language_info->Language)) {
     	// Loading the language dictionary failed.
-    	wxString message = "Switching Bambu Studio to language " + language_info->CanonicalName + " failed.";
+    	wxString message = "Switching 3DLabs Studio to language " + language_info->CanonicalName + " failed.";
 #if !defined(_WIN32) && !defined(__APPLE__)
         // likely some linux system
         message += "\nYou may need to reconfigure the missing locales, likely by running the \"locale-gen\" and \"dpkg-reconfigure locales\" commands.\n";
 #endif
         if (initial)
         	message + "\n\nApplication will close.";
-        wxMessageBox(message, "Bambu Studio - Switching language failed", wxOK | wxICON_ERROR);
+        wxMessageBox(message, "3DLabs Studio - Switching language failed", wxOK | wxICON_ERROR);
         if (initial)
 			std::exit(EXIT_FAILURE);
 		else
