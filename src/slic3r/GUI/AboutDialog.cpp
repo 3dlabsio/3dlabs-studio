@@ -151,7 +151,7 @@ wxString CopyrightsDialog::get_html_text()
         _L("License"),
         _L("3DLabs Studio is licensed under "),
         "https://www.gnu.org/licenses/agpl-3.0.html",_L("GNU Affero General Public License, version 3"),
-        _L("Bambu Studio is based on PrusaSlicer by Prusa Research, which is from Slic3r by Alessandro Ranellucci and the RepRap community"),
+        _L("3DLabs Studio is based on Bambu Studio by Bambu Labs, PrusaSlicer by Prusa Research, which is from Slic3r by Alessandro Ranellucci and the RepRap community"),
         _L("Libraries"),
         _L("This software uses open source components whose copyright and other proprietary rights belong to their respective owners"));
 
@@ -241,26 +241,6 @@ AboutDialog::AboutDialog()
 
     panel_versizer->Add(m_logo, 1, wxALL | wxEXPAND, 0);
 
-    // version
-    {
-        vesizer->Add(0, FromDIP(165), 1, wxEXPAND, FromDIP(5));
-
-        auto version_string = _L("Version") + " " + std::string(SoftFever_VERSION);
-        wxStaticText* version = new wxStaticText(this, wxID_ANY, version_string.c_str(), wxDefaultPosition, wxDefaultSize);
-	wxFont version_font = GetFont();
-        #ifdef __WXMSW__
-        version_font.SetPointSize(version_font.GetPointSize()-1);
-        #else
-            version_font.SetPointSize(11);
-        #endif
-        version_font.SetPointSize(FromDIP(16));
-        version->SetFont(version_font);
-        version->SetForegroundColour(wxColour(255, 255, 255));
-        version->SetBackgroundColour(wxColour(72, 94, 112));
-        vesizer->Add(version, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, FromDIP(5));
-        vesizer->Add(0, 0, 1, wxEXPAND, FromDIP(5));
-    }
-
     wxBoxSizer *text_sizer_horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer *text_sizer = new wxBoxSizer(wxVERTICAL);
     text_sizer_horiz->Add( 0, 0, 0, wxLEFT, FromDIP(23));
@@ -312,9 +292,47 @@ AboutDialog::AboutDialog()
     copyright_hor_sizer->Add(copyright_ver_sizer, 0, wxALL,5);
     copyright_hor_sizer->Add( 0, 0, 0, wxLEFT, FromDIP(120));
 
+    // version
+    /*
+    {
+        vesizer->Add(0, FromDIP(165), 1, wxEXPAND, FromDIP(5));
+
+        auto version_string = _L("Version") + " " + std::string(SoftFever_VERSION);
+        wxStaticText* version = new wxStaticText(this, wxID_ANY, version_string.c_str(), wxDefaultPosition, wxDefaultSize);
+        wxFont version_font = GetFont();
+        #ifdef __WXMSW__
+        version_font.SetPointSize(version_font.GetPointSize()-1);
+        #else
+            version_font.SetPointSize(11);
+        #endif
+        version_font.SetPointSize(FromDIP(16));
+        version->SetFont(version_font);
+        version->SetForegroundColour(wxColour(72, 94, 112));
+        version->SetBackgroundColour(wxColour(255, 255, 255));
+        vesizer->Add(version, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_BOTTOM, FromDIP(5));
+        vesizer->Add(0, 0, 1, wxEXPAND, FromDIP(5));
+    }
+    */
+
+    // 3DL
+    // Rearrange version text position and appearance
+    auto version_string = _L("Version") + " " + std::string(SoftFever_VERSION);
+    wxStaticText *version_text = new wxStaticText(this, wxID_ANY, version_string.c_str(), wxDefaultPosition, wxDefaultSize);
+    wxFont version_font = GetFont();
+    #ifdef __WXMSW__
+    version_font.SetPointSize(version_font.GetPointSize()-1);
+    #else
+        version_font.SetPointSize(11);
+    #endif
+    version_font.SetPointSize(FromDIP(10));
+    version_text->SetFont(version_font);
+    version_text->SetForegroundColour(wxColour(107, 107, 107));
+
     wxStaticText *html_text = new wxStaticText(this, wxID_ANY, "Copyright(C) 2021-2023 3D Laboratories LLC", wxDefaultPosition, wxDefaultSize);
+    
     html_text->SetForegroundColour(wxColour(107, 107, 107));
 
+    copyright_ver_sizer->Add(version_text, 0, wxALL , 0);
     copyright_ver_sizer->Add(html_text, 0, wxALL , 0);
 
     m_html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_NEVER /*NEVER*/);
