@@ -67,6 +67,7 @@
     "resolution": "0.012",
     "small_perimeter_speed": "15",
     "support_type": "normal(auto)",
+    "support_style": "default",
     "support_on_build_plate_only": "0",
     "support_top_z_distance": "0.2",
     "support_filament": "0",
