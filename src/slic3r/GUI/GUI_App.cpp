@@ -389,7 +389,7 @@ private:
             title = wxGetApp().is_editor() ? SLIC3R_APP_FULL_NAME : GCODEVIEWER_APP_NAME;
 
             // dynamically get the version to display
-            version = _L("V") + " " + std::string(SLIC3R_VERSION);
+            version = _L("V") + " " + std::string(SoftFever_VERSION);
 
             // credits infornation
             credits = "";
