@@ -1,6 +1,6 @@
 {
     "type": "process",
-    "name": "fdm_process_3dlabs_common",
+    "name": "fdm_process_3dlabs_abs",
     "from": "system",
     "instantiation": "false",
     "inherits": "fdm_process_common",
@@ -111,6 +111,5 @@
       "3D Labs HTX 0.4 nozzle",
       "3D Labs X400 0.4 nozzle"
     ],
-
     "version": "1.2.1.6"
 }
