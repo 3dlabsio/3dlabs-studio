@@ -2,14 +2,10 @@
     "type": "filament",
     "filament_id": "GFU99",
     "setting_id": "GFSU99-00",
-    "name": "TPU",
+    "name": "Generic TPU",
     "from": "system",
     "instantiation": "true",
     "inherits": "fdm_filament_tpu",
-    "compatible_printers": [
-      "3D Labs HTX 0.4 nozzle",
-      "3D Labs X400 0.4 nozzle"
-    ],
     "additional_cooling_fan_speed": [
         "0"
     ],

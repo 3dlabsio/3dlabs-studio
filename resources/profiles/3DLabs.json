@@ -25,6 +25,10 @@
         {
             "name": "ABS 0.20mm Standard @3D Labs",
             "sub_path": "process/ABS 0.20mm Standard @3D Labs.json"
+        },
+        {
+            "name": "TPU 0.20mm Standard @3D Labs",
+            "sub_path": "process/TPU 0.20mm Standard @3D Labs.json"
         }
     ],
     "filament_list": [
@@ -77,12 +81,12 @@
             "sub_path": "filament/PETG.json"
         },
         {
-            "name": "Generic ABS",
-            "sub_path": "filament/ABS.json"
+            "name": "Generic ABS/ASA",
+            "sub_path": "filament/Generic ABS.json"
         },
         {
-            "name": "TPU",
-            "sub_path": "filament/TPU.json"
+            "name": "Generic TPU",
+            "sub_path": "filament/Generic TPU.json"
         },
         {
             "name": "ASA",
