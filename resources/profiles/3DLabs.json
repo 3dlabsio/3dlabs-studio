@@ -23,28 +23,8 @@
             "sub_path": "process/fdm_process_3dlabs_common.json"
         },
         {
-            "name": "0.08mm Extra Fine @3D Labs",
-            "sub_path": "process/0.08mm Extra Fine @3D Labs.json"
-        },
-        {
-            "name": "0.12mm Fine @3D Labs",
-            "sub_path": "process/0.12mm Fine @3D Labs.json"
-        },
-        {
-            "name": "0.15mm Optimal @3D Labs",
-            "sub_path": "process/0.15mm Optimal @3D Labs.json"
-        },
-        {
-            "name": "0.20mm Standard @3D Labs",
-            "sub_path": "process/0.20mm Standard @3D Labs.json"
-        },
-        {
-            "name": "0.24mm Draft @3D Labs",
-            "sub_path": "process/0.24mm Draft @3D Labs.json"
-        },
-        {
-            "name": "0.28mm Extra Draft @3D Labs",
-            "sub_path": "process/0.28mm Extra Draft @3D Labs.json"
+            "name": "ABS 0.20mm Standard @3D Labs",
+            "sub_path": "process/ABS 0.20mm Standard @3D Labs.json"
         }
     ],
     "filament_list": [
@@ -97,7 +77,7 @@
             "sub_path": "filament/PETG.json"
         },
         {
-            "name": "ABS",
+            "name": "Generic ABS",
             "sub_path": "filament/ABS.json"
         },
         {
