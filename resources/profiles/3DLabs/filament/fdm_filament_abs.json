@@ -3,7 +3,6 @@
     "name": "fdm_filament_abs",
     "from": "system",
     "instantiation": "false",
-    "inherits": "fdm_filament_common",
     "compatible_prints": [
 	    "ABS/ASA 0.15mm Fine @3D Labs",
         "ABS/ASA 0.20mm Standard @3D Labs",
