@@ -8,5 +8,5 @@
     "bed_model": "",
     "bed_texture": "",
     "hotend_model": "hotend.stl",
-    "default_materials": "ABS;PLA;PLA-CF;PETG;TPU;ASA;PC;PVA;PA;PA-CF"
+    "default_materials": "Generic ABS/ASA;Generic TPU"
 }

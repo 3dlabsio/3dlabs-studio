@@ -221,7 +221,7 @@ ParamsPanel::ParamsPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
         m_tips_arrow = new wxStaticBitmap(m_top_panel, wxID_ANY, m_tips_arrow_icon);
         m_tips_arrow->Hide();
 
-        m_title_view = new Label(m_top_panel, _L("Advance"));
+        m_title_view = new Label(m_top_panel, _L("Expert"));
         m_mode_view = new SwitchButton(m_top_panel, wxID_ABOUT);
 
         // BBS: new layout
