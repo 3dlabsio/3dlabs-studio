@@ -139,10 +139,10 @@
     "0"
   ],
   "default_filament_profile": [
-    "ABS",
-    "ABS"
+    "Generic ABS/ASA",
+    "Generic ABS/ASA"
   ],
-  "default_print_profile": "0.20mm Standard @3D Labs",
+  "default_print_profile": "ABS/ASA 0.20mm Standard @3D Labs",
   "bed_exclude_area": [
     "0x0",
     "0x0"

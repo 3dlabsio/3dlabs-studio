@@ -7,11 +7,24 @@
 	    "ABS/ASA 0.15mm Fine @3D Labs",
         "ABS/ASA 0.20mm Standard @3D Labs",
         "ABS/ASA 0.24mm Draft @3D Labs",
-        "ABS/ASA 0.20mm Rought Draft @3D Labs"
+        "ABS/ASA 0.20mm Rought Draft @3D Labs",
+        "ABS & Aquatek 120 0.20mm Standard @3D Labs"
     ],
     "compatible_printers": [
         "3D Labs HTX 0.4 nozzle",
         "3D Labs X400 0.4 nozzle"
+    ],
+    "filament_settings_id": [
+        ""
+    ],
+    "filament_soluble": [
+        "0"
+    ],
+    "filament_type": [
+        "ABS"
+    ],
+    "filament_vendor": [
+        "Generic"
     ],
     "cool_plate_temp" : [
         "105"
@@ -48,9 +61,6 @@
     ],
     "filament_max_volumetric_speed": [
         "28.6"
-    ],
-    "filament_type": [
-        "ABS"
     ],
     "filament_density": [
         "1.04"

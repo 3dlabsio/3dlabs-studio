@@ -41,8 +41,8 @@
     "0.4"
   ],
   "default_filament_profile": [
-    "ABS",
-    "ABS"
+    "Generic ABS/ASA",
+    "Generic ABS/ASA"
   ],
   "printable_height": "300"
 }
