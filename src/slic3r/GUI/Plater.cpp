@@ -859,13 +859,16 @@ void Sidebar::update_presets(Preset::Type preset_type)
         const std::string &name = preset_bundle.filaments.get_selected_preset_name();
         if (p->editing_filament >= 0) {
             preset_bundle.set_filament_preset(p->editing_filament, name);
-        } else if (filament_cnt == 1) {
-            // Single filament printer, synchronize the filament presets.
-            preset_bundle.set_filament_preset(0, name);
+        } else {
+            // synchronize the filament presets.
+            for(int idx=0;idx<filament_cnt;++idx)
+                preset_bundle.set_filament_preset(idx, name);
         }
 
-        for (size_t i = 0; i < filament_cnt; i++)
+        for (size_t i = 0; i < filament_cnt; i++){
             p->combos_filament[i]->update();
+        }
+            
 
         break;
     }
