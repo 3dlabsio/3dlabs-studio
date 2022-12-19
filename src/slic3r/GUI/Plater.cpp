@@ -2720,7 +2720,7 @@ std::vector<size_t> Plater::priv::load_files(const std::vector<fs::path>& input_
                     else if (load_config && (file_version.maj() != app_version.maj())) {
                         // version mismatch, only load geometries
 
-			load_config = false;
+			            load_config = false;
                         if (!load_model) {
                             // only load config case, return directly
                             show_info(q, _L("The Config can not be loaded."), _L("Load 3mf"));
