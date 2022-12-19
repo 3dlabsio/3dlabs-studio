@@ -83,11 +83,16 @@
     "support_speed": "60",
     "support_threshold_angle": "30",
     "support_object_xy_distance": "0.35",
-    "tree_support_branch_angle": "30",
+    "tree_support_branch_angle": "45",
     "tree_support_wall_count": "0",
+<<<<<<< HEAD:resources/profiles/3DLabs/process/fdm_process_3dlabs_tpu.json
     "tree_support_with_infill": "0",
     "detect_thin_wall": "1",
     "top_surface_pattern": "monotonicline",
+=======
+    "detect_thin_wall": "0",
+    "top_surface_pattern": "monotonic",
+>>>>>>> v1.4.0_beta3:resources/profiles/Creality/process/fdm_process_creality_common.json
     "top_surface_line_width": "0.4",
     "top_shell_layers": "5",
     "top_shell_thickness": "0.8",
