@@ -24,41 +24,20 @@
     "outer_wall_acceleration": "1800",
     "bridge_no_support": "0",
     "draft_shield": "disabled",
-<<<<<<< HEAD:resources/profiles/3DLabs/process/fdm_process_3dlabs_common.json
     "elefant_foot_compensation": "0.2",
     "outer_wall_line_width": "0.4",
     "only_one_wall_top": "1",
-=======
-    "elefant_foot_compensation": "0",
-    "enable_arc_fitting": "1",
-    "outer_wall_line_width": "0.42",
-    "outer_wall_speed": "120",
-    "outer_wall_acceleration": "5000",
->>>>>>> v1.4.0_beta3:resources/profiles/BBL/process/fdm_process_bbl_common.json
     "wall_infill_order": "inner wall/outer wall/infill",
     "line_width": "0.4",
     "infill_direction": "45",
-<<<<<<< HEAD:resources/profiles/3DLabs/process/fdm_process_3dlabs_common.json
     "sparse_infill_density": "25%",
     "sparse_infill_pattern": "cubic",
     "initial_layer_acceleration": "1000",
     "initial_layer_line_width": "0.42",
-=======
-    "sparse_infill_density": "15%",
-    "sparse_infill_pattern": "grid",
-    "internal_bridge_support_thickness": "0.8",
-    "initial_layer_acceleration": "500",
-    "initial_layer_line_width": "0.5",
->>>>>>> v1.4.0_beta3:resources/profiles/BBL/process/fdm_process_bbl_common.json
     "initial_layer_print_height": "0.2",
     "infill_combination": "0",
     "sparse_infill_line_width": "0.45",
-<<<<<<< HEAD:resources/profiles/3DLabs/process/fdm_process_3dlabs_common.json
     "infill_wall_overlap": "25%",
-=======
-    "infill_wall_overlap": "15%",
-    "sparse_infill_speed": "250",
->>>>>>> v1.4.0_beta3:resources/profiles/BBL/process/fdm_process_bbl_common.json
     "interface_shells": "0",
     "ironing_flow": "10%",
     "ironing_spacing": "0.15",
@@ -109,12 +88,8 @@
     "tree_support_branch_diameter": "2",
     "tree_support_branch_angle": "45",
     "tree_support_wall_count": "0",
-<<<<<<< HEAD:resources/profiles/3DLabs/process/fdm_process_3dlabs_common.json
     "tree_support_with_infill": "0",
     "detect_thin_wall": "1",
-=======
-    "detect_thin_wall": "0",
->>>>>>> v1.4.0_beta3:resources/profiles/BBL/process/fdm_process_bbl_common.json
     "top_surface_pattern": "monotonicline",
     "top_surface_line_width": "0.4",
     "top_shell_layers": "5",

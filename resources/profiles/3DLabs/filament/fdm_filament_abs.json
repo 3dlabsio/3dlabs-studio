@@ -27,11 +27,7 @@
         "Generic"
     ],
     "cool_plate_temp" : [
-<<<<<<< HEAD:resources/profiles/3DLabs/filament/fdm_filament_abs.json
         "105"
-=======
-        "0"
->>>>>>> v1.4.0_beta3:resources/profiles/BBL/filament/fdm_filament_abs.json
     ],
     "eng_plate_temp" : [
         "105"
@@ -43,11 +39,7 @@
         "105"
     ],
     "cool_plate_temp_initial_layer" : [
-<<<<<<< HEAD:resources/profiles/3DLabs/filament/fdm_filament_abs.json
         "105"
-=======
-        "0"
->>>>>>> v1.4.0_beta3:resources/profiles/BBL/filament/fdm_filament_abs.json
     ],
     "eng_plate_temp_initial_layer" : [
         "105"
