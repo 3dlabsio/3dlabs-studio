@@ -47,11 +47,7 @@ CopyrightsDialog::CopyrightsDialog()
         wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {
     this->SetFont(wxGetApp().normal_font());
-#ifdef _WIN32
-    wxGetApp().UpdateDarkUI(this);
-#else
-	this->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
-#endif
+	this->SetBackgroundColour(*wxWHITE);
 
     std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
     SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
@@ -66,6 +62,7 @@ CopyrightsDialog::CopyrightsDialog()
     m_html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition,
                               wxSize(40 * em_unit(), 20 * em_unit()), wxHW_SCROLLBAR_AUTO);
     m_html->SetMinSize(wxSize(FromDIP(870),FromDIP(520)));
+    m_html->SetBackgroundColour(*wxWHITE);
     wxFont font = get_default_font(this);
     const int fs = font.GetPointSize();
     const int fs2 = static_cast<int>(1.2f*fs);
@@ -81,6 +78,7 @@ CopyrightsDialog::CopyrightsDialog()
     SetSizer(sizer);
     sizer->SetSizeHints(this);
     CenterOnParent();
+    wxGetApp().UpdateDlgDarkUI(this);
 }
 
 void CopyrightsDialog::fill_entries()
@@ -214,9 +212,7 @@ AboutDialog::AboutDialog()
         wxDefaultSize, /*wxCAPTION*/wxDEFAULT_DIALOG_STYLE)
 {
     SetFont(wxGetApp().normal_font());
-
-    wxColour bgr_clr = wxGetApp().get_window_default_clr();//wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
-	SetBackgroundColour(bgr_clr);
+	SetBackgroundColour(*wxWHITE);
 
     std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
     SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
@@ -258,6 +254,7 @@ AboutDialog::AboutDialog()
     {
         auto staticText = new wxStaticText( this, wxID_ANY, wxEmptyString,wxDefaultPosition,wxSize(FromDIP(520), -1), wxALIGN_LEFT );
         staticText->SetForegroundColour(wxColour(107, 107, 107));
+        staticText->SetBackgroundColour(*wxWHITE);
         staticText->SetMinSize(wxSize(FromDIP(520), -1));
         staticText->SetFont(Label::Body_12);
         if (is_zh) {
@@ -380,6 +377,7 @@ AboutDialog::AboutDialog()
     ver_sizer->Add( 0, 0, 0, wxTOP, FromDIP(30));
     button_portions->Bind(wxEVT_BUTTON, &AboutDialog::onCopyrightBtn, this);
 
+    wxGetApp().UpdateDlgDarkUI(this);
 	SetSizer(main_sizer);
     Layout();
     Fit();
@@ -407,7 +405,6 @@ void AboutDialog::on_dpi_changed(const wxRect &suggested_rect)
 
     SetMinSize(size);
     Fit();
-
     Refresh();
 }
 
@@ -431,7 +428,7 @@ void AboutDialog::onCopyrightBtn(wxEvent &)
 void AboutDialog::onCopyToClipboard(wxEvent&)
 {
     wxTheClipboard->Open();
-    wxTheClipboard->SetData(new wxTextDataObject(_L("Version") + " " + std::string(SLIC3R_VERSION)));
+    wxTheClipboard->SetData(new wxTextDataObject(_L("Version") + " " + GUI_App::format_display_version()));
     wxTheClipboard->Close();
 }
 
