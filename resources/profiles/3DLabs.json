@@ -39,12 +39,8 @@
             "sub_path": "process/ABS 0.20mm Standard @3D Labs.json"
         },
         {
-            "name": "ABS 0.24mm Draft @3D Labs.json",
-            "sub_path": "process/ABS 0.24mm Draft @3D Labs.json"
-        },
-        {
-            "name": "ABS 0.28mm Rough Draft @3D Labs.json",
-            "sub_path": "process/ABS 0.28mm Rough Draft @3D Labs.json"
+            "name": "ABS 0.30mm Draft @3D Labs.json",
+            "sub_path": "process/ABS 0.30mm Draft @3D Labs.json"
         },
         {
             "name": "TPU 0.15mm Fine @3D Labs.json",
@@ -55,12 +51,8 @@
             "sub_path": "process/TPU 0.20mm Standard @3D Labs.json"
         },
         {
-            "name": "TPU 0.24mm Draft @3D Labs.json",
-            "sub_path": "process/TPU 0.24mm Draft @3D Labs.json"
-        },
-        {
-            "name": "TPU 0.28mm Rough Draft @3D Labs.json",
-            "sub_path": "process/TPU 0.28mm Rough Draft @3D Labs.json"
+            "name": "TPU 0.30mm Draft @3D Labs.json",
+            "sub_path": "process/TPU 0.30mm Draft @3D Labs.json"
         }
     ],
     "filament_list": [
@@ -89,10 +81,6 @@
             "sub_path": "filament/fdm_filament_pc.json"
         },
         {
-            "name": "fdm_filament_asa",
-            "sub_path": "filament/fdm_filament_asa.json"
-        },
-        {
             "name": "fdm_filament_pva",
             "sub_path": "filament/fdm_filament_pva.json"
         },
@@ -101,12 +89,24 @@
             "sub_path": "filament/fdm_filament_pa.json"
         },
         {
-            "name": "Generic ABS/ASA",
-            "sub_path": "filament/Generic ABS.json"
+            "name": "3DXTech ABS",
+            "sub_path": "filament/3DXTech ABS.json"
         },
         {
-            "name": "Generic TPU",
-            "sub_path": "filament/Generic TPU.json"
+            "name": "3DXTech ASA",
+            "sub_path": "filament/3DXTech ASA.json"
+        },
+        {
+            "name": "Kexcelled ABS 5 Basic",
+            "sub_path": "filament/Kexcelled ABS 5 Basic.json"
+        },
+        {
+            "name": "Duramic TPU",
+            "sub_path": "filament/Duramic TPU.json"
+        },
+        {
+            "name": "SainSmart TPU",
+            "sub_path": "filament/SainSmart TPU.json"
         }
     ],
     "machine_list": [

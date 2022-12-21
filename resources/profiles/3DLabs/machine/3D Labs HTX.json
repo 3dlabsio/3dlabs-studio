@@ -8,5 +8,5 @@
     "bed_model": "",
     "bed_texture": "3dlabs_logo.png",
     "hotend_model": "hotend.stl",
-    "default_materials": "Generic ABS/ASA;Generic TPU"
+    "default_materials": "3DXTech ABS;3DXTech ASA;Kexcelled ABS 5 Basic;Duramic TPU;SainSmart TPU"
 }
