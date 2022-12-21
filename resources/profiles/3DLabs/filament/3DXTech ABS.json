@@ -2,10 +2,13 @@
     "type": "filament",
     "filament_id": "GFB99",
     "setting_id": "GFSB99-00",
-    "name": "Generic ABS/ASA",
+    "name": "3DXTech ABS",
     "from": "system",
     "instantiation": "true",
     "inherits": "fdm_filament_abs",
+    "filament_vendor": [
+        "3DXTech"
+    ],
     "filament_max_volumetric_speed": [
         "12"
     ],
@@ -47,7 +50,7 @@
         "195"
     ],
     "nozzle_temperature": [
-        "245"
+        "235"
     ],
     "nozzle_temperature_initial_layer": [
         "245"
@@ -64,5 +67,5 @@
     "slow_down_min_speed": [
         "5"
     ],
-    "version": "1.2.1.6"
+    "version": "1.2.1.7"
 }

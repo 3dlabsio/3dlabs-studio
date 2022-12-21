@@ -2,10 +2,13 @@
     "type": "filament",
     "filament_id": "GFU99",
     "setting_id": "GFSU99-00",
-    "name": "Generic TPU",
+    "name": "Duramic TPU",
     "from": "system",
     "instantiation": "true",
     "inherits": "fdm_filament_tpu",
+    "filament_vendor": [
+        "Duramic"
+    ],
     "additional_cooling_fan_speed": [
         "0"
     ],
