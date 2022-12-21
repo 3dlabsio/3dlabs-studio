@@ -6,13 +6,14 @@
     "compatible_prints": [
 	    "ABS/ASA 0.15mm Fine @3D Labs",
         "ABS/ASA 0.20mm Standard @3D Labs",
-        "ABS/ASA 0.24mm Draft @3D Labs",
-        "ABS/ASA 0.20mm Rought Draft @3D Labs",
-        "ABS & Aquatek 120 0.20mm Standard @3D Labs"
+        "ABS/ASA 0.30mm Draft @3D Labs"
     ],
     "compatible_printers": [
         "3D Labs HTX 0.4 nozzle",
         "3D Labs X400 0.4 nozzle"
+    ],
+    "default_filament_colour": [
+        "#E38C1F"
     ],
     "filament_settings_id": [
         ""
