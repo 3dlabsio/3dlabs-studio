@@ -3,7 +3,7 @@
     "setting_id": "GP_3DLabs_999",
     "name": "New Profile Template",
     "from": "system",
-    "inherits": "fdm_process_common",
+    "inherits": "fdm_process_3dlabs_common",
     "instantiation": "true",
     "layer_height": "0.2",
     "bottom_shell_layers": "3",
