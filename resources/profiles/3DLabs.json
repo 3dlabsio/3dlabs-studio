@@ -93,6 +93,10 @@
             "sub_path": "filament/fdm_filament_pa.json"
         },
         {
+            "name": "New Filament Template",
+            "sub_path": "filament/New Filament Template.json"
+        },
+        {
             "name": "3DXTech ABS",
             "sub_path": "filament/3DXTech ABS.json"
         },
