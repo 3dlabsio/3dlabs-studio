@@ -53,6 +53,10 @@
         {
             "name": "TPU 0.30mm Draft @3D Labs.json",
             "sub_path": "process/TPU 0.30mm Draft @3D Labs.json"
+        },
+        {
+            "name": "New Profile Template.json",
+            "sub_path": "process/New Profile Template.json"
         }
     ],
     "filament_list": [
