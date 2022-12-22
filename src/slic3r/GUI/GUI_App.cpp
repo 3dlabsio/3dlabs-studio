@@ -4475,6 +4475,10 @@ Tab* GUI_App::get_model_tab(bool part)
 
 ConfigOptionMode GUI_App::get_mode()
 {
+    //3dlabs testing
+    // force develop mode
+    //return comDevelop;
+    
     if (!app_config->has("user_mode"))
         return comSimple;
     //BBS

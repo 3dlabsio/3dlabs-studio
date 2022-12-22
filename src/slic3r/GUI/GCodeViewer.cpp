@@ -714,10 +714,15 @@ void GCodeViewer::SequentialView::render(const bool has_render_path, float legen
         bottom -= wxGetApp().plater()->get_view_toolbar().get_height();
 #endif
     //gcode_window.render(legend_height, bottom, static_cast<uint64_t>(gcode_ids[current.last]));
-    if (wxGetApp().get_mode() == ConfigOptionMode::comDevelop) {
+
+    // 3dlabs
+    //gcode_window.render(legend_height, (float)canvas_height, (float)canvas_width, static_cast<uint64_t>(gcode_ids[current.last]));
+    
+    if (wxGetApp().get_mode() == ConfigOptionMode::comAdvanced) {
         if (has_render_path)
             gcode_window.render(legend_height, (float)canvas_height, (float)canvas_width, static_cast<uint64_t>(gcode_ids[current.last]));
     }
+    
 }
 
 const std::vector<GCodeViewer::Color> GCodeViewer::Extrusion_Role_Colors {{
@@ -997,7 +1002,9 @@ void GCodeViewer::load(const GCodeProcessorResult& gcode_result, const Print& pr
     m_gcode_result = &gcode_result;
     m_only_gcode_in_preview = only_gcode;
 
-    if (mode == ConfigOptionMode::comDevelop) {
+    //3dlabs
+    
+    if (mode == ConfigOptionMode::comAdvanced) {
         m_sequential_view.gcode_window.load_gcode(gcode_result.filename,
             // Stealing out lines_ends should be safe because this gcode_result is processed only once (see the 1st if in this function).
             std::move(const_cast<std::vector<size_t>&>(gcode_result.lines_ends)));

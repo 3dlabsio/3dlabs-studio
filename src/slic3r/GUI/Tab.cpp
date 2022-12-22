@@ -1952,6 +1952,10 @@ void TabPrint::build()
         optgroup->append_single_option_line("flush_into_objects", "reduce-wasting-during-filament-change#wipe-into-object");
         optgroup->append_single_option_line("flush_into_support", "reduce-wasting-during-filament-change#wipe-into-support-enabled-by-default");
 
+        optgroup = page->new_optgroup(L("Ooze control"), L"param_wall");
+        optgroup->append_single_option_line("ooze_prevention");
+        optgroup->append_single_option_line("standby_temperature_delta");
+
         optgroup = page->new_optgroup(L("Special mode"), L"param_special");
         optgroup->append_single_option_line("slicing_mode");
         optgroup->append_single_option_line("print_sequence");
@@ -1961,7 +1965,6 @@ void TabPrint::build()
         optgroup->append_single_option_line("fuzzy_skin");
         optgroup->append_single_option_line("fuzzy_skin_point_distance");
         optgroup->append_single_option_line("fuzzy_skin_thickness");
-
 
         optgroup = page->new_optgroup(L("G-code output"), L"param_gcode");
         optgroup->append_single_option_line("reduce_infill_retraction");
@@ -2624,6 +2627,26 @@ void TabFilament::build()
         option.opt.height = gcode_field_height;// 150;
         optgroup->append_single_option_line(option);
         //BBS
+
+    page = add_options_page(L("Dependencies"), "advanced");
+        optgroup = page->new_optgroup(L("Profile dependencies"));
+        create_line_with_widget(optgroup.get(), "compatible_printers", "", [this](wxWindow* parent) {
+            return compatible_widget_create(parent, m_compatible_printers);
+        });
+
+        option = optgroup->get_option("compatible_printers_condition");
+        option.opt.full_width = true;
+        optgroup->append_single_option_line(option);
+
+        create_line_with_widget(optgroup.get(), "compatible_prints", "", [this](wxWindow* parent) {
+            return compatible_widget_create(parent, m_compatible_prints);
+        });
+
+        option = optgroup->get_option("compatible_prints_condition");
+        option.opt.full_width = true;
+        optgroup->append_single_option_line(option);
+
+        build_preset_description_line(optgroup.get());
 #if 0
     //page = add_options_page(L("Dependencies"), "advanced");
     //    optgroup = page->new_optgroup(L("Profile dependencies"));
