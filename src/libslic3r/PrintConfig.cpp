@@ -2890,15 +2890,6 @@ void PrintConfigDef::init_fff_params()
     def->max = max_temp;
     def->set_default_value(new ConfigOptionInt(0));
 
-    def = this->add("nozzle_standby_temperature", coInts);
-    def->label = L("Standby temperature");
-    def->tooltip = L("Nozzle standby temperature");
-    def->sidetext = L("°C");
-    def->full_label = L("Nozzle standby temperature");
-    def->min = 0;
-    def->max = max_temp;
-    def->set_default_value(new ConfigOptionInts { 200 });
-
     def = this->add("nozzle_temperature", coInts);
     def->label = L("Other layers");
     def->tooltip = L("Nozzle temperature for layers after the initial one");

@@ -63,7 +63,6 @@
     "minimum_sparse_infill_area": "15",
     "internal_solid_infill_line_width": "0.48",
     "spiral_mode": "0",
-    "standby_temperature_delta": "-5",
     "enable_support": "0",
     "resolution": "0.012",
     "small_perimeter_speed": "15",

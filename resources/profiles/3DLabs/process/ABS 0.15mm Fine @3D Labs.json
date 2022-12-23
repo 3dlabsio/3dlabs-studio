@@ -1,7 +1,7 @@
 {
     "type": "process",
     "setting_id": "GP_3DLabs_001",
-    "name": "ABS/ASA 0.15mm Fine @3D Labs",
+    "name": "ABS 0.15mm Fine @3D Labs",
     "from": "system",
     "inherits": "fdm_process_3dlabs_abs",
     "instantiation": "true",

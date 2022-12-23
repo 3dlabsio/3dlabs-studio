@@ -43,7 +43,6 @@
     "internal_solid_infill_line_width": "0.45",
     "internal_solid_infill_speed": "40",
     "spiral_mode": "0",
-    "standby_temperature_delta": "-5",
     "enable_support": "0",
     "support_filament": "0",
     "support_line_width": "0.42",
