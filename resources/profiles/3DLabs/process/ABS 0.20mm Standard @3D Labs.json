@@ -1,7 +1,7 @@
 {
     "type": "process",
     "setting_id": "GP_3DLabs_002",
-    "name": "ABS/ASA 0.20mm Standard @3D Labs",
+    "name": "ABS 0.20mm Standard @3D Labs",
     "from": "system",
     "inherits": "fdm_process_3dlabs_abs",
     "instantiation": "true",

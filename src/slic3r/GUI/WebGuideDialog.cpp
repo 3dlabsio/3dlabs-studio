@@ -106,7 +106,7 @@ GuideFrame::GuideFrame(GUI_App *pGUI, long style)
     LoadProfile();
 
     // UI
-    SetStartPage(BBL_REGION);
+    SetStartPage(BBL_MODELS);
 
     BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << boost::format(",  finished");
     wxGetApp().UpdateDlgDarkUI(this);

@@ -182,7 +182,7 @@ MonitorPanel::~MonitorPanel()
     m_connection_info->SetMaxSize(wxSize(FromDIP(-1), FromDIP(25)));
 
     wxBoxSizer* connection_sizer = new wxBoxSizer(wxVERTICAL);
-    m_hyperlink = new wxHyperlinkCtrl(m_connection_info, wxID_ANY, _L("Failed to connect to the server"), wxT("https://wiki.bambulab.com/en/software/bambu-studio/failed-to-connect-printer"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE);
+    m_hyperlink = new wxHyperlinkCtrl(m_connection_info, wxID_ANY, _L("Failed to connect to the server"), wxT("https://docs.3dlabs.io/en/software/bambu-studio/failed-to-connect-printer"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE);
     connection_sizer->Add(m_hyperlink, 0, wxALIGN_CENTER | wxALL, 5);
     m_hyperlink->SetBackgroundColour(wxColour(255, 111, 0));
     m_connection_info->SetSizer(connection_sizer);

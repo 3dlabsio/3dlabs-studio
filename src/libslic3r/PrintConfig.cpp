@@ -818,7 +818,9 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("compatible_printers", coStrings);
     def->label = L("Compatible machine");
-    def->mode = comDevelop;
+    //3dlabs
+    def->mode = comAdvanced;
+    //def->mode = comDevelop;
     def->set_default_value(new ConfigOptionStrings());
     def->cli = ConfigOptionDef::nocli;
 
@@ -840,7 +842,9 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("compatible_prints", coStrings);
     def->label = L("Compatible process profiles");
-    def->mode = comDevelop;
+    //3dlabs
+    def->mode = comAdvanced;
+    //def->mode = comDevelop;
     def->set_default_value(new ConfigOptionStrings());
     def->cli = ConfigOptionDef::nocli;
 
@@ -2107,10 +2111,12 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("ooze_prevention", coBool);
     def->label = L("Enable");
-    //def->tooltip = L("This option will drop the temperature of the inactive extruders to prevent oozing. "
-    //               "It will enable a tall skirt automatically and move extruders outside such "
-    //               "skirt when changing temperatures.");
-    def->mode = comDevelop;
+    def->tooltip = L("This option will drop the temperature of the inactive extruders to prevent oozing. "
+                   "It will enable a tall skirt automatically and move extruders outside such "
+                   "skirt when changing temperatures.");
+    //3dlabs
+    def->mode = comSimple;
+    //def->mode = comDevelop;
     def->set_default_value(new ConfigOptionBool(false));
 
     def = this->add("filename_format", coString);
@@ -2466,15 +2472,17 @@ void PrintConfigDef::init_fff_params()
     def->set_default_value(new ConfigOptionEnum<TimelapseType>(tlTraditional));
 
     def = this->add("standby_temperature_delta", coInt);
-    def->label = L("Temperature variation");
-    //def->tooltip = L("Temperature difference to be applied when an extruder is not active. "
-    //               "Enables a full-height \"sacrificial\" skirt on which the nozzles are periodically wiped.");
+    def->label = L("Extruder standby temperature delta");
+    def->tooltip = L("Temperature difference to be applied when an extruder is not active. "
+                   "Enables a full-height \"sacrificial\" skirt on which the nozzles are periodically wiped.");
     def->sidetext = "∆°C";
     def->min = -max_temp;
     def->max = max_temp;
     //BBS
-    def->mode = comDevelop;
-    def->set_default_value(new ConfigOptionInt(-5));
+    //def->mode = comDevelop;
+    //3dlabs
+    def->mode = comSimple;
+    def->set_default_value(new ConfigOptionInt(-50));
 
     def = this->add("machine_start_gcode", coString);
     def->label = L("Start G-code");
@@ -2881,15 +2889,6 @@ void PrintConfigDef::init_fff_params()
     def->min = 0;
     def->max = max_temp;
     def->set_default_value(new ConfigOptionInt(0));
-
-    def = this->add("nozzle_standby_temperature", coInts);
-    def->label = L("Standby temperature");
-    def->tooltip = L("Nozzle standby temperature");
-    def->sidetext = L("°C");
-    def->full_label = L("Nozzle standby temperature");
-    def->min = 0;
-    def->max = max_temp;
-    def->set_default_value(new ConfigOptionInts { 200 });
 
     def = this->add("nozzle_temperature", coInts);
     def->label = L("Other layers");

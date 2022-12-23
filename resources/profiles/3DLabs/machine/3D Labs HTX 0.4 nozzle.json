@@ -45,7 +45,6 @@
     "Kexcelled ABS 5 Basic"
   ],
   "printable_height": "300",
-  "change_filament_gcode": "{if next_extruder == 0}\nM104 S{nozzle_standby_temperature[1]} T1\nT0\n{if nozzle_temperature[0] == 0}\nCLEAN_PURGE T=0 S={nozzle_temperature_initial_layer[0]}\n{else}\nCLEAN_PURGE T=0 S={nozzle_temperature[0]}\n{endif}\n{elsif next_extruder == 1}\nM104 S{nozzle_standby_temperature[0]} T0\nT1\n{if nozzle_temperature[1] == 0}\nCLEAN_PURGE T=1 S={nozzle_temperature_initial_layer[1]}\n{else}\nCLEAN_PURGE T=1 S={nozzle_temperature[1]}\n{endif}\n{endif}",
   "extruder_offset": [
     "0x0",
     "0x0"

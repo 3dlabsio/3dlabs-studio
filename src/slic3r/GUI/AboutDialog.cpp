@@ -313,7 +313,7 @@ AboutDialog::AboutDialog()
 
     // 3DL
     // Rearrange version text position and appearance
-    auto version_string = _L("Version") + " " + std::string(SoftFever_VERSION);
+    auto version_string = _L("Version") + " " + std::string(SLIC3R_VERSION);
     wxStaticText *version_text = new wxStaticText(this, wxID_ANY, version_string.c_str(), wxDefaultPosition, wxDefaultSize);
     wxFont version_font = GetFont();
     #ifdef __WXMSW__

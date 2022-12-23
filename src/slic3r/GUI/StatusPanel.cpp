@@ -1807,6 +1807,7 @@ void StatusPanel::update_ams(MachineObject *obj)
     // update obj in sub dlg
     if (m_ams_setting_dlg) {
         m_ams_setting_dlg->obj = obj;
+
         if (obj && m_ams_setting_dlg->IsShown()) {
             m_ams_setting_dlg->update_insert_material_read_mode(obj->ams_insert_flag);
             m_ams_setting_dlg->update_starting_read_mode(obj->ams_power_on_flag);
@@ -2445,6 +2446,7 @@ void StatusPanel::on_ams_setting_click(SimpleEvent &event)
         try {
             int ams_id_int            = atoi(ams_id.c_str());
             m_ams_setting_dlg->ams_id = ams_id_int;
+            m_ams_setting_dlg->ams_support_remain = obj->ams_support_remain;
             m_ams_setting_dlg->Show();
         } catch (...) {
             ;
@@ -2560,7 +2562,7 @@ void StatusPanel::on_ams_selected(wxCommandEvent &event)
 
 void StatusPanel::on_ams_guide(wxCommandEvent& event)
 {
-    wxString ams_wiki_url = "https://wiki.bambulab.com/en/software/bambu-studio/use-ams-on-bambu-studio";
+    wxString ams_wiki_url = "https://docs.3dlabs.io/en/software/bambu-studio/use-ams-on-bambu-studio";
     wxLaunchDefaultBrowser(ams_wiki_url);
 }
 

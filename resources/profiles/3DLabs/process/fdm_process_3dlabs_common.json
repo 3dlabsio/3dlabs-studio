@@ -26,7 +26,6 @@
     "draft_shield": "disabled",
     "elefant_foot_compensation": "0.2",
     "outer_wall_line_width": "0.4",
-    "only_one_wall_top": "1",
     "wall_infill_order": "inner wall/outer wall/infill",
     "line_width": "0.4",
     "infill_direction": "45",
@@ -63,7 +62,6 @@
     "minimum_sparse_infill_area": "15",
     "internal_solid_infill_line_width": "0.48",
     "spiral_mode": "0",
-    "standby_temperature_delta": "-5",
     "enable_support": "0",
     "resolution": "0.012",
     "small_perimeter_speed": "15",
@@ -115,5 +113,5 @@
       "3D Labs X400 0.4 nozzle"
     ],
 
-    "version": "1.2.1.6"
+    "version": "1.2.1.7"
 }

@@ -302,13 +302,14 @@ public:
 
         // load bitmap for logo
         BitmapCache bmp_cache;
-        int logo_margin = FromDIP(72 * m_scale);
-        int logo_size = FromDIP(122 * m_scale);
-        int logo_width = FromDIP(94 * m_scale);
+        int logo_margin = FromDIP(32 * m_scale);
+        int logo_size = FromDIP(200 * m_scale);
+        int logo_width = FromDIP(250 * m_scale);
         wxBitmap logo_bmp = *bmp_cache.load_svg("3dlabs/splash_logo", logo_size, logo_size);
         int logo_y = top_margin + title_rect.GetHeight() + logo_margin;
-        memDc.DrawBitmap(logo_bmp, (width - logo_width) / 2, logo_y, true);
-
+        //memDc.DrawBitmap(logo_bmp, (width - logo_width) / 2, logo_y, true);
+        memDc.DrawBitmap(logo_bmp, 10, logo_y, true);
+        
         // calculate position for the dynamic text
         int text_margin = FromDIP(80 * m_scale);
         m_action_line_y_position = logo_y + logo_size + text_margin;
@@ -1701,7 +1702,7 @@ void GUI_App::init_networking_callbacks()
                     wxCommandEvent event(EVT_CONNECT_LAN_MODE_PRINT);
 
                     if (obj) {
-                        
+
                         if (obj->is_lan_mode_printer()) {
                             if (state == ConnectStatus::ConnectStatusOk) {
                                 obj->command_request_push_all();
@@ -1894,6 +1895,9 @@ void GUI_App::init_app_config()
             if (! wxGetEnv(wxS("XDG_CONFIG_HOME"), &dir) || dir.empty() )
                 dir = wxFileName::GetHomeDir() + wxS("/.config");
             set_data_dir((dir + "/" + GetAppName()).ToUTF8().data());
+            boost::filesystem::path data_dir_path(data_dir());
+            if (!boost::filesystem::exists(data_dir_path))
+                boost::filesystem::create_directory(data_dir_path);
         #endif
     } else {
         m_datadir_redefined = true;
@@ -2731,7 +2735,7 @@ void GUI_App::UpdateDarkUI(wxWindow* window, bool highlited/* = false*/, bool ju
 
     /*if (m_is_dark_mode != dark_mode() )
         m_is_dark_mode = dark_mode();*/
-    
+
 
     if (m_is_dark_mode) {
         auto original_col = window->GetBackgroundColour();
@@ -4471,6 +4475,10 @@ Tab* GUI_App::get_model_tab(bool part)
 
 ConfigOptionMode GUI_App::get_mode()
 {
+    //3dlabs testing
+    // force develop mode
+    //return comDevelop;
+    
     if (!app_config->has("user_mode"))
         return comSimple;
     //BBS

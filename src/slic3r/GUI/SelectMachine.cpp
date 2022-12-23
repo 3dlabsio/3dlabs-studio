@@ -641,7 +641,7 @@ void SelectMachinePopup::update_other_devices()
     m_placeholder_panel = new wxWindow(m_scrolledWindow, wxID_ANY, wxDefaultPosition, wxSize(-1,FromDIP(26)));
     wxBoxSizer* placeholder_sizer = new wxBoxSizer(wxVERTICAL);
 
-    m_hyperlink = new wxHyperlinkCtrl(m_placeholder_panel, wxID_ANY, _L("Can't find my devices?"), wxT("https://wiki.bambulab.com/en/software/bambu-studio/failed-to-connect-printer"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE);
+    m_hyperlink = new wxHyperlinkCtrl(m_placeholder_panel, wxID_ANY, _L("Can't find my devices?"), wxT("https://docs.3dlabs.io/en/software/bambu-studio/failed-to-connect-printer"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE);
     placeholder_sizer->Add(m_hyperlink, 0, wxALIGN_CENTER | wxALL, 5);
 
 
@@ -875,7 +875,7 @@ void SelectMachinePopup::OnLeftUp(wxMouseEvent &event)
         //hyper link
         auto h_rect = m_hyperlink->ClientToScreen(wxPoint(0, 0));
         if (mouse_pos.x > h_rect.x && mouse_pos.y > h_rect.y && mouse_pos.x < (h_rect.x + m_hyperlink->GetSize().x) && mouse_pos.y < (h_rect.y + m_hyperlink->GetSize().y)) {
-          wxLaunchDefaultBrowser(wxT("https://wiki.bambulab.com/en/software/bambu-studio/failed-to-connect-printer"));
+          wxLaunchDefaultBrowser(wxT("https://docs.3dlabs.io/en/software/bambu-studio/failed-to-connect-printer"));
         }
     }
 }
@@ -1168,7 +1168,7 @@ SelectMachineDialog::SelectMachineDialog(Plater *plater)
     m_sizer_prepare->Add(0, 0, 1, wxTOP, FromDIP(12));
 
     auto hyperlink_sizer = new wxBoxSizer( wxHORIZONTAL );
-    auto m_hyperlink = new wxHyperlinkCtrl(m_panel_prepare, wxID_ANY, _L("Can't find my devices?"), wxT("https://wiki.bambulab.com/en/software/bambu-studio/failed-to-connect-printer"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE);
+    auto m_hyperlink = new wxHyperlinkCtrl(m_panel_prepare, wxID_ANY, _L("Can't find my devices?"), wxT("https://docs.3dlabs.io/en/software/bambu-studio/failed-to-connect-printer"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE);
 
     //auto linkimg = new wxStaticBitmap(m_panel_prepare, wxID_ANY, create_scaled_bitmap("link_wiki_img", this, 18), wxDefaultPosition, wxSize(FromDIP(18), FromDIP(18)), 0);
 
@@ -2930,7 +2930,7 @@ void SelectMachineDialog::set_default()
     }
 
     // material info
-    auto        extruders = wxGetApp().plater()->get_partplate_list().get_curr_plate()->get_extruders();
+    auto        extruders = wxGetApp().plater()->get_partplate_list().get_curr_plate()->get_used_extruders();
     BitmapCache bmcache;
 
     MaterialHash::iterator iter = m_materialList.begin();

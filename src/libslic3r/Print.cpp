@@ -189,7 +189,6 @@ bool Print::invalidate_state_by_config_options(const ConfigOptionResolver & /* n
             || opt_key == "filament_max_volumetric_speed"
             || opt_key == "gcode_flavor"
             || opt_key == "single_extruder_multi_material"
-            || opt_key == "nozzle_standby_temperature"
             || opt_key == "nozzle_temperature"
             // BBS
             || opt_key == "cool_plate_temp"

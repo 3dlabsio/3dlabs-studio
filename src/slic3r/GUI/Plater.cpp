@@ -629,7 +629,7 @@ Sidebar::Sidebar(Plater *parent)
             SetCursor(wxCURSOR_ARROW);
         });
         bed_type_title->Bind(wxEVT_LEFT_UP, [bed_type_title, this](wxMouseEvent &e) {
-            wxLaunchDefaultBrowser("https://wiki.bambulab.com/en/x1/manual/compatibility-and-parameter-settings-of-filaments");
+            wxLaunchDefaultBrowser("https://docs.3dlabs.io/en/x1/manual/compatibility-and-parameter-settings-of-filaments");
         });
 
         AppConfig *app_config = wxGetApp().app_config;
@@ -8554,7 +8554,7 @@ int GUI::Plater::close_with_confirm(std::function<bool(bool)> second_check)
         return wxID_NO;
     }
 
-    auto result = MessageDialog(static_cast<wxWindow*>(this), _L("The current project has unsaved changes, save it before continue?"),
+    auto result = MessageDialog(static_cast<wxWindow*>(this), _L("The current project has unsaved changes, save before exiting?"),
         wxString(SLIC3R_APP_FULL_NAME) + " - " + _L("Save"), wxYES_NO | wxCANCEL | wxYES_DEFAULT | wxCENTRE).ShowModal();
     if (result == wxID_CANCEL)
         return result;
