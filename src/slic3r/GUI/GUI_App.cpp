@@ -570,7 +570,7 @@ private:
 // #if BBL_INTERNAL_TESTING
             // version = _L("Internal Version") + " " + std::string(SLIC3R_VERSION);
 // #else
-            version = _L("SoftFever Version") + " " + std::string(SoftFever_VERSION);
+            version = _L("3DLabs Studio") + " " + std::string(SLIC3R_VERSION);
 // #endif
 
             // credits infornation
