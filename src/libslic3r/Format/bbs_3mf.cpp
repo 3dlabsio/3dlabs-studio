@@ -3138,9 +3138,9 @@ void PlateData::parse_filament_info(GCodeProcessorResult *result)
         } else if (m_curr_metadata_name == BBL_APPLICATION_TAG) {
             // Generator application of the 3MF.
             // SLIC3R_APP_KEY - SLIC3R_VERSION
-            if (boost::starts_with(m_curr_characters, "BambuStudio-")) {
+            if (boost::starts_with(m_curr_characters, "BambuStudio-") || boost::starts_with(m_curr_characters, "3DLabsStudio-")) {
                 m_is_bbl_3mf = true;
-                m_bambuslicer_generator_version = Semver::parse(m_curr_characters.substr(12));
+                m_bambuslicer_generator_version = Semver::parse(m_curr_characters.substr(13));
             }
         //TODO: currently use version 0, no need to load&&save this string
         /*} else if (m_curr_metadata_name == BBS_FDM_SUPPORTS_PAINTING_VERSION) {
