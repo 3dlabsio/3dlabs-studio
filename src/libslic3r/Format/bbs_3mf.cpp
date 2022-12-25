@@ -5296,11 +5296,11 @@ void PlateData::parse_filament_info(GCodeProcessorResult *result)
 
             if (!data._3mf_printer_thumbnail_middle.empty()) {
                 stream << " <Relationship Target=\"/" << data._3mf_printer_thumbnail_middle
-                       << "\" Id=\"rel-4\" Type=\"http://schemas.bambulab.com/package/2021/cover-thumbnail-middle\"/>\n";
+                       << "\" Id=\"rel-4\" Type=\"http://schemas.3dlabs.io/package/2021/cover-thumbnail-middle\"/>\n";
             }
             if (!data._3mf_printer_thumbnail_small.empty())
                 stream << " <Relationship Target=\"/" << data._3mf_printer_thumbnail_small
-                       << "\" Id=\"rel-5\" Type=\"http://schemas.bambulab.com/package/2021/cover-thumbnail-small\"/>\n";
+                       << "\" Id=\"rel-5\" Type=\"http://schemas.3dlabs.io/package/2021/cover-thumbnail-small\"/>\n";
         }
         else if (targets.empty()) {
             return false;
@@ -6453,7 +6453,7 @@ void PlateData::parse_filament_info(GCodeProcessorResult *result)
 
         // write model rels
         if (save_gcode)
-            _add_relationships_file_to_archive(archive, BBS_MODEL_CONFIG_RELS_FILE, gcode_paths, {"http://schemas.bambulab.com/package/2021/gcode"}, Slic3r::PackingTemporaryData(), export_plate_idx);
+            _add_relationships_file_to_archive(archive, BBS_MODEL_CONFIG_RELS_FILE, gcode_paths, {"http://schemas.3dlabs.io/package/2021/gcode"}, Slic3r::PackingTemporaryData(), export_plate_idx);
 
         //BBS: store assemble related info
         stream << "  <" << ASSEMBLE_TAG << ">\n";

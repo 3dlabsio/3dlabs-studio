@@ -4,10 +4,6 @@
   "from": "system",
   "instantiation": "false",
   "gcode_flavor": "klipper",
-  "extruder_colour": [
-    "#02A9F0",
-    "#E38C1F"
-  ],
   "machine_max_acceleration_e": [
     "5000",
     "5000"

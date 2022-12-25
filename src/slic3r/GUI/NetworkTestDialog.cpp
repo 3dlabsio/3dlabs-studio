@@ -458,12 +458,12 @@ void NetworkTestDialog::start_test_oss()
 	m_in_testing[TEST_OSS_JOB] = true;
 	update_status(TEST_OSS_JOB, "test storage start...");
 
-	std::string url = "http://upload-file.bambulab.com";
+	std::string url = "http://upload-file.3dlabs.io";
 
 	AppConfig* config = wxGetApp().app_config;
 	if (config) {
 		if (config->get_country_code() == "CN")
-			url = "http://upload-file.bambulab.cn";
+			url = "http://upload-file.3dlabs.io";
 	}
 
 	Slic3r::Http http = Slic3r::Http::get(url);

@@ -73,10 +73,10 @@ std::string AppConfig::get_hms_host()
 //     else if (sel == ENV_PRE_HOST)
 //         host = "e-pre.bambu-lab.com";
 //     else if (sel == ENV_PRODUCT_HOST)
-//         host = "e.bambulab.com";
+//         host = "iot.3dlabs.io";
 //     return host;
 // #else
-    return "e.bambulab.com";
+    return "iot.3dlabs.io";
 // #endif
 }
 

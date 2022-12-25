@@ -1256,22 +1256,22 @@ std::string GUI_App::get_http_url(std::string country_code)
 {
     std::string url;
     if (country_code == "US") {
-        url = "https://api.bambulab.com/";
+        url = "https://api.3dlabs.io/";
     }
     else if (country_code == "CN") {
-        url = "https://api.bambulab.cn/";
+        url = "https://api.3dlabs.io/";
     }
     else if (country_code == "ENV_CN_DEV") {
-        url = "https://api-dev.bambu-lab.com/";
+        url = "https://api.3dlabs.io/";
     }
     else if (country_code == "ENV_CN_QA") {
-        url = "https://api-qa.bambu-lab.com/";
+        url = "https://api.3dlabs.io/";
     }
     else if (country_code == "ENV_CN_PRE") {
-        url = "https://api-pre.bambu-lab.com/";
+        url = "https://api.3dlabs.io/";
     }
     else {
-        url = "https://api.bambulab.com/";
+        url = "https://api.3dlabs.io/";
     }
 
     url += "v1/iot-service/api/slicer/resource";
