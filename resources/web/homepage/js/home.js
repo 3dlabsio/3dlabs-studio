@@ -13,8 +13,8 @@ function OnInit()
 	SendMsg_GetLoginInfo();
 	SendMsg_GetRecentFile();
 	
-	//-----Christmas-----
-	ShowCabin();
+	//-----Samples-----
+	ShowSamplePrints();
 }
 
 //------最佳打开文件的右键菜单功能----------
@@ -406,57 +406,55 @@ function OpenWikiUrl( strUrl )
 window.postMessage = HandleStudio;
 
 
-//---------------Christma cabin
-var CCabin={
+//---------------First Print
+var FPrint={
 	"model":[
 		{
-			"name":"Bambu Christmas Cabin",
-			"icon":"christmas_cabin.png",
-			"file":"Bambu Christmas Cabin.3mf"
+			"name":"First Print",
+			"icon":"FirstPrint.png",
+			"file":"FirstPrint.3mf"
 		}		
 	]	
 };
 
-function ShowCabin()
+function ShowSamplePrints()
 {
-	let nCabin=CCabin.model.length;
+	let nFPrint=FPrint.model.length;
 
-	if(nCabin==0)
+	if(nFPrint==0)
 	{
-		$('#CabinList').html('');
+		$('#SamplesList').html('');
 	
-	    $('#ChristmasArea').hide();
+	    $('#SamplesArea').hide();
 		return;
 	}
 	
 	let strHtml='';
-	for(let m=0;m<nCabin;m++)
+	for(let m=0;m<nFPrint;m++)
 	{
-		let OneCabin=CCabin.model[m];
+		let OneFPrint=FPrint.model[m];
 		
-		let OneHtml='<div class="FileItem" onClick="OnOpenCabin(\''+OneCabin.file+'\')" >'+
-				    '<div class="FileImg"><img src="model/'+OneCabin.icon+'"/></div>'+
-				    '<div class="FileName TextS1">'+OneCabin.name+'</div>'+
+		let OneHtml='<div class="FileItem" onClick="OnOpenSample(\''+OneFPrint.file+'\')" >'+
+				    '<div class="FileImg"><img src="model/'+OneFPrint.icon+'"/></div>'+
+				    '<div class="FileName TextS1">'+OneFPrint.name+'</div>'+
 			        '</div>';
 		
 		strHtml+=OneHtml;
 	}
 	
-	$('#CabinList').html(strHtml);
+	$('#SamplesList').html(strHtml);
 	
-	$('#ChristmasArea').show();
-	$('#ChristmasArea').css('display','flex');
+	$('#SamplesArea').show();
+	$('#SamplesArea').css('display','flex');
 }
 
-function OnOpenCabin( cabinfile )
+function OnOpenSample( samplefile )
 {
-	//alert(cabinfile);
-	
 	var tSend={};
 	tSend['sequence_id']=Math.round(new Date() / 1000);
-	tSend['command']="homepage_open_ccabin";
+	tSend['command']="homepage_open_sample";
 	tSend['data']={};
-	tSend['data']['file']=cabinfile;
+	tSend['data']['file']=samplefile;
 	
 	SendWXMessage( JSON.stringify(tSend) );		
 }
