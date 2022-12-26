@@ -44,7 +44,6 @@
     "Kexcelled ABS 5 Basic",
     "Kexcelled ABS 5 Basic"
   ],
-  "default_filament_colour": "#02A9F0,#E38C1F",
   "printable_height": "300",
   "extruder_offset": [
     "0x0",
