@@ -128,7 +128,6 @@
   "z_lift_type": "NormalLift",
   "silent_mode": "0",
   "single_extruder_multi_material": "0",
-  "change_filament_gcode": ";toolchange\n{if next_extruder == 0}\nM104 S{filament_toolchange_temp} T1\nT0\n{if temperature[0] == 0}\nM104 S{first_layer_temperature[0]} T0\n{else}\nM104 S{temperature[0]} T0\n{endif}\n{elsif next_extruder == 1}\nM104 S{filament_toolchange_temp} T0\nT1\n{if temperature[1] == 0}\nM104 S{first_layer_temperature[1]} T1\n{else}\nM104 S{temperature[1]} T1\n{endif}\n{endif}",
   "machine_pause_gcode": "PAUSE\n",
   "wipe": [
     "0",

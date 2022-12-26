@@ -976,8 +976,8 @@ void MainFrame::init_tabpanel()
             auto num_extruders = full_config.option<ConfigOptionFloats>("nozzle_diameter")->values.size();
             wxColour new_col = Plater::get_next_color_for_filament();
             std::string new_color = new_col.GetAsString(wxC2S_HTML_SYNTAX).ToStdString();
-            wxGetApp().preset_bundle->set_num_filaments(num_extruders, new_color);
-            m_plater->on_filaments_change(num_extruders);
+            wxGetApp().preset_bundle->set_num_filaments(2, new_color);
+            m_plater->on_filaments_change(2);
         }
     }
 }

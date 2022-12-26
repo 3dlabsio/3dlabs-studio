@@ -2615,7 +2615,8 @@ wxColour Plater::get_next_color_for_filament()
     static int curr_color_filamenet = 0;
     // refs to https://www.ebaomonthly.com/window/photo/lesson/colorList.htm
     wxColour colors[FILAMENT_SYSTEM_COLORS_NUM] = {
-        *wxYELLOW,
+        wxColour(227, 140, 31),
+        //*wxYELLOW,
         * wxRED,
         *wxBLUE,
         *wxCYAN,
