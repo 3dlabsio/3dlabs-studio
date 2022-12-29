@@ -1,12 +1,10 @@
 {
     "type": "filament",
-    "name": "fdm_filament_abs",
+    "name": "fdm_filament_bvoh",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints": [
-	    "ABS 0.15mm Fine @3D Labs",
-        "ABS 0.20mm Standard @3D Labs",
-        "ABS 0.30mm Draft @3D Labs"
+    "compatible_prints": [ 
+	""
     ],
     "compatible_printers": [
         "3D Labs HTX 0.4 nozzle",
@@ -19,7 +17,7 @@
         "0"
     ],
     "filament_type": [
-        "ABS"
+        "BVOH"
     ],
     "filament_vendor": [
         "Generic"
