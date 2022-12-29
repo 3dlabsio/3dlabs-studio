@@ -1,10 +1,20 @@
 {
+    "compatible_prints": [
+        "PEEK 0.25mm Standard @3D Labs"
+    ],
+    "filament_id": "GFB101",
+    "filament_vendor": [
+        "Essentium"
+    ],
+    "from": "system",
+    "inherits": "fdm_filament_peek",
+    "instantiation": "true",
+    "name": "Essentium PEEK",
+    "setting_id": "GFSB101-00",
+    "type": "filament",
     "chamber_temperature": "90",
     "close_fan_the_first_x_layers": [
         "0"
-    ],
-    "compatible_prints": [
-        "PEEK 0.25mm Standard @3D Labs"
     ],
     "enable_overhang_bridge_fan": [
         "0"
@@ -27,6 +37,9 @@
     "filament_density": [
         "1.31"
     ],
+    "filament_deretraction_speed": [
+        "36"
+    ],
     "filament_flow_ratio": [
         "0.98"
     ],
@@ -35,6 +48,12 @@
     ],
     "filament_retraction_length": [
         "0.6"
+    ],
+    "filament_retraction_minimum_travel": [
+        "3.5"
+    ],
+    "filament_retraction_speed": [
+        "36"
     ],
     "filament_settings_id": [
         "Essentium PEEK"
@@ -48,16 +67,16 @@
     "filament_z_hop": [
         "0.8"
     ],
-    "from": "User",
     "hot_plate_temp": [
         "195"
     ],
     "hot_plate_temp_initial_layer": [
         "195"
     ],
-    "inherits": "Kexcelled ABS 5 Basic",
     "is_custom_defined": "0",
-    "name": "Essentium PEEK",
+    "nozzle_standby_temperature": [
+        "195"
+    ],
     "nozzle_temperature": [
         "450"
     ],
@@ -78,6 +97,9 @@
     ],
     "slow_down_layer_time": [
         "12"
+    ],
+    "slow_down_min_speed": [
+        "5"
     ],
     "temperature_vitrification": [
         "260"
