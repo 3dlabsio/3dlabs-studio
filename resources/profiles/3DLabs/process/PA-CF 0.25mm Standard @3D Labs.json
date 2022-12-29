@@ -1,0 +1,8 @@
+{
+    "from": "User",
+    "inherits": "ABS 0.20mm Standard @3D Labs",
+    "is_custom_defined": "0",
+    "name": "PA-CF 0.25mm Standard @3D Labs",
+    "print_settings_id": "PA-CF 0.25mm Standard @3D Labs",
+    "version": "2.0.0.1"
+}

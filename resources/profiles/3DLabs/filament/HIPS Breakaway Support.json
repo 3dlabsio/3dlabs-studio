@@ -1,0 +1,25 @@
+{
+    "compatible_prints": [
+        "ABS 0.15mm Fine @3D Labs",
+        "ABS 0.20mm Standard @3D Labs",
+        "ABS 0.30mm Draft @3D Labs",
+        "PP 0.20mm Standard @3D Labs",
+        "TPU 0.15mm Fine @3D Labs",
+        "TPU 0.20mm Standard @3D Labs",
+        "TPU 0.30mm Draft @3D Labs"
+    ],
+    "filament_density": [
+        "1.05"
+    ],
+    "filament_settings_id": [
+        "HIPS Breakaway Support"
+    ],
+    "filament_type": [
+        "HIPS"
+    ],
+    "from": "User",
+    "inherits": "3DXTech ASA",
+    "is_custom_defined": "0",
+    "name": "HIPS Breakaway Support",
+    "version": "2.0.0.1"
+}

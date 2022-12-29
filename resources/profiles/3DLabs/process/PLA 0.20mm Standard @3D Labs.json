@@ -1,0 +1,9 @@
+{
+    "from": "User",
+    "inherits": "ABS 0.15mm Fine @3D Labs",
+    "is_custom_defined": "0",
+    "layer_height": "0.2",
+    "name": "PLA 0.20mm Standard @3D Labs",
+    "print_settings_id": "PLA 0.20mm Standard @3D Labs",
+    "version": "2.0.0.1"
+}

@@ -1,0 +1,54 @@
+{
+    "chamber_temperature": "55",
+    "compatible_prints": [
+        "ABS 0.15mm Fine @3D Labs",
+        "ABS 0.20mm Standard @3D Labs",
+        "ABS 0.30mm Draft @3D Labs",
+        "PA-CF 0.25mm Standard @3D Labs",
+        "PLA 0.15mm Fine @3D Labs",
+        "PLA 0.20mm Standard @3D Labs",
+        "PLA 0.30mm Draft @3D Labs",
+        "PP 0.20mm Standard @3D Labs",
+        "TPU 0.15mm Fine @3D Labs",
+        "TPU 0.20mm Standard @3D Labs",
+        "TPU 0.30mm Draft @3D Labs"
+    ],
+    "enable_pressure_advance": [
+        "0"
+    ],
+    "filament_density": [
+        "1.05"
+    ],
+    "filament_is_support": [
+        "1"
+    ],
+    "filament_settings_id": [
+        "Aquasys 120 Support"
+    ],
+    "filament_soluble": [
+        "1"
+    ],
+    "filament_type": [
+        "BVOH"
+    ],
+    "from": "User",
+    "hot_plate_temp_initial_layer": [
+        "100"
+    ],
+    "inherits": "3DXTech ASA",
+    "is_custom_defined": "0",
+    "name": "Aquasys 120 Support",
+    "nozzle_temperature": [
+        "215"
+    ],
+    "nozzle_temperature_initial_layer": [
+        "215"
+    ],
+    "nozzle_temperature_range_high": [
+        "230"
+    ],
+    "nozzle_temperature_range_low": [
+        "200"
+    ],
+    "version": "2.0.0.1"
+}
