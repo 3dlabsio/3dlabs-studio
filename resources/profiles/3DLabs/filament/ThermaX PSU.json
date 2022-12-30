@@ -1,10 +1,20 @@
 {
+    "compatible_prints": [
+        "PSU 0.25mm Standard @3D Labs"
+    ],
+    "filament_id": "GFB115",
+    "filament_vendor": [
+        "3DXTech"
+    ],
+    "from": "system",
+    "inherits": "fdm_filament_pekk",
+    "instantiation": "true",
+    "name": "ThermaX PSU",
+    "setting_id": "GFSB115-00",
+    "type": "filament",
     "chamber_temperature": "90",
     "close_fan_the_first_x_layers": [
         "0"
-    ],
-    "compatible_prints": [
-        "PSU 0.25mm Standard @3D Labs"
     ],
     "enable_overhang_bridge_fan": [
         "0"
@@ -39,6 +49,9 @@
     "filament_retraction_length": [
         "0.8"
     ],
+    "filament_retraction_minimum_travel": [
+        "3.5"
+    ],
     "filament_retraction_speed": [
         "66"
     ],
@@ -54,16 +67,16 @@
     "filament_z_hop": [
         "0.8"
     ],
-    "from": "User",
     "hot_plate_temp": [
         "185"
     ],
     "hot_plate_temp_initial_layer": [
         "185"
     ],
-    "inherits": "Kexcelled ABS 5 Basic",
     "is_custom_defined": "0",
-    "name": "ThermaX PSU",
+    "nozzle_standby_temperature": [
+        "195"
+    ],
     "nozzle_temperature": [
         "370"
     ],
@@ -84,6 +97,9 @@
     ],
     "slow_down_layer_time": [
         "0"
+    ],
+    "slow_down_min_speed": [
+        "5"
     ],
     "temperature_vitrification": [
         "200"

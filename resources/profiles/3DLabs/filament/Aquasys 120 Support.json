@@ -1,4 +1,14 @@
 {
+    "type": "filament",
+    "filament_id": "GFB102",
+    "setting_id": "GFSB102-00",
+    "name": "Aquasys 120 Support",
+    "from": "system",
+    "instantiation": "true",
+    "inherits": "fdm_filament_bvoh",
+    "filament_vendor": [
+        "Infinite Material Solutions"
+    ],
     "compatible_prints": [
         "ABS 0.15mm Fine @3D Labs",
         "ABS 0.20mm Standard @3D Labs",
@@ -12,16 +22,6 @@
         "TPU 0.20mm Standard @3D Labs",
         "TPU 0.30mm Draft @3D Labs"
     ],
-    "filament_id": "GFB99",
-    "filament_vendor": [
-        "Infinite Material Solutions"
-    ],
-    "from": "system",
-    "inherits": "fdm_filament_bvoh",
-    "instantiation": "true",
-    "name": "Aquasys 120 Support",
-    "setting_id": "GFSB99-00",
-    "type": "filament",
     "chamber_temperature": "55",
     "enable_pressure_advance": [
         "0"

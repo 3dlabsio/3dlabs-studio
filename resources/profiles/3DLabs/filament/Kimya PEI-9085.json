@@ -1,13 +1,26 @@
 {
+    "compatible_prints": [
+        "PEI-9085 0.25mm Standard @3D Labs"
+    ],
+    "filament_id": "GFB112",
+    "filament_vendor": [
+        "Kimya"
+    ],
+    "from": "system",
+    "inherits": "fdm_filament_pei",
+    "instantiation": "true",
+    "name": "Kimya PEI-9085",
+    "setting_id": "GFSB112-00",
+    "type": "filament",
     "chamber_temperature": "90",
     "close_fan_the_first_x_layers": [
         "0"
     ],
-    "compatible_prints": [
-        "PEI-9085 0.25mm Standard @3D Labs"
-    ],
     "enable_overhang_bridge_fan": [
         "0"
+    ],
+    "enable_pressure_advance": [
+        "1"
     ],
     "fan_cooling_layer_time": [
         "0"
@@ -36,6 +49,9 @@
     "filament_retraction_length": [
         "1.1"
     ],
+    "filament_retraction_minimum_travel": [
+        "3.5"
+    ],
     "filament_retraction_speed": [
         "66"
     ],
@@ -51,16 +67,16 @@
     "filament_z_hop": [
         "0.8"
     ],
-    "from": "User",
     "hot_plate_temp": [
         "180"
     ],
     "hot_plate_temp_initial_layer": [
         "180"
     ],
-    "inherits": "Kexcelled ABS 5 Basic",
     "is_custom_defined": "0",
-    "name": "Kimya PEI-9085",
+    "nozzle_standby_temperature": [
+        "195"
+    ],
     "nozzle_temperature": [
         "375"
     ],
@@ -81,6 +97,9 @@
     ],
     "slow_down_layer_time": [
         "0"
+    ],
+    "slow_down_min_speed": [
+        "5"
     ],
     "temperature_vitrification": [
         "200"

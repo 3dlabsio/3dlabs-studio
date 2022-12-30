@@ -6,7 +6,7 @@
     "machine_tech": "FFF",
     "family": "3D Labs",
     "bed_model": "",
-    "bed_texture": "",
+    "bed_texture": "3dlabs_logo.png",
     "hotend_model": "hotend.stl",
-    "default_materials": "Generic ABS;Generic TPU"
+    "default_materials": "3DXTech ABS;3DXTech ASA;Kexcelled ABS 5 Basic;Duramic TPU;SainSmart TPU;Aquasys 120 Support"
 }
