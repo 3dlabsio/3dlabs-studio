@@ -1,10 +1,17 @@
 {
-    "from": "User",
-    "inherits": "ABS 0.15mm Fine @3D Labs",
+    "from": "system",
+    "inherits": "fdm_process_3dlabs_pla",
+    "instantiation": "true",
+    "name": "PLA 0.30mm Draft @3D Labs",
+    "setting_id": "GP_3DLabs_001",
+    "type": "process",
+    "bottom_shell_layers": "3",
+    "bottom_shell_thickness": "0.6",
     "initial_layer_print_height": "0.25",
     "is_custom_defined": "0",
     "layer_height": "0.3",
-    "name": "PLA 0.30mm Draft @3D Labs",
     "print_settings_id": "PLA 0.30mm Draft @3D Labs",
+    "top_shell_layers": "8",
+    "top_shell_thickness": "1.0",
     "version": "2.0.0.1"
 }

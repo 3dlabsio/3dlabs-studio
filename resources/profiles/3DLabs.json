@@ -27,6 +27,34 @@
             "sub_path": "process/fdm_process_3dlabs_tpu.json"
         },
         {
+            "name": "fdm_process_3dlabs_pa",
+            "sub_path": "process/fdm_process_3dlabs_pa.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_peek",
+            "sub_path": "process/fdm_process_3dlabs_peek.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_pei",
+            "sub_path": "process/fdm_process_3dlabs_pei.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_pekk",
+            "sub_path": "process/fdm_process_3dlabs_pekk.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_pla",
+            "sub_path": "process/fdm_process_3dlabs_pla.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_pp",
+            "sub_path": "process/fdm_process_3dlabs_pp.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_psu",
+            "sub_path": "process/fdm_process_3dlabs_psu.json"
+        },
+        {
             "name": "fdm_process_3dlabs_common",
             "sub_path": "process/fdm_process_3dlabs_common.json"
         },
@@ -41,6 +69,50 @@
         {
             "name": "ABS 0.30mm Draft @3D Labs.json",
             "sub_path": "process/ABS 0.30mm Draft @3D Labs.json"
+        },
+        {
+            "name": "PA-CF 0.25mm Standard @3D Labs",
+            "sub_path": "process/PA-CF 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PEEK 0.25mm Standard @3D Labs",
+            "sub_path": "process/PEEK 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PEEK-CF 0.25mm Standard @3D Labs",
+            "sub_path": "process/PEEK-CF 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PEI-9085 0.25mm Standard @3D Labs",
+            "sub_path": "process/PEI-9085 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PEKK-A 0.25mm Standard @3D Labs",
+            "sub_path": "process/PEKK-A 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PEKK-A CF 0.25mm Standard @3D Labs",
+            "sub_path": "process/PEKK-A CF 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PLA 0.15mm Fine @3D Labs",
+            "sub_path": "process/PLA 0.15mm Fine @3D Labs.json"
+        },
+        {
+            "name": "PLA 0.20mm Standard @3D Labs",
+            "sub_path": "process/PLA 0.20mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PLA 0.30mm Draft @3D Labs",
+            "sub_path": "process/PLA 0.30mm Draft @3D Labs.json"
+        },
+        {
+            "name": "PP 0.20mm Standard @3D Labs",
+            "sub_path": "process/PP 0.20mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PSU 0.25mm Standard @3D Labs",
+            "sub_path": "process/PSU 0.25mm Standard @3D Labs.json"
         },
         {
             "name": "TPU 0.15mm Fine @3D Labs.json",

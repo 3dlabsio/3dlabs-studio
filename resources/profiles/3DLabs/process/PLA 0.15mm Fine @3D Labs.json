@@ -1,8 +1,16 @@
 {
-    "from": "User",
-    "inherits": "ABS 0.15mm Fine @3D Labs",
-    "is_custom_defined": "0",
+    "from": "system",
+    "inherits": "fdm_process_3dlabs_pla",
+    "instantiation": "true",
     "name": "PLA 0.15mm Fine @3D Labs",
+    "setting_id": "GP_3DLabs_001",
+    "type": "process",
+    "bottom_shell_layers": "3",
+    "bottom_shell_thickness": "0.6",
+    "is_custom_defined": "0",
+    "layer_height": "0.15",
     "print_settings_id": "PLA 0.15mm Fine @3D Labs",
+    "top_shell_layers": "8",
+    "top_shell_thickness": "1.0",
     "version": "2.0.0.1"
 }
