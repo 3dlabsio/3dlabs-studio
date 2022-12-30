@@ -3,7 +3,7 @@
     "inherits": "fdm_process_3dlabs_pekk",
     "instantiation": "true",
     "name": "PEKK-A CF 0.25mm Standard @3D Labs",
-    "setting_id": "GP_3DLabs_002",
+    "setting_id": "GP_3DLabs_013",
     "type": "process",
     "bottom_shell_layers": "4",
     "bottom_shell_thickness": "0.6",

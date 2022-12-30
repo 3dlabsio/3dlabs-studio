@@ -3,10 +3,14 @@
     "name": "3D Labs X400",
     "model_id": "X400",
     "nozzle_diameter": "0.4",
+    "extruder_offset": [
+        "0x0",
+        "0x0"
+    ],
     "machine_tech": "FFF",
     "family": "3D Labs",
     "bed_model": "",
     "bed_texture": "3dlabs_logo.png",
     "hotend_model": "hotend.stl",
-    "default_materials": "3DXTech ABS;3DXTech ASA;Kexcelled ABS 5 Basic;Duramic TPU;SainSmart TPU;Aquasys 120 Support"
+    "default_materials": "3DXTech ABS;3DXTech ASA;Kexcelled ABS 5 Basic;Duramic TPU;SainSmart TPU;Aquasys 120 Support;Essentium PA-CF-HTN;Essentium PEEK;eSun PLA+;FormFutura 9676 BK CF;FormFutura Centaur;FormFutura Pegasus;FormFutura PEI-9085;HIPS Breakaway Support;KetaSpire PEEK CF;Kimya PEI-9085;Kimya PEKK-A CF;Kimya PEKK-A;ThermaX PSU"
 }
