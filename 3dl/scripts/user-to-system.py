@@ -19,7 +19,7 @@ def merge_json(json1, json2):
         merged_data["from"] = "system"
 
     # Remove the "pressure_advance" key if its value is 0 in the second file
-    if "pressure_advance" in json2_data and json2_data["pressure_advance"] == 0:
+    if "enable_pressure_advance" in json2_data and json2_data["enable_pressure_advance"] == 0:
         merged_data.pop("pressure_advance", None)
 
     # Sort the keys under the "header" by alphabetical order
