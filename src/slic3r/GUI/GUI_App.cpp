@@ -731,7 +731,7 @@ static const FileWildcards file_wildcards_by_type[FT_SIZE] = {
     /* FT_OBJ */     { "OBJ files"sv,       { ".obj"sv } },
     /* FT_AMF */     { "AMF files"sv,       { ".amf"sv, ".zip.amf"sv, ".xml"sv } },
     /* FT_3MF */     { "3MF files"sv,       { ".3mf"sv } },
-    /* FT_GCODE */   { "G-code files"sv,    { ".gcode"sv } },
+    /* FT_GCODE */   { "G-code files"sv,    { ".gcode"sv, ".3mf"sv } },
     /* FT_MODEL */   {"Supported files"sv,  {".3mf"sv, ".stl"sv, ".stp"sv, ".step"sv, ".svg"sv, ".amf"sv, ".obj"sv }},
     /* FT_PROJECT */ { "Project files"sv,   { ".3mf"sv} },
     /* FT_GALLERY */ { "Known files"sv,     { ".stl"sv, ".obj"sv } },
@@ -1121,7 +1121,7 @@ void GUI_App::post_init()
             this->preset_updater->sync(http_url, language, network_ver, preset_bundle);
 
             //BBS: check new version
-            //this->check_new_version();
+            this->check_new_version_sf();
         });
     }
 
@@ -1702,7 +1702,7 @@ void GUI_App::init_networking_callbacks()
                     wxCommandEvent event(EVT_CONNECT_LAN_MODE_PRINT);
 
                     if (obj) {
-
+                        
                         if (obj->is_lan_mode_printer()) {
                             if (state == ConnectStatus::ConnectStatusOk) {
                                 obj->command_request_push_all();
@@ -1895,9 +1895,6 @@ void GUI_App::init_app_config()
             if (! wxGetEnv(wxS("XDG_CONFIG_HOME"), &dir) || dir.empty() )
                 dir = wxFileName::GetHomeDir() + wxS("/.config");
             set_data_dir((dir + "/" + GetAppName()).ToUTF8().data());
-            boost::filesystem::path data_dir_path(data_dir());
-            if (!boost::filesystem::exists(data_dir_path))
-                boost::filesystem::create_directory(data_dir_path);
         #endif
     } else {
         m_datadir_redefined = true;
@@ -2735,7 +2732,7 @@ void GUI_App::UpdateDarkUI(wxWindow* window, bool highlited/* = false*/, bool ju
 
     /*if (m_is_dark_mode != dark_mode() )
         m_is_dark_mode = dark_mode();*/
-
+    
 
     if (m_is_dark_mode) {
         auto original_col = window->GetBackgroundColour();
@@ -3241,7 +3238,7 @@ void GUI_App::load_gcode(wxWindow* parent, wxString& input_file) const
 {
     input_file.Clear();
     wxFileDialog dialog(parent ? parent : GetTopWindow(),
-        _L("Choose one file (gcode/.gco/.g/.ngc/ngc):"),
+        _L("Choose one file (gcode/3mf):"),
         app_config->get_last_dir(), "",
         file_wildcards(FT_GCODE), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
@@ -3811,6 +3808,101 @@ void GUI_App::check_new_version(bool show_tips, int by_user)
     }).perform();
 }
 
+//parse the string, if it doesn't contain a valid version string, return invalid version.
+Semver get_version(const std::string& str, const std::regex& regexp) {
+    std::smatch match;
+    if (std::regex_match(str, match, regexp)) {
+        std::string version_cleaned = match[0];
+        const boost::optional<Semver> version = Semver::parse(version_cleaned);
+        if (version.has_value()) {
+            return *version;
+        }
+    }
+    return Semver::invalid();
+}
+
+void GUI_App::check_new_version_sf(bool show_tips, int by_user)
+{
+    AppConfig* app_config = wxGetApp().app_config;
+    auto version_check_url = app_config->version_check_url();
+    Http::get(version_check_url).on_error([&](std::string body, std::string error, unsigned http_status) {
+        (void)body;
+        BOOST_LOG_TRIVIAL(error) << format("Error getting: `%1%`: HTTP %2%, %3%",
+            version_check_url,
+            http_status,
+            error);
+        })
+        .timeout_connect(1)
+        .on_complete([&](std::string body, unsigned /* http_status */) {
+            boost::trim(body);
+            // SoftFever: parse github release, ported from SS
+
+            boost::property_tree::ptree root;
+            std::stringstream json_stream(body);
+            boost::property_tree::read_json(json_stream, root);
+            bool i_am_pre = false;
+            //at least two number, use '.' as separator. can be followed by -Az23 for prereleased and +Az42 for metadata
+            std::regex matcher("[0-9]+\\.[0-9]+(\\.[0-9]+)*(-[A-Za-z0-9]+)?(\\+[A-Za-z0-9]+)?");
+
+            Semver current_version = get_version(SoftFever_VERSION, matcher);
+            Semver best_pre(1, 0, 0);
+            Semver best_release(1, 0, 0);
+            std::string best_pre_url;
+            std::string best_release_url;
+            std::string best_release_content;
+            std::string best_pre_content;
+            const std::regex reg_num("([0-9]+)");
+            for (auto json_version : root) {
+                std::string tag = json_version.second.get<std::string>("tag_name");
+                if (tag[0] == 'v')
+                    tag.erase(0, 1);
+                for (std::regex_iterator it = std::sregex_iterator(tag.begin(), tag.end(), reg_num); it != std::sregex_iterator(); ++it) {
+
+                }
+                Semver tag_version = get_version(tag, matcher);
+                if (current_version == tag_version)
+                    i_am_pre = json_version.second.get<bool>("prerelease");
+                if (json_version.second.get<bool>("prerelease")) {
+                    if (best_pre < tag_version) {
+                        best_pre = tag_version;
+                        best_pre_url = json_version.second.get<std::string>("html_url");
+                        best_pre_content = json_version.second.get<std::string>("body");
+                        best_pre.set_prerelease("Preview");
+                    }
+                }
+                else {
+                    if (best_release < tag_version) {
+                        best_release = tag_version;
+                        best_release_url = json_version.second.get<std::string>("html_url");
+                        best_release_content = json_version.second.get<std::string>("body");
+                    }
+                }
+            }
+
+            //if release is more recent than beta, use release anyway
+            if (best_pre < best_release) {
+                best_pre = best_release;
+                best_pre_url = best_release_url;
+                best_pre_content = best_release_content;
+            }
+            //if we're the most recent, don't do anything
+            if ((i_am_pre ? best_pre : best_release) <= current_version)
+                return;
+
+            //BOOST_LOG_TRIVIAL(info) << format("Got %1% online version: `%2%`. Sending to GUI thread...", SLIC3R_APP_NAME, i_am_pre ? best_pre.to_string(): best_release.to_string());
+
+            version_info.url = i_am_pre ? best_pre_url : best_release_url;
+            version_info.version_str = i_am_pre ? best_pre.to_string() : best_release.to_string_sf();
+            version_info.description = i_am_pre ? best_pre_content : best_release_content;
+            version_info.force_upgrade = false;
+
+            wxCommandEvent* evt = new wxCommandEvent(EVT_SLIC3R_VERSION_ONLINE);
+            evt->SetString((i_am_pre ? best_pre : best_release).to_string());
+            GUI::wxGetApp().QueueEvent(evt);
+            })
+            .perform_sync();;
+            
+}
 
 //BBS pop up a dialog and download files
 void GUI_App::request_new_version(int by_user)

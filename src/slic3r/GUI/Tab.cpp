@@ -1800,6 +1800,7 @@ void TabPrint::build()
 
         optgroup = page->new_optgroup(L("Advanced"), L"param_advanced");
         optgroup->append_single_option_line("wall_infill_order");
+        optgroup->append_single_option_line("print_flow_ratio");
         optgroup->append_single_option_line("bridge_flow");
         optgroup->append_single_option_line("top_solid_infill_flow_ratio");
         optgroup->append_single_option_line("bottom_solid_infill_flow_ratio");
@@ -1936,6 +1937,7 @@ void TabPrint::build()
         optgroup = page->new_optgroup(L("Bed adhension"), L"param_adhension");
         optgroup->append_single_option_line("skirt_loops");
         optgroup->append_single_option_line("skirt_distance");
+        optgroup->append_single_option_line("skirt_height");
         //optgroup->append_single_option_line("draft_shield");
         optgroup->append_single_option_line("brim_type", "auto-brim");
         optgroup->append_single_option_line("brim_width", "auto-brim#manual");

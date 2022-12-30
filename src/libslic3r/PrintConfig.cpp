@@ -1154,6 +1154,17 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloats { 1. });
 
+    def = this->add("print_flow_ratio", coPercent);
+    def->label = L("Flow ratio");
+    def->tooltip = L("The material may have volumetric change after switching between molten state and crystalline state. "
+                     "This setting changes all extrusion flow of this filament in gcode proportionally. "
+                     "Recommended value range is between 0.95 and 1.05. "
+                     "Maybe you can tune this value to get nice flat surface when there has slight overflow or underflow");
+    def->sidetext = L("%");
+    def->mode = comAdvanced;
+    def->min = 2;
+    def->set_default_value(new ConfigOptionPercent(100));
+
     def = this->add("enable_pressure_advance", coBools);
     def->label = L("Enable pressure advance");
     def->tooltip = L("Enable pressure advance, auto calibration result will be overwriten once enabled.");
@@ -1222,7 +1233,7 @@ void PrintConfigDef::init_fff_params()
                      "Can't be zero");
     def->sidetext = L("mm³/s");
     def->min = 0;
-    def->max = 50;
+    def->max = 200;
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloats { 2. });
 
