@@ -1,0 +1,102 @@
+{
+    "compatible_prints": [
+        "PP 0.20mm Standard @3D Labs"
+    ],
+    "filament_id": "GFB107",
+    "filament_vendor": [
+        "FormFutura"
+    ],
+    "from": "system",
+    "inherits": "fdm_filament_pp",
+    "instantiation": "true",
+    "name": "FormFutura Centaur",
+    "setting_id": "GFSB107-00",
+    "type": "filament",
+    "chamber_temperature": "55",
+    "enable_overhang_bridge_fan": [
+        "0"
+    ],
+    "enable_pressure_advance": [
+        "0"
+    ],
+    "fan_cooling_layer_time": [
+        "0"
+    ],
+    "fan_max_speed": [
+        "0"
+    ],
+    "fan_min_speed": [
+        "0"
+    ],
+    "filament_cost": [
+        "116"
+    ],
+    "filament_density": [
+        "0.81"
+    ],
+    "filament_deretraction_speed": [
+        "36"
+    ],
+    "filament_flow_ratio": [
+        "1"
+    ],
+    "filament_max_volumetric_speed": [
+        "11"
+    ],
+    "filament_retraction_length": [
+        "2"
+    ],
+    "filament_retraction_minimum_travel": [
+        "3.5"
+    ],
+    "filament_retraction_speed": [
+        "36"
+    ],
+    "filament_settings_id": [
+        "FormFutura Centaur"
+    ],
+    "filament_type": [
+        "PP"
+    ],
+    "filament_z_hop": [
+        "0.4"
+    ],
+    "hot_plate_temp": [
+        "65"
+    ],
+    "hot_plate_temp_initial_layer": [
+        "65"
+    ],
+    "is_custom_defined": "0",
+    "nozzle_standby_temperature": [
+        "195"
+    ],
+    "nozzle_temperature": [
+        "230"
+    ],
+    "nozzle_temperature_initial_layer": [
+        "210"
+    ],
+    "nozzle_temperature_range_high": [
+        "235"
+    ],
+    "nozzle_temperature_range_low": [
+        "200"
+    ],
+    "pressure_advance": [
+        "0.0492"
+    ],
+    "reduce_fan_stop_start_freq": [
+        "0"
+    ],
+    "slow_down_layer_time": [
+        "20"
+    ],
+    "slow_down_min_speed": [
+        "5"
+    ],
+    "temperature_vitrification": [
+        "120"
+    ],
+    "version": "2.0.0.1"
+}

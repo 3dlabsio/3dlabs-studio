@@ -1,6 +1,6 @@
 {
     "type": "process",
-    "setting_id": "GP_3DLabs_006",
+    "setting_id": "GP_3DLabs_020",
     "name": "TPU 0.20mm Standard @3D Labs",
     "from": "system",
     "inherits": "fdm_process_3dlabs_tpu",

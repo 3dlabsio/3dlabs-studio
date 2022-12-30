@@ -1,6 +1,6 @@
 {
     "type": "filament",
-    "name": "fdm_filament_pla",
+    "name": "fdm_filament_hips",
     "from": "system",
     "instantiation": "false",
     "compatible_prints": [
@@ -17,7 +17,7 @@
         "0"
     ],
     "filament_type": [
-        "PLA"
+        "HIPS"
     ],
     "filament_vendor": [
         "Generic"

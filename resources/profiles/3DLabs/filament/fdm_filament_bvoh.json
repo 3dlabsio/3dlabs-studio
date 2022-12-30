@@ -1,9 +1,9 @@
 {
     "type": "filament",
-    "name": "fdm_filament_pla",
+    "name": "fdm_filament_bvoh",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints": [
+    "compatible_prints": [ 
 	    ""
     ],
     "compatible_printers": [
@@ -17,7 +17,7 @@
         "0"
     ],
     "filament_type": [
-        "PLA"
+        "BVOH"
     ],
     "filament_vendor": [
         "Generic"

@@ -27,6 +27,34 @@
             "sub_path": "process/fdm_process_3dlabs_tpu.json"
         },
         {
+            "name": "fdm_process_3dlabs_pa",
+            "sub_path": "process/fdm_process_3dlabs_pa.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_peek",
+            "sub_path": "process/fdm_process_3dlabs_peek.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_pei",
+            "sub_path": "process/fdm_process_3dlabs_pei.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_pekk",
+            "sub_path": "process/fdm_process_3dlabs_pekk.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_pla",
+            "sub_path": "process/fdm_process_3dlabs_pla.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_pp",
+            "sub_path": "process/fdm_process_3dlabs_pp.json"
+        },
+        {
+            "name": "fdm_process_3dlabs_psu",
+            "sub_path": "process/fdm_process_3dlabs_psu.json"
+        },
+        {
             "name": "fdm_process_3dlabs_common",
             "sub_path": "process/fdm_process_3dlabs_common.json"
         },
@@ -43,6 +71,50 @@
             "sub_path": "process/ABS 0.30mm Draft @3D Labs.json"
         },
         {
+            "name": "PA-CF 0.25mm Standard @3D Labs",
+            "sub_path": "process/PA-CF 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PEEK 0.25mm Standard @3D Labs",
+            "sub_path": "process/PEEK 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PEEK-CF 0.25mm Standard @3D Labs",
+            "sub_path": "process/PEEK-CF 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PEI-9085 0.25mm Standard @3D Labs",
+            "sub_path": "process/PEI-9085 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PEKK-A 0.25mm Standard @3D Labs",
+            "sub_path": "process/PEKK-A 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PEKK-A CF 0.25mm Standard @3D Labs",
+            "sub_path": "process/PEKK-A CF 0.25mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PLA 0.15mm Fine @3D Labs",
+            "sub_path": "process/PLA 0.15mm Fine @3D Labs.json"
+        },
+        {
+            "name": "PLA 0.20mm Standard @3D Labs",
+            "sub_path": "process/PLA 0.20mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PLA 0.30mm Draft @3D Labs",
+            "sub_path": "process/PLA 0.30mm Draft @3D Labs.json"
+        },
+        {
+            "name": "PP 0.20mm Standard @3D Labs",
+            "sub_path": "process/PP 0.20mm Standard @3D Labs.json"
+        },
+        {
+            "name": "PSU 0.25mm Standard @3D Labs",
+            "sub_path": "process/PSU 0.25mm Standard @3D Labs.json"
+        },
+        {
             "name": "TPU 0.15mm Fine @3D Labs.json",
             "sub_path": "process/TPU 0.15mm Fine @3D Labs.json"
         },
@@ -57,36 +129,48 @@
     ],
     "filament_list": [
         {
+            "name": "fdm_filament_abs",
+            "sub_path": "filament/fdm_filament_abs.json"
+        },
+        {
+            "name": "fdm_filament_bvoh",
+            "sub_path": "filament/fdm_filament_bvoh.json"
+        },
+        {
             "name": "fdm_filament_common",
             "sub_path": "filament/fdm_filament_common.json"
+        },
+        {
+            "name": "fdm_filament_hips",
+            "sub_path": "filament/fdm_filament_hips.json"
+        },
+        {
+            "name": "fdm_filament_pa",
+            "sub_path": "filament/fdm_filament_pa.json"
+        },
+        {
+            "name": "fdm_filament_peek",
+            "sub_path": "filament/fdm_filament_peek.json"
+        },
+        {
+            "name": "fdm_filament_pei",
+            "sub_path": "filament/fdm_filament_pei.json"
+        },
+        {
+            "name": "fdm_filament_pekk",
+            "sub_path": "filament/fdm_filament_pekk.json"
         },
         {
             "name": "fdm_filament_pla",
             "sub_path": "filament/fdm_filament_pla.json"
         },
         {
+            "name": "fdm_filament_pp",
+            "sub_path": "filament/fdm_filament_pp.json"
+        },
+        {
             "name": "fdm_filament_tpu",
             "sub_path": "filament/fdm_filament_tpu.json"
-        },
-        {
-            "name": "fdm_filament_pet",
-            "sub_path": "filament/fdm_filament_pet.json"
-        },
-        {
-            "name": "fdm_filament_abs",
-            "sub_path": "filament/fdm_filament_abs.json"
-        },
-        {
-            "name": "fdm_filament_pc",
-            "sub_path": "filament/fdm_filament_pc.json"
-        },
-        {
-            "name": "fdm_filament_pva",
-            "sub_path": "filament/fdm_filament_pva.json"
-        },
-        {
-            "name": "fdm_filament_pa",
-            "sub_path": "filament/fdm_filament_pa.json"
         },
         {
             "name": "3DXTech ABS",
@@ -97,12 +181,64 @@
             "sub_path": "filament/3DXTech ASA.json"
         },
         {
+            "name": "Aquasys 120 Support",
+            "sub_path": "filament/Aquasys 120 Support.json"
+        },
+        {
             "name": "Kexcelled ABS 5 Basic",
             "sub_path": "filament/Kexcelled ABS 5 Basic.json"
         },
         {
             "name": "Duramic TPU",
             "sub_path": "filament/Duramic TPU.json"
+        },
+        {
+            "name": "Essentium PA-CF-HTN",
+            "sub_path": "filament/Essentium PA-CF-HTN.json"
+        },
+        {
+            "name": "Essentium PEEK",
+            "sub_path": "filament/Essentium PEEK.json"
+        },
+        {
+            "name": "eSun PLA+",
+            "sub_path": "filament/eSun PLA+.json"
+        },
+        {
+            "name": "FormFutura 9676 BK CF",
+            "sub_path": "filament/FormFutura 9676 BK CF.json"
+        },
+        {
+            "name": "FormFutura Centaur",
+            "sub_path": "filament/FormFutura Centaur.json"
+        },
+        {
+            "name": "FormFutura Pegasus",
+            "sub_path": "filament/FormFutura Pegasus.json"
+        },
+        {
+            "name": "FormFutura PEI-9085",
+            "sub_path": "filament/FormFutura PEI-9085.json"
+        },
+        {
+            "name": "HIPS Breakaway Support",
+            "sub_path": "filament/HIPS Breakaway Support.json"
+        },
+        {
+            "name": "KetaSpire PEEK CF",
+            "sub_path": "filament/KetaSpire PEEK CF.json"
+        },
+        {
+            "name": "Kimya PEI-9085",
+            "sub_path": "filament/Kimya PEI-9085.json"
+        },
+        {
+            "name": "Kimya PEKK-A CF",
+            "sub_path": "filament/Kimya PEKK-A CF.json"
+        },
+        {
+            "name": "Kimya PEKK-A",
+            "sub_path": "filament/Kimya PEKK-A.json"
         },
         {
             "name": "SainSmart TPU",

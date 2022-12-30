@@ -1,6 +1,6 @@
 {
     "type": "filament",
-    "name": "fdm_filament_pla",
+    "name": "fdm_filament_pp",
     "from": "system",
     "instantiation": "false",
     "compatible_prints": [
@@ -17,7 +17,7 @@
         "0"
     ],
     "filament_type": [
-        "PLA"
+        "PP"
     ],
     "filament_vendor": [
         "Generic"

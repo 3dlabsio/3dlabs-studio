@@ -1,0 +1,108 @@
+{
+    "compatible_prints": [
+        "PEI-9085 0.25mm Standard @3D Labs"
+    ],
+    "filament_id": "GFB112",
+    "filament_vendor": [
+        "Kimya"
+    ],
+    "from": "system",
+    "inherits": "fdm_filament_pei",
+    "instantiation": "true",
+    "name": "Kimya PEI-9085",
+    "setting_id": "GFSB112-00",
+    "type": "filament",
+    "chamber_temperature": "90",
+    "close_fan_the_first_x_layers": [
+        "0"
+    ],
+    "enable_overhang_bridge_fan": [
+        "0"
+    ],
+    "enable_pressure_advance": [
+        "1"
+    ],
+    "fan_cooling_layer_time": [
+        "0"
+    ],
+    "fan_max_speed": [
+        "0"
+    ],
+    "fan_min_speed": [
+        "0"
+    ],
+    "filament_cost": [
+        "220"
+    ],
+    "filament_density": [
+        "1.34"
+    ],
+    "filament_deretraction_speed": [
+        "66"
+    ],
+    "filament_flow_ratio": [
+        "1"
+    ],
+    "filament_max_volumetric_speed": [
+        "9"
+    ],
+    "filament_retraction_length": [
+        "1.1"
+    ],
+    "filament_retraction_minimum_travel": [
+        "3.5"
+    ],
+    "filament_retraction_speed": [
+        "66"
+    ],
+    "filament_settings_id": [
+        "Kimya PEI-9085"
+    ],
+    "filament_type": [
+        "PEI"
+    ],
+    "filament_wipe": [
+        "1"
+    ],
+    "filament_z_hop": [
+        "0.8"
+    ],
+    "hot_plate_temp": [
+        "180"
+    ],
+    "hot_plate_temp_initial_layer": [
+        "180"
+    ],
+    "is_custom_defined": "0",
+    "nozzle_standby_temperature": [
+        "195"
+    ],
+    "nozzle_temperature": [
+        "375"
+    ],
+    "nozzle_temperature_initial_layer": [
+        "360"
+    ],
+    "nozzle_temperature_range_high": [
+        "390"
+    ],
+    "nozzle_temperature_range_low": [
+        "320"
+    ],
+    "pressure_advance": [
+        "0.0492"
+    ],
+    "reduce_fan_stop_start_freq": [
+        "0"
+    ],
+    "slow_down_layer_time": [
+        "0"
+    ],
+    "slow_down_min_speed": [
+        "5"
+    ],
+    "temperature_vitrification": [
+        "200"
+    ],
+    "version": "2.0.0.1"
+}
