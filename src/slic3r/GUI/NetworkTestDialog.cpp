@@ -130,10 +130,10 @@ wxBoxSizer* NetworkTestDialog::create_content_sizer(wxWindow* parent)
 	grid_sizer->SetFlexibleDirection(wxBOTH);
 	grid_sizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
 
-	btn_link = new wxButton(this, wxID_ANY, _L("Test BambuLab"), wxDefaultPosition, wxDefaultSize, 0);
+	btn_link = new wxButton(this, wxID_ANY, _L("Test 3D Labs"), wxDefaultPosition, wxDefaultSize, 0);
 	grid_sizer->Add(btn_link, 0, wxEXPAND | wxALL, 5);
 
-	text_link_title = new wxStaticText(this, wxID_ANY, _L("Test BambuLab:"), wxDefaultPosition, wxDefaultSize, 0);
+	text_link_title = new wxStaticText(this, wxID_ANY, _L("Test 3D Labs:"), wxDefaultPosition, wxDefaultSize, 0);
 	text_link_title->Wrap(-1);
 	grid_sizer->Add(text_link_title, 0, wxALIGN_RIGHT | wxALL, 5);
 
@@ -151,17 +151,6 @@ wxBoxSizer* NetworkTestDialog::create_content_sizer(wxWindow* parent)
 	text_bing_val = new wxStaticText(this, wxID_ANY, _L("N/A"), wxDefaultPosition, wxDefaultSize, 0);
 	text_bing_val->Wrap(-1);
 	grid_sizer->Add(text_bing_val, 0, wxALL, 5);
-
-	btn_iot = new wxButton(this, wxID_ANY, _L("Test HTTP"), wxDefaultPosition, wxDefaultSize, 0);
-	grid_sizer->Add(btn_iot, 0, wxEXPAND | wxALL, 5);
-
-	text_iot_title = new wxStaticText(this, wxID_ANY, _L("Test HTTP Service:"), wxDefaultPosition, wxDefaultSize, 0);
-	text_iot_title->Wrap(-1);
-	grid_sizer->Add(text_iot_title, 0, wxALIGN_RIGHT | wxALL, 5);
-
-	text_iot_value = new wxStaticText(this, wxID_ANY, _L("N/A"), wxDefaultPosition, wxDefaultSize, 0);
-	text_iot_value->Wrap(-1);
-	grid_sizer->Add(text_iot_value, 0, wxALL, 5);
 
 	btn_oss = new wxButton(this, wxID_ANY, _L("Test storage"), wxDefaultPosition, wxDefaultSize, 0);
 	grid_sizer->Add(btn_oss, 0, wxEXPAND | wxALL, 5);
