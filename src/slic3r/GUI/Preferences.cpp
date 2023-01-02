@@ -822,7 +822,7 @@ wxWindow* PreferencesDialog::create_general_page()
     auto item_user_sync        = create_item_checkbox(_L("Auto sync user presets(Printer/Filament/Process)"), page, _L("User Sync"), 50, "sync_user_preset");
 
 #ifdef _WIN32
-    auto title_associate_file = create_item_title(_L("Associate files to BambuStudio"), page, _L("Associate files to BambuStudio"));
+    auto title_associate_file = create_item_title(_L("Associate files to 3DLabs Studio"), page, _L("Associate files to 3DLabs Studio"));
 
     // associate file
     auto item_associate_3mf  = create_item_checkbox(_L("Associate .3mf files to BambuStudio"), page,
