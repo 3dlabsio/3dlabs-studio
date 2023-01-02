@@ -24,6 +24,8 @@ Downloads available here: https://github.com/3dlabsio/3dlabs-studio/releases
 - PA-CF
 - PSU
 10. STEP file support
+11. PA tuning
+12. Flow rate calibration
 
 ### [V2.0.0]:
 1. Initial release
