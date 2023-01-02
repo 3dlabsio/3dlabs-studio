@@ -2532,7 +2532,7 @@ void MainFrame::init_menubar_as_editor()
 
     // help
     append_menu_item(calib_menu, wxID_ANY, _L("Tutorial"), _L("Calibration help"),
-        [this](wxCommandEvent&) { wxLaunchDefaultBrowser("https://github.com/SoftFever/BambuStudio-SoftFever/wiki/Calibration", wxBROWSER_NEW_WINDOW); }, "", nullptr,
+        [this](wxCommandEvent&) { wxLaunchDefaultBrowser("https://docs.3dlabs.io/3dlabs-studio/Calibration", wxBROWSER_NEW_WINDOW); }, "", nullptr,
         [this]() {return m_plater->is_view3D_shown();; }, this);
     
     m_menubar->Append(calib_menu,wxString::Format("&%s", _L("Calibration")));
