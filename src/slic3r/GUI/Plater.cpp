@@ -2759,6 +2759,10 @@ std::vector<size_t> Plater::priv::load_files(const std::vector<fs::path>& input_
     bool is_user_cancel = false;
 
     if (input_files.empty()) { return std::vector<size_t>(); }
+    
+    // SoftFever: ugly fix so we can exist pa calib mode
+    background_process.fff_print()->calib_mode() = Calib_None;
+
 
     // BBS
     int filaments_cnt = config->opt<ConfigOptionStrings>("filament_colour")->values.size();
@@ -8639,9 +8643,6 @@ void Plater::add_file()
         break;
     default:break;
     }
-
-    // SoftFever: ugly fix so we can exist pa calib mode
-    p->background_process.fff_print()->calib_mode() = Calib_None;
 }
 
 void Plater::update() { p->update(); }
