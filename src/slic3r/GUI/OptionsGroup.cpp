@@ -1233,7 +1233,7 @@ void ExtruderOptionsGroup::on_change_OG(const t_config_option_key& opt_id, const
 wxString OptionsGroup::get_url(const std::string& path_end)
 {
     //BBS
-    return wxString::Format(L"https://docs.3dlabs.io/%s/software/bambu-studio/%s", L"en", from_u8(path_end));
+    return wxString::Format(L"https://docs.3dlabs.io/3dlabs-studio/%s", L"en", from_u8(path_end));
 }
 
 bool OptionsGroup::launch_browser(const std::string& path_end)

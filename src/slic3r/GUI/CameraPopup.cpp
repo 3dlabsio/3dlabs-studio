@@ -83,7 +83,7 @@ CameraPopup::CameraPopup(wxWindow *parent, MachineObject* obj)
 
     main_sizer->Add(top_sizer, 0, wxALL, FromDIP(10));
 
-    auto url = wxString::Format(L"https://docs.3dlabs.io/%s/software/bambu-studio/virtual-camera", L"en");
+    auto url = wxString::Format(L"https://docs.3dlabs.io/3dlabs-studio/virtual-camera", L"en");
     vcamera_guide_link = new wxHyperlinkCtrl(m_panel, wxID_ANY, _L("Show \"Live Video\" guide page."),
         url, wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE);
     vcamera_guide_link->Hide();
@@ -360,7 +360,7 @@ void CameraPopup::OnLeftUp(wxMouseEvent &event)
         //hyper link
         auto h_rect = vcamera_guide_link->ClientToScreen(wxPoint(0, 0));
         if (mouse_pos.x > h_rect.x && mouse_pos.y > h_rect.y && mouse_pos.x < (h_rect.x + vcamera_guide_link->GetSize().x) && mouse_pos.y < (h_rect.y + vcamera_guide_link->GetSize().y)) {
-            auto url = wxString::Format(L"https://docs.3dlabs.io/%s/software/bambu-studio/virtual-camera", L"en");
+            auto url = wxString::Format(L"https://docs.3dlabs.io/3dlabs-studio/virtual-camera", L"en");
             wxLaunchDefaultBrowser(url);
         }
     }
