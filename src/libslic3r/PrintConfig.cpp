@@ -312,6 +312,11 @@ static void assign_printer_technology_to_unknown(t_optiondef_map &options, Print
             kvp.second.printer_technology = printer_technology;
 }
 
+// Maximum extruder temperature, bumped to 1500 to support printing of glass.
+namespace {
+    const int max_temp = 1500;
+};
+
 PrintConfigDef::PrintConfigDef()
 {
     this->init_common_params();
@@ -2245,9 +2250,7 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("ooze_prevention", coBool);
     def->label = L("Enable");
-    def->tooltip = L("This option will drop the temperature of the inactive extruders to prevent oozing. "
-                   "It will enable a tall skirt automatically and move extruders outside such "
-                   "skirt when changing temperatures.");
+    def->tooltip = L("This option will drop the temperature of the inactive extruders to prevent oozing. ");
     //3dlabs
     def->mode = comSimple;
     //def->mode = comDevelop;
@@ -2680,7 +2683,8 @@ void PrintConfigDef::init_fff_params()
     def = this->add("standby_temperature_delta", coInt);
     def->label = L("Extruder standby temperature delta");
     def->tooltip = L("Temperature difference to be applied when an extruder is not active. "
-                   "Enables a full-height \"sacrificial\" skirt on which the nozzles are periodically wiped.");
+                     "The value is not used when 'idle_temperature' in filament settings "
+                     "is defined.");
     def->sidetext = "∆°C";
     def->min = -max_temp;
     def->max = max_temp;
@@ -3743,6 +3747,15 @@ void PrintConfigDef::init_sla_params()
     def->sidetext = L(" ");
     def->min = 0;
     def->set_default_value(new ConfigOptionFloat(0.3));
+
+    def = this->add_nullable("idle_temperature", coInts);
+    def->label = L("Idle temperature");
+    def->tooltip = L("Nozzle temperature when the tool is currently not used in multi-tool setups."
+                     "This is only used when 'Ooze prevention is active in Print Settings.'");
+    def->sidetext = L("°C");
+    //def->min = 0;
+    //def->max = max_temp;
+    def->set_default_value(new ConfigOptionIntsNullable { ConfigOptionIntsNullable::nil_value() });
 
     def = this->add("bottle_volume", coFloat);
     def->label = L(" ");
@@ -4839,6 +4852,12 @@ std::map<std::string, std::string> validate(const FullPrintConfig &cfg, bool und
         assert(opt != nullptr);
         const ConfigOptionDef   *optdef = print_config_def.get(opt_key);
         assert(optdef != nullptr);
+
+        if (opt->nullable() && opt->is_nil()) {
+            // Do not check nil values
+            continue;
+        }
+
         bool out_of_range = false;
         switch (opt->type()) {
         case coFloat:

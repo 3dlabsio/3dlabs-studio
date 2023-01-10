@@ -2604,6 +2604,9 @@ void TabFilament::build()
         optgroup->append_single_option_line("filament_diameter");
         optgroup->append_single_option_line("filament_flow_ratio");
 
+        //3DL - feature/ooze_control
+        optgroup->append_single_option_line("idle_temperature");
+
         optgroup->append_single_option_line("enable_pressure_advance");
         optgroup->append_single_option_line("pressure_advance");
 

@@ -145,6 +145,7 @@ bool Print::invalidate_state_by_config_options(const ConfigOptionResolver & /* n
         "curr_bed_type",
         "nozzle_volume",
         "chamber_temperature",
+        "idle_temperature",
         "thumbnails",
         "nozzle_hrc",
         "required_nozzle_HRC",
@@ -205,6 +206,7 @@ bool Print::invalidate_state_by_config_options(const ConfigOptionResolver & /* n
             || opt_key == "single_extruder_multi_material"
             || opt_key == "nozzle_temperature"
             // BBS
+            || opt_key == "idle_temperature"
             || opt_key == "cool_plate_temp"
             || opt_key == "eng_plate_temp"
             || opt_key == "hot_plate_temp"
