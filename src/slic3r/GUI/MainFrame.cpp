@@ -2493,8 +2493,6 @@ void MainFrame::init_menubar_as_editor()
         m_menubar->Append(viewMenu, wxString::Format("&%s", _L("View")));
     /*if (publishMenu)
         m_menubar->Append(publishMenu, wxString::Format("&%s", _L("3D Models")));*/
-    if (helpMenu)
-        m_menubar->Append(helpMenu, wxString::Format("&%s", _L("Help")));
 
     // SoftFever calibrations
     auto calib_menu = new wxMenu();
@@ -2531,7 +2529,8 @@ void MainFrame::init_menubar_as_editor()
         [this]() {return m_plater->is_view3D_shown();; }, this);
     
     m_menubar->Append(calib_menu,wxString::Format("&%s", _L("Calibration")));
-
+    if (helpMenu)
+        m_menubar->Append(helpMenu, wxString::Format("&%s", _L("Help")));
     SetMenuBar(m_menubar);
 
 #endif
