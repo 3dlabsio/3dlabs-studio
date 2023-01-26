@@ -1174,7 +1174,7 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("pressure_advance", coFloats);
     def->label = L("Pressure advance");
-    def->tooltip = L("Pressure advance(Klipper) AKA Linear advance factor(Marlin)");
+    def->tooltip = L("Pressure advance");
     def->max = 2;
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloats { 0.02 });
@@ -1470,13 +1470,13 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("accel_to_decel_enable", coBool);
     def->label = L("Adjust accel to decel");
-    def->tooltip = L("Klipper's max_accel_to_decel will be adjusted automatically");
+    def->tooltip = L("Max_accel_to_decel will be adjusted automatically");
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(false));
     
     def = this->add("accel_to_decel_factor", coPercent);
     def->label = L("% of acceleration");
-    def->tooltip = L("Klipper's Max_accel_to_decel will be adjusted to this % of acceleration");
+    def->tooltip = L("Max_accel_to_decel will be adjusted to this % of acceleration");
     def->sidetext = L("%");
     def->min = 1;
     def->max = 100;
