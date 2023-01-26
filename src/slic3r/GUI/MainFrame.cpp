@@ -2517,9 +2517,18 @@ void MainFrame::init_menubar_as_editor()
     calib_menu->AppendSubMenu(flowrate_menu, _L("Flow rate"));
 
     // PA
+<<<<<<< HEAD
     auto pa_menu = new wxMenu();
     append_menu_item(pa_menu, wxID_ANY, _L("Line method - DDE"), _L(""),
         [this](wxCommandEvent&) { if (m_plater) m_plater->calib_pa(true, false); }, "", nullptr,
+=======
+    append_menu_item(calib_menu, wxID_ANY, _L("Pressure advance"), _L("Pressure advance"),
+        [this](wxCommandEvent&) {
+            if (!m_pa_calib_dlg)
+                m_pa_calib_dlg = new PA_Calibration_Dlg((wxWindow*)this, wxID_ANY, m_plater);
+            m_pa_calib_dlg->ShowModal();
+        }, "", nullptr,
+>>>>>>> 52097197 (fix po file erros)
         [this]() {return m_plater->is_view3D_shown();; }, this);
     append_menu_item(pa_menu, wxID_ANY, _L("Line method - Bowden"), _L(""),
         [this](wxCommandEvent&) { if (m_plater) m_plater->calib_pa(true, true); }, "", nullptr,
