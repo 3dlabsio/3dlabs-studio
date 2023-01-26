@@ -1,27 +1,10 @@
 #pragma once
-#define calib_pressure_advance_dd
 
 #include <string>
 #include "Point.hpp"
 namespace Slic3r {
 
 class GCode;
-
-enum class CalibMode : int {
-    Calib_None = 0,
-    Calib_PA_Line,
-    Calib_PA_Tower,
-};
-struct Calib_Params
-{
-    Calib_Params();
-    Calib_Params(const Calib_Params& p);
-    Calib_Params& operator =(const Calib_Params& p);
-    double pa_start, pa_end, pa_step;
-    bool print_numbers;
-    CalibMode mode;
-};
-
 class calib_pressure_advance
 {
 public:
@@ -34,7 +17,6 @@ public:
         m_fast_speed = fast;
     }
     double& line_width() { return m_line_width; };
-    bool&    draw_numbers() { return m_draw_numbers; }
 
 private:
     std::string move_to(Vec2d pt);
@@ -47,6 +29,5 @@ private:
     double m_space_y;
     double m_slow_speed, m_fast_speed;
     double m_line_width;
-    bool   m_draw_numbers;
 };
 } // namespace Slic3r
