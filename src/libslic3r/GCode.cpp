@@ -272,7 +272,7 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
 
     int OozePrevention::_get_temp(const GCode& gcodegen) const
     {
-        return (gcodegen.layer() != NULL && gcodegen.layer()->id() == 0)
+        return (gcodegen.layer() == nullptr || gcodegen.layer()->id() == 0)
             ? gcodegen.config().nozzle_temperature_initial_layer.get_at(gcodegen.writer().extruder()->id())
             : gcodegen.config().nozzle_temperature.get_at(gcodegen.writer().extruder()->id());
     }
@@ -1706,6 +1706,10 @@ void GCode::_do_export(Print& print, GCodeOutputStream &file, ThumbnailsGenerato
             is_extruder_used[extruder_id] = true;
         m_placeholder_parser.set("is_extruder_used", new ConfigOptionBools(is_extruder_used));
     }
+
+    // Enable ooze prevention if configured so.
+    DoExport::init_ooze_prevention(print, m_ooze_prevention);
+
     float outer_wall_volumetric_speed = 0.0f;
     {
         int curr_bed_type = m_config.curr_bed_type.getInt();
@@ -1776,9 +1780,6 @@ void GCode::_do_export(Print& print, GCodeOutputStream &file, ThumbnailsGenerato
 
     // Set other general things.
     file.write(this->preamble());
-
-    // Enable ooze prevention if configured so.
-    DoExport::init_ooze_prevention(print, m_ooze_prevention);
 
     print.throw_if_canceled();
 
@@ -2385,7 +2386,7 @@ void GCode::_print_first_layer_extruder_temperatures(GCodeOutputStream &file, Pr
         m_writer.set_temperature(temp, wait, first_printing_extruder_id);
     } else {
         // Custom G-code does not set the extruder temperature. Do it now.
-        if (print.config().single_extruder_multi_material.value || m_ooze_prevention.enable) {
+        if (print.config().single_extruder_multi_material.value) {
             // Set temperature of the first printing extruder only.
             int temp = print.config().nozzle_temperature_initial_layer.get_at(first_printing_extruder_id);
             if (temp > 0)
@@ -2394,8 +2395,14 @@ void GCode::_print_first_layer_extruder_temperatures(GCodeOutputStream &file, Pr
             // Set temperatures of all the printing extruders.
             for (unsigned int tool_id : print.extruders()) {
                 int temp = print.config().nozzle_temperature_initial_layer.get_at(tool_id);
-                if (print.config().ooze_prevention.value)
-                    temp += print.config().standby_temperature_delta.value;
+
+                if (print.config().ooze_prevention.value && tool_id != first_printing_extruder_id) {
+                    if (print.config().idle_temperature.is_nil(tool_id))
+                        temp += print.config().standby_temperature_delta.value;
+                    else
+                        temp = print.config().idle_temperature.get_at(tool_id);
+                }
+
                 if (temp > 0)
                     file.write(m_writer.set_temperature(temp, wait, tool_id));
             }
