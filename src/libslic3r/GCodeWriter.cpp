@@ -61,11 +61,9 @@ std::string GCodeWriter::preamble()
         FLAVOR_IS(gcfSmoothie) ||
         FLAVOR_IS(gcfKlipper))
     {
-        if (RELATIVE_E_AXIS) {
-            gcode << "M83 ; only support relative e\n";
+        if (this->config.use_relative_e_distances) {
+            gcode << "M83 ; use relative distances for extrusion\n";
         } else {
-            //BBS: don't support absolute e distance
-            assert(0);
             gcode << "M82 ; use absolute distances for extrusion\n";
         }
         gcode << this->reset_e(true);
@@ -176,10 +174,15 @@ std::string GCodeWriter::set_acceleration(unsigned int acceleration)
         // This is new MarlinFirmware with separated print/retraction/travel acceleration.
         // Use M204 P, we don't want to override travel acc by M204 S (which is deprecated anyway).
         gcode << "M204 P" << acceleration;
-    } else {
-        // M204: Set default acceleration
+    } else if (FLAVOR_IS(gcfKlipper) && this->config.accel_to_decel_enable) {
+        gcode << "SET_VELOCITY_LIMIT ACCEL_TO_DECEL=" << acceleration * this->config.accel_to_decel_factor / 100;
+        if (GCodeWriter::full_gcode_comment)
+            gcode << " ; adjust max_accel_to_decel to chosen % of new accel value\n";
         gcode << "M204 S" << acceleration;
-    }
+        // Set max accel to decel to half of acceleration
+    } else
+        gcode << "M204 S" << acceleration;
+    
     //BBS
     if (GCodeWriter::full_gcode_comment) gcode << " ; adjust acceleration";
     gcode << "\n";
@@ -246,7 +249,7 @@ std::string GCodeWriter::reset_e(bool force)
         m_extruder->reset_E();
     }
 
-    if (! RELATIVE_E_AXIS) {
+    if (! this->config.use_relative_e_distances) {
         std::ostringstream gcode;
         gcode << "G92 E0";
         //BBS
@@ -301,11 +304,12 @@ std::string GCodeWriter::toolchange(unsigned int extruder_id)
     return gcode.str();
 }
 
-std::string GCodeWriter::set_speed(double F, const std::string &comment, const std::string &cooling_marker) const
+std::string GCodeWriter::set_speed(double F, const std::string &comment, const std::string &cooling_marker)
 {
     assert(F > 0.);
     assert(F < 100000.);
-
+    
+    m_current_speed = F;
     GCodeG1Formatter w;
     w.emit_f(F);
     //BBS
@@ -503,6 +507,9 @@ std::string GCodeWriter::extrude_to_xy(const Vec2d &point, double dE, const std:
 {
     m_pos(0) = point(0);
     m_pos(1) = point(1);
+    if(std::abs(dE) <= std::numeric_limits<double>::epsilon())
+        force_no_extrusion = true;
+    
     if (!force_no_extrusion)
         m_extruder->extrude(dE);
 
@@ -583,15 +590,26 @@ std::string GCodeWriter::retract_for_toolchange(bool before_wipe)
 
 std::string GCodeWriter::_retract(double length, double restart_extra, const std::string &comment)
 {
+    /*  If firmware retraction is enabled, we use a fake value of 1
+    since we ignore the actual configured retract_length which
+    might be 0, in which case the retraction logic gets skipped. */
+    if (this->config.use_firmware_retraction)
+        length = 1;
+
     std::string gcode;
     if (double dE = m_extruder->retract(length, restart_extra);  dE != 0) {
-        //BBS
-        GCodeG1Formatter w;
-        w.emit_e(m_extruder->E());
-        w.emit_f(m_extruder->retract_speed() * 60.);
-        //BBS
-        w.emit_comment(GCodeWriter::full_gcode_comment, comment);
-        gcode = w.string();
+        if (this->config.use_firmware_retraction) {
+            gcode = FLAVOR_IS(gcfMachinekit) ? "G22 ; retract\n" : "G10 ; retract\n";
+        }
+        else {
+            // BBS
+            GCodeG1Formatter w;
+            w.emit_e(m_extruder->E());
+            w.emit_f(m_extruder->retract_speed() * 60.);
+            // BBS
+            w.emit_comment(GCodeWriter::full_gcode_comment, comment);
+            gcode = w.string();
+        }
     }
     
     if (FLAVOR_IS(gcfMakerWare))
@@ -608,14 +626,20 @@ std::string GCodeWriter::unretract()
         gcode = "M101 ; extruder on\n";
     
     if (double dE = m_extruder->unretract(); dE != 0) {
-        //BBS
-        // use G1 instead of G0 because G0 will blend the restart with the previous travel move
-        GCodeG1Formatter w;
-        w.emit_e(m_extruder->E());
-        w.emit_f(m_extruder->deretract_speed() * 60.);
-        //BBS
-        w.emit_comment(GCodeWriter::full_gcode_comment, " ; unretract");
-        gcode += w.string();
+        if (this->config.use_firmware_retraction) {
+            gcode += FLAVOR_IS(gcfMachinekit) ? "G23 ; unretract\n" : "G11 ; unretract\n";
+            gcode += this->reset_e();
+        }
+        else {
+            //BBS
+            // use G1 instead of G0 because G0 will blend the restart with the previous travel move
+            GCodeG1Formatter w;
+            w.emit_e(m_extruder->E());
+            w.emit_f(m_extruder->deretract_speed() * 60.);
+            //BBS
+            w.emit_comment(GCodeWriter::full_gcode_comment, " ; unretract");
+            gcode += w.string();
+        }
     }
     
     return gcode;

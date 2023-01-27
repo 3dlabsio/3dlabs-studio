@@ -92,6 +92,8 @@ std::string get_print_status_info(PrintDialogStatus status)
         return "PrintStatusNoSdcard";
     case PrintStatusTimelapseNoSdcard:
         return "PrintStatusTimelapseNoSdcard";
+    case PrintStatusNotSupportedPrintAll:
+        return "PrintStatusNotSupportedPrintAll";
     }
     return "unknown";
 }
@@ -1148,8 +1150,10 @@ SelectMachineDialog::SelectMachineDialog(Plater *plater)
 
     select_bed->Show(true);
     select_flow->Show(true);
-    select_timelapse->Show(false);
+    select_timelapse->Show(true);
     select_use_ams->Show(true);
+
+    m_sizer_select->Layout();
 
     // line schedule
     m_line_schedule = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(-1, 1));
@@ -1361,6 +1365,9 @@ wxWindow *SelectMachineDialog::create_ams_checkbox(wxString title, wxWindow *par
 
     checkbox->SetToolTip(tooltip);
     text->SetToolTip(tooltip);
+    ams_check->Bind(wxEVT_TOGGLEBUTTON, [this](wxCommandEvent &e) {
+        wxGetApp().app_config->set("bbl_machine", "use_ams", ams_check->GetValue());
+    });
 
     text->Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent & event) {
             ams_check->SetValue(ams_check->GetValue() ? false : true);
@@ -1398,6 +1405,10 @@ wxWindow *SelectMachineDialog::create_item_checkbox(wxString title, wxWindow *pa
     checkbox->SetToolTip(tooltip);
     text->SetToolTip(tooltip);
 
+    checkbox->Bind(wxEVT_TOGGLEBUTTON, [this, param, check](wxCommandEvent &e) {
+        wxGetApp().app_config->set("bbl_machine",param.c_str(), check->GetValue());
+    });
+    
     text->Bind(wxEVT_LEFT_DOWN, [this, check](wxMouseEvent &) { check->SetValue(check->GetValue() ? false : true); });
     m_checkbox_list[param] = check;
     return checkbox;
@@ -1407,12 +1418,18 @@ void SelectMachineDialog::update_select_layout(MachineObject *obj)
 {
     if (obj && obj->is_function_supported(PrinterFunction::FUNC_FLOW_CALIBRATION)) {
         select_flow->Show();
+        auto flow_cali_str = wxGetApp().app_config->get("bbl_machine", "flow_cali");
+        if(!flow_cali_str.empty())
+            m_checkbox_list["flow_cali"]->SetValue(flow_cali_str == "1" || flow_cali_str == "true");
     } else {
         select_flow->Hide();
     }
 
     if (obj && obj->is_function_supported(PrinterFunction::FUNC_AUTO_LEVELING)) {
         select_bed->Show();
+        auto bed_leveling_str = wxGetApp().app_config->get("bbl_machine", "bed_leveling");
+        if(!bed_leveling_str.empty())
+            m_checkbox_list["bed_leveling"]->SetValue(bed_leveling_str == "1" || bed_leveling_str == "true");
     } else {
         select_bed->Hide();
     }
@@ -1421,9 +1438,14 @@ void SelectMachineDialog::update_select_layout(MachineObject *obj)
         && obj->is_support_print_with_timelapse()
         && is_show_timelapse()) {
         select_timelapse->Show();
+        auto timelapse_str = wxGetApp().app_config->get("bbl_machine", "timelapse");
+        if(!timelapse_str.empty())
+            m_checkbox_list["timelapse"]->SetValue(timelapse_str == "1" || timelapse_str == "true");
     } else {
         select_timelapse->Hide();
     }
+
+    m_sizer_select->Layout();
     Fit();
 }
 
@@ -1869,6 +1891,11 @@ void SelectMachineDialog::show_status(PrintDialogStatus status, std::vector<wxSt
         update_print_status_msg(msg_text, true, true);
         Enable_Send_Button(false);
         Enable_Refresh_Button(true);
+    } else if (status == PrintDialogStatus::PrintStatusNotSupportedPrintAll) {
+        wxString msg_text = _L("This printer does not support printing all plates");
+        update_print_status_msg(msg_text, true, true);
+        Enable_Send_Button(false);
+        Enable_Refresh_Button(true);
     }
 }
 
@@ -1947,13 +1974,13 @@ void SelectMachineDialog::show_errors(wxString &info)
 void SelectMachineDialog::on_ok_btn(wxCommandEvent &event)
 {
     std::vector<wxString> confirm_text;
-    confirm_text.push_back(_L("Please check the following infomation and click Confirm to continue sending print:\n"));
+    confirm_text.push_back(_L("Please check the following infomation and click Confirm to continue sending print:") + "\n");
 
 #if 0
     //Check Printer Model Id
     bool is_same_printer_type = is_same_printer_model();
     if (!is_same_printer_type)
-        confirm_text.push_back(_L("The printer type used to generate G-code is not the same type as the currently selected physical printer. It is recommend to re-slice by selecting the same printer type.\n"));
+        confirm_text.push_back(_L("The printer type used to generate G-code is not the same type as the currently selected physical printer. It is recommend to re-slice by selecting the same printer type.") + "\n");
 #else
     bool is_same_printer_type = true;
 #endif
@@ -2130,7 +2157,8 @@ void SelectMachineDialog::on_ok()
 
     m_print_job                = std::make_shared<PrintJob>(m_status_bar, m_plater, m_printer_last_select);
     m_print_job->m_dev_ip      = obj_->dev_ip;
-    m_print_job->m_access_code = obj_->access_code;
+    m_print_job->m_access_code   = obj_->get_access_code();
+    m_print_job->m_local_use_ssl = obj_->local_use_ssl;
     m_print_job->connection_type = obj_->connection_type();
     m_print_job->set_project_name(m_current_project_name.utf8_string());
 
@@ -2533,6 +2561,9 @@ void SelectMachineDialog::update_ams_check(MachineObject* obj)
         && obj->ams_support_use_ams
         && obj->has_ams()) {
         select_use_ams->Show();
+        auto use_ams_str = wxGetApp().app_config->get("bbl_machine", "use_ams");
+        if(!use_ams_str.empty())
+            ams_check->SetValue(use_ams_str == "1" || use_ams_str == "true");
     } else {
         select_use_ams->Hide();
     }
@@ -2607,6 +2638,12 @@ void SelectMachineDialog::update_show_status()
 
     reset_timeout();
     update_ams_check(obj_);
+
+    if (!obj_->is_function_supported(PrinterFunction::FUNC_PRINT_ALL) && m_print_plate_idx == PLATE_ALL_IDX) {
+        show_status(PrintDialogStatus::PrintStatusNotSupportedPrintAll);
+        return;
+    }
+
 
     // do ams mapping if no ams result
     if (obj_->has_ams() && m_ams_mapping_result.empty()) {

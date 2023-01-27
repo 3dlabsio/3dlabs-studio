@@ -797,15 +797,14 @@ void PrintConfigDef::init_fff_params()
     def->enum_keys_map = &ConfigOptionEnum<BrimType>::get_enum_values();
     def->enum_values.emplace_back("auto_brim");
     def->enum_values.emplace_back("outer_only");
+    def->enum_values.emplace_back("inner_only");
+    def->enum_values.emplace_back("outer_and_inner");
     def->enum_values.emplace_back("no_brim");
-    //def->enum_values.emplace_back("inner_only");
-    //def->enum_values.emplace_back("outer_and_inner");
     def->enum_labels.emplace_back(L("Auto"));
-    def->enum_labels.emplace_back(L("Manual"));
+    def->enum_labels.emplace_back(L("outer_only"));
+    def->enum_labels.emplace_back(L("Inner brim only"));
+    def->enum_labels.emplace_back(L("Outer and inner brim"));
     def->enum_labels.emplace_back(L("No-brim"));
-    // BBS: The following two types are disabled
-    //def->enum_labels.emplace_back(L("Inner brim only"));
-    //def->enum_labels.emplace_back(L("Outer and inner brim"));
     def->mode = comSimple;
     def->set_default_value(new ConfigOptionEnum<BrimType>(btAutoBrim));
 
@@ -1157,16 +1156,16 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloats { 1. });
 
-    def = this->add("print_flow_ratio", coPercent);
+    def = this->add("print_flow_ratio", coFloat);
     def->label = L("Flow ratio");
     def->tooltip = L("The material may have volumetric change after switching between molten state and crystalline state. "
                      "This setting changes all extrusion flow of this filament in gcode proportionally. "
                      "Recommended value range is between 0.95 and 1.05. "
                      "Maybe you can tune this value to get nice flat surface when there has slight overflow or underflow");
-    def->sidetext = L("%");
     def->mode = comAdvanced;
-    def->min = 2;
-    def->set_default_value(new ConfigOptionPercent(100));
+    def->max = 2;
+    def->min = 0.01;
+    def->set_default_value(new ConfigOptionFloat(1));
 
     def = this->add("enable_pressure_advance", coBools);
     def->label = L("Enable pressure advance");
@@ -1175,7 +1174,7 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("pressure_advance", coFloats);
     def->label = L("Pressure advance");
-    def->tooltip = L("Pressure advnce(Klipper) AKA Linear advance factor(Marlin)");
+    def->tooltip = L("Pressure advance");
     def->max = 2;
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloats { 0.02 });
@@ -1469,6 +1468,21 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(300));
 
+    def = this->add("accel_to_decel_enable", coBool);
+    def->label = L("Enable accel to decel");
+    def->tooltip = L("Max_accel_to_decel will be adjusted automatically");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(false));
+    
+    def = this->add("accel_to_decel_factor", coPercent);
+    def->label = L("% of acceleration");
+    def->tooltip = L("Max_accel_to_decel will be adjusted to this % of acceleration");
+    def->sidetext = L("%");
+    def->min = 1;
+    def->max = 100;
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionPercent(50));
+    
     def = this->add("default_jerk", coFloat);
     def->label = L("Default");
     def->tooltip = L("Default");
@@ -1496,6 +1510,14 @@ void PrintConfigDef::init_fff_params()
     def = this->add("top_surface_jerk", coFloat);
     def->label = L("Top surface");
     def->tooltip = L("Jerk for top surface");
+    def->sidetext = L("mm/s");
+    def->min = 1;
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionFloat(9));
+
+    def = this->add("infill_jerk", coFloat);
+    def->label = L("Infill");
+    def->tooltip = L("Jerk for infill");
     def->sidetext = L("mm/s");
     def->min = 1;
     def->mode = comAdvanced;
@@ -2185,7 +2207,20 @@ void PrintConfigDef::init_fff_params()
     def->min = 0;
     def->max = 1000;
     def->set_default_value(new ConfigOptionInt(2));
-
+    
+    def = this->add("post_process", coStrings);
+    def->label = L("Post-processing Scripts");
+    def->tooltip = L("If you want to process the output G-code through custom scripts, "
+                   "list their absolute paths here. Separate multiple scripts with a semicolon. "
+                   "Scripts will be passed the absolute path to the G-code file as the first argument, "
+                   "and they can access Studio's config settings by reading environment variables.");
+    def->gui_flags = "serialized";
+    def->multiline = true;
+    def->full_width = true;
+    def->height = 6;
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionStrings());
+    
     def = this->add("printer_model", coString);
     //def->label = L("Printer type");
     //def->tooltip = L("Type of the printer");
@@ -2320,7 +2355,6 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("retract_restart_extra", coFloats);
     def->label = L("Extra length on restart");
-    def->label = "Extra length on restart";
     def->tooltip = L("When the retraction is compensated after the travel move, the extruder will push "
                   "this additional amount of filament. This setting is rarely needed.");
     def->sidetext = L("mm");
@@ -2329,7 +2363,6 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("retract_restart_extra_toolchange", coFloats);
     def->label = L("Extra length on restart");
-    def->label = "Extra length on restart";
     def->tooltip = L("When the retraction is compensated after changing tool, the extruder will push "
                   "this additional amount of filament.");
     def->sidetext = L("mm");
@@ -2352,6 +2385,13 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloats { 0. });
 
+    def = this->add("use_firmware_retraction", coBool);
+    def->label = L("Use firmware retraction");
+    def->tooltip = L("This experimental setting uses G10 and G11 commands to have the firmware "
+                   "handle the retraction. This is only supported in recent Marlin.");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(false));
+
     def = this->add("seam_position", coEnum);
     def->label = L("Seam position");
     def->category = L("Quality");
@@ -2367,7 +2407,40 @@ void PrintConfigDef::init_fff_params()
     def->enum_labels.push_back(L("Random"));
     def->mode = comSimple;
     def->set_default_value(new ConfigOptionEnum<SeamPosition>(spAligned));
+    
+    def = this->add("seam_gap", coFloatOrPercent);
+    def->label = L("Seam gap");
+    def->tooltip = L("In order to reduce the visibility of the seam in a closed loop extrusion, the loop is interrupted and shortened by a specified amount."
+                    "\nhis amount can be specified in millimeters or as a percentage of the current extruder diameter. The default value for this parameter is 15%.");
+    def->sidetext = L("mm or %");
+    def->min = 0;
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionFloatOrPercent(15,true));
 
+    def = this->add("role_based_wipe_speed", coBool);
+    def->label = L("Role base wipe speed");
+    def->tooltip = L("The wipe speed is determined by the speed of the current extrusion role.\n"
+                     "e.g. if a wipe action is executed immediately following an outer wall extrusion, the speed of the outer wall extrusion will be utilized for the wipe action.");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(true));
+    
+    def = this->add("wipe_on_loops", coBool);
+    def->label = L("Wipe on loops");
+    def->tooltip = L("To minimize the visibility of the seam in a closed loop extrusion, a small inward movement is executed before the extruder leaves the loop.");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(true));
+
+    def = this->add("wipe_speed", coFloatOrPercent);
+    def->label = L("Wipe speed");
+    def->tooltip = L("The wipe speed is determined by the speed setting specified in this configuration."
+                   "\nIf the value is expressed as a percentage (e.g. 80%), it will be calculated based on the travel speed setting above."
+                   "\nThe default value for this parameter is 80%");
+    def->sidetext = L("mm/s or %");
+    def->ratio_over = "travel_speed";
+    def->min = 0;
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionFloatOrPercent(80,true));
+    
     def = this->add("skirt_distance", coFloat);
     def->label = L("Skirt distance");
     def->tooltip = L("Distance from skirt to brim or object");
@@ -3189,7 +3262,16 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->gui_type = ConfigOptionDef::GUIType::one_string;
     def->set_default_value(new ConfigOptionPoints{Vec2d(300, 300)});
-    
+
+    def = this->add("use_relative_e_distances", coBool);
+    def->label = L("Use relative E distances");
+    def->tooltip = L("Relative extrusion is recommended when using \"label_objects\" option."
+                   "Some extruders work better with this option unckecked (absolute extrusion mode). "
+                   "Wipe tower is only compatible with relative mode. It is always enabled on "
+                   "BambuLab printers. Default is checked");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(true));
+
     def = this->add("wall_generator", coEnum);
     def->label = L("Wall generator");
     def->category = L("Quality");
@@ -3350,7 +3432,7 @@ void PrintConfigDef::init_filament_option_keys()
         "retraction_length", "z_hop", "retraction_speed", "deretraction_speed",
         "retract_before_wipe", "retract_restart_extra", "retraction_minimum_travel", "wipe", "wipe_distance",
         "retract_when_changing_layer", "retract_length_toolchange", "retract_restart_extra_toolchange", "filament_colour",
-        "default_filament_profile"
+        "default_filament_profile"/*,"filament_seam_gap"*/
     };
 
     m_filament_retract_keys = {
@@ -4487,6 +4569,22 @@ std::string validate(const FullPrintConfig &cfg)
     if (cfg.bottom_shell_layers < 0)
         return "Invalid value for --bottom-solid-layers";
 
+    if (cfg.use_firmware_retraction.value &&
+        cfg.gcode_flavor.value != gcfKlipper &&
+        cfg.gcode_flavor.value != gcfSmoothie &&
+        cfg.gcode_flavor.value != gcfRepRapSprinter &&
+        cfg.gcode_flavor.value != gcfRepRapFirmware &&
+        cfg.gcode_flavor.value != gcfMarlinLegacy &&
+        cfg.gcode_flavor.value != gcfMarlinFirmware &&
+        cfg.gcode_flavor.value != gcfMachinekit &&
+        cfg.gcode_flavor.value != gcfRepetier)
+        return "--use-firmware-retraction is only supported by Klipper, Marlin, Smoothie, RepRapFirmware, Repetier and Machinekit firmware";
+
+    if (cfg.use_firmware_retraction.value)
+        for (unsigned char wipe : cfg.wipe.values)
+             if (wipe)
+                return "--use-firmware-retraction is not compatible with --wipe";
+                
     // --gcode-flavor
     if (! print_config_def.get("gcode_flavor")->has_enum_value(cfg.gcode_flavor.serialize()))
         return "Invalid value for --gcode-flavor";

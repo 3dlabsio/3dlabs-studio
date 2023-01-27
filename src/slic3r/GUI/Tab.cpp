@@ -1496,7 +1496,8 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
 void Tab::show_timelapse_warning_dialog() {
     if (!m_is_timelapse_wipe_tower_already_prompted) {
         wxString      msg_text = _(L("When recording timelapse without toolhead, it is recommended to add a \"Timelapse Wipe Tower\" \n"
-                                "by right-click the empty position of build plate and choose \"Add Primitive\"->\"Timelapse Wipe Tower\".\n"));
+                                "by right-click the empty position of build plate and choose \"Add Primitive\"->\"Timelapse Wipe Tower\"."));
+        msg_text += "\n";
         MessageDialog dialog(nullptr, msg_text, "", wxICON_WARNING | wxOK);
         dialog.ShowModal();
         m_is_timelapse_wipe_tower_already_prompted = true;
@@ -1833,6 +1834,11 @@ void TabPrint::build()
 
         optgroup = page->new_optgroup(L("Seam"), L"param_seam");
         optgroup->append_single_option_line("seam_position", "Seam");
+        optgroup->append_single_option_line("seam_gap","Seam");
+        optgroup->append_single_option_line("role_based_wipe_speed","Seam");
+        optgroup->append_single_option_line("wipe_speed", "Seam");
+        optgroup->append_single_option_line("wipe_on_loops","Seam");
+
 
         optgroup = page->new_optgroup(L("Precision"), L"param_precision");
         optgroup->append_single_option_line("slice_closing_radius");
@@ -1933,11 +1939,14 @@ void TabPrint::build()
         optgroup->append_single_option_line("initial_layer_acceleration");
         optgroup->append_single_option_line("top_surface_acceleration");
         optgroup->append_single_option_line("travel_acceleration");
+        optgroup->append_single_option_line("accel_to_decel_enable");
+        optgroup->append_single_option_line("accel_to_decel_factor");
 
         optgroup = page->new_optgroup(L("Jerk(XY)"));
         optgroup->append_single_option_line("default_jerk");
         optgroup->append_single_option_line("outer_wall_jerk");
         optgroup->append_single_option_line("inner_wall_jerk");
+        optgroup->append_single_option_line("infill_jerk");
         optgroup->append_single_option_line("top_surface_jerk");
         optgroup->append_single_option_line("initial_layer_jerk");
         optgroup->append_single_option_line("travel_jerk");
@@ -1959,6 +1968,7 @@ void TabPrint::build()
 
         optgroup = page->new_optgroup(L("Raft"), L"param_raft");
         optgroup->append_single_option_line("raft_layers");
+        optgroup->append_single_option_line("raft_contact_distance");
         optgroup->append_single_option_line("raft_first_layer_density");
         optgroup->append_single_option_line("raft_first_layer_expansion");
 
@@ -2035,6 +2045,13 @@ void TabPrint::build()
         option.opt.is_code = true;
         option.opt.multiline = true;
         // option.opt.height = 5;
+        optgroup->append_single_option_line(option);
+    
+        optgroup = page->new_optgroup(L("Post-processing Scripts"), L"param_gcode", 0);
+        option = optgroup->get_option("post_process");
+        option.opt.full_width = true;
+        option.opt.is_code = true;
+        option.opt.height = 15;
         optgroup->append_single_option_line(option);
 
 #if 0
@@ -2457,13 +2474,15 @@ void TabFilament::add_filament_overrides_page()
                                         "filament_z_hop",
                                         "filament_retraction_speed",
                                         "filament_deretraction_speed",
-                                        //"filament_retract_restart_extra",
+                                        "filament_retract_restart_extra",
                                         "filament_retraction_minimum_travel",
                                         "filament_retract_when_changing_layer",
                                         "filament_wipe",
                                         //BBS
                                         "filament_wipe_distance",
-                                        "filament_retract_before_wipe"
+                                        "filament_retract_before_wipe",
+                                        //SoftFever
+                                        // "filament_seam_gap"
                                      })
         append_single_option_line(opt_key, extruder_idx);
 }
@@ -2488,13 +2507,15 @@ void TabFilament::update_filament_overrides_page()
                                             "filament_z_hop",
                                             "filament_retraction_speed",
                                             "filament_deretraction_speed",
-                                            //"filament_retract_restart_extra",
+                                            "filament_retract_restart_extra",
                                             "filament_retraction_minimum_travel",
                                             "filament_retract_when_changing_layer",
                                             "filament_wipe",
                                             //BBS
                                             "filament_wipe_distance",
-                                            "filament_retract_before_wipe"
+                                            "filament_retract_before_wipe",
+                                            //SoftFever
+                                            // "filament_seam_gap"
                                         };
 
     const int extruder_idx = 0; // #ys_FIXME
@@ -2589,7 +2610,7 @@ void TabFilament::build()
             DynamicPrintConfig& filament_config = wxGetApp().preset_bundle->filaments.get_edited_preset().config;
 
             update_dirty();
-            if (opt_key == "cool_plate_temp" || opt_key == "cool_plate_temp_initial_layer") {
+            /*if (opt_key == "cool_plate_temp" || opt_key == "cool_plate_temp_initial_layer") {
                 m_config_manipulation.check_bed_temperature_difference(BedType::btPC, &filament_config);
             }
             else if (opt_key == "eng_plate_temp" || opt_key == "eng_plate_temp_initial_layer") {
@@ -2601,7 +2622,7 @@ void TabFilament::build()
             else if (opt_key == "textured_plate_temp" || opt_key == "textured_plate_temp_initial_layer") {
                 m_config_manipulation.check_bed_temperature_difference(BedType::btPTE, &filament_config);
             }
-            else if (opt_key == "nozzle_temperature") {
+            else */if (opt_key == "nozzle_temperature") {
                 m_config_manipulation.check_nozzle_temperature_range(&filament_config);
             }
             else if (opt_key == "nozzle_temperature_initial_layer") {
@@ -2791,6 +2812,7 @@ void TabFilament::toggle_options()
         toggle_line("cool_plate_temp_initial_layer", is_BBL_printer);
         toggle_line("eng_plate_temp_initial_layer", is_BBL_printer);
         toggle_line("textured_plate_temp_initial_layer", is_BBL_printer);
+        toggle_option("chamber_temperature", !is_BBL_printer);
     }
     if (m_active_page->title() == "Setting Overrides")
         update_filament_overrides_page();
@@ -2993,6 +3015,8 @@ void TabPrinter::build_fff()
         option = optgroup->get_option("thumbnails");
         option.opt.full_width = true;
         optgroup->append_single_option_line(option);
+        optgroup->append_single_option_line("use_relative_e_distances");
+        optgroup->append_single_option_line("use_firmware_retraction");
         optgroup->append_single_option_line("scan_first_layer");
         // optgroup->append_single_option_line("spaghetti_detector");
         optgroup->append_single_option_line("machine_load_filament_time");
@@ -3365,19 +3389,19 @@ void TabPrinter::build_unregular_pages(bool from_initial_build/* = false*/)
         optgroup = page->new_optgroup(L("Position"));
         optgroup->append_single_option_line("extruder_offset", "", extruder_idx);
 
-        //BBS: don't show retract related config menu in machine page
-        optgroup = page->new_optgroup(L("Retraction"), L"param_retraction");
-        optgroup->append_single_option_line("retraction_length", "", extruder_idx);
-        optgroup->append_single_option_line("z_hop", "", extruder_idx);
-        optgroup->append_single_option_line("z_lift_type", "", extruder_idx);
-        optgroup->append_single_option_line("retraction_speed", "", extruder_idx);
-        optgroup->append_single_option_line("deretraction_speed", "", extruder_idx);
-        //optgroup->append_single_option_line("retract_restart_extra", "", extruder_idx);
-        optgroup->append_single_option_line("retraction_minimum_travel", "", extruder_idx);
-        optgroup->append_single_option_line("retract_when_changing_layer", "", extruder_idx);
-        optgroup->append_single_option_line("wipe", "", extruder_idx);
-        optgroup->append_single_option_line("wipe_distance", "", extruder_idx);
-        optgroup->append_single_option_line("retract_before_wipe", "", extruder_idx);
+            //BBS: don't show retract related config menu in machine page
+            optgroup = page->new_optgroup(L("Retraction"), L"param_retraction");
+            optgroup->append_single_option_line("retraction_length", "", extruder_idx);
+            optgroup->append_single_option_line("retract_restart_extra", "", extruder_idx);
+            optgroup->append_single_option_line("z_hop", "", extruder_idx);
+            optgroup->append_single_option_line("z_lift_type", "", extruder_idx);
+            optgroup->append_single_option_line("retraction_speed", "", extruder_idx);
+            optgroup->append_single_option_line("deretraction_speed", "", extruder_idx);
+            optgroup->append_single_option_line("retraction_minimum_travel", "", extruder_idx);
+            optgroup->append_single_option_line("retract_when_changing_layer", "", extruder_idx);
+            optgroup->append_single_option_line("wipe", "", extruder_idx);
+            optgroup->append_single_option_line("wipe_distance", "", extruder_idx);
+            optgroup->append_single_option_line("retract_before_wipe", "", extruder_idx);
 
         optgroup = page->new_optgroup(L("Retraction when switching material"));
         optgroup->append_single_option_line("retract_length_toolchange", "", extruder_idx);
@@ -3524,6 +3548,8 @@ void TabPrinter::toggle_options()
     //}
     if (m_active_page->title() == "Basic information") {
         toggle_option("single_extruder_multi_material", have_multiple_extruders);
+        // Hide relative extrusion option for BBL printers
+        toggle_line("use_relative_e_distances", !is_BBL_printer);
 
         auto flavor = m_config->option<ConfigOptionEnum<GCodeFlavor>>("gcode_flavor")->value;
         bool is_marlin_flavor = flavor == gcfMarlinLegacy || flavor == gcfMarlinFirmware;
@@ -3538,6 +3564,11 @@ void TabPrinter::toggle_options()
              {"scan_first_layer", "machine_load_filament_time",
                         "machine_unload_filament_time", "nozzle_type"})
           toggle_line(el, is_BBL_printer);
+
+        // SoftFever: hide non-BBL settings
+        for (auto el :
+            { "use_firmware_retraction" })
+            toggle_line(el, !is_BBL_printer);
     }
 
     wxString extruder_number;
@@ -3549,13 +3580,17 @@ void TabPrinter::toggle_options()
         size_t i = size_t(val - 1);
         bool have_retract_length = m_config->opt_float("retraction_length", i) > 0;
 
+        // when using firmware retraction, firmware decides retraction length
+        bool use_firmware_retraction = m_config->opt_bool("use_firmware_retraction");
+        toggle_option("retract_length", !use_firmware_retraction, i);
+
         // user can customize travel length if we have retraction length or we"re using
         // firmware retraction
-        toggle_option("retraction_minimum_travel", have_retract_length, i);
+        toggle_option("retraction_minimum_travel", have_retract_length || use_firmware_retraction, i);
 
         // user can customize other retraction options if retraction is enabled
         //BBS
-        bool retraction = have_retract_length;
+        bool retraction = have_retract_length || use_firmware_retraction;
         std::vector<std::string> vec = { "z_hop", "retract_when_changing_layer" };
         for (auto el : vec)
             toggle_option(el, retraction, i);
@@ -3568,10 +3603,29 @@ void TabPrinter::toggle_options()
         vec = { "retraction_speed", "deretraction_speed", "retract_before_wipe", "retract_restart_extra", "wipe", "wipe_distance" };
         for (auto el : vec)
             //BBS
-            toggle_option(el, retraction, i);
+            toggle_option(el, retraction && !use_firmware_retraction, i);
 
         bool wipe = retraction && m_config->opt_bool("wipe", i);
         toggle_option("retract_before_wipe", wipe, i);
+        if (use_firmware_retraction && wipe) {
+            //wxMessageDialog dialog(parent(),
+            MessageDialog dialog(parent(),
+                _(L("The Wipe option is not available when using the Firmware Retraction mode.\n"
+                    "\nShall I disable it in order to enable Firmware Retraction?")),
+                _(L("Firmware Retraction")), wxICON_WARNING | wxYES | wxNO);
+
+            DynamicPrintConfig new_conf = *m_config;
+            if (dialog.ShowModal() == wxID_YES) {
+                auto wipe = static_cast<ConfigOptionBools*>(m_config->option("wipe")->clone());
+                for (size_t w = 0; w < wipe->values.size(); w++)
+                    wipe->values[w] = false;
+                new_conf.set_key_value("wipe", wipe);
+            }
+            else {
+                new_conf.set_key_value("use_firmware_retraction", new ConfigOptionBool(false));
+            }
+            load_config(new_conf);
+        }
         // BBS
         toggle_option("wipe_distance", wipe, i);
 
@@ -3582,7 +3636,7 @@ void TabPrinter::toggle_options()
     }
 
     auto gcf = m_config->option<ConfigOptionEnum<GCodeFlavor>>("gcode_flavor")->value;
-        if (m_active_page->title() == "Motion ability") {
+    if (m_active_page->title() == "Motion ability") {
         assert(gcf == gcfMarlinLegacy || gcf == gcfMarlinFirmware || gcf == gcfKlipper);
         bool silent_mode = m_config->opt_bool("silent_mode");
         int  max_field = silent_mode ? 2 : 1;

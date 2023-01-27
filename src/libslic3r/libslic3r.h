@@ -57,7 +57,8 @@ static constexpr double EPSILON = 1e-4;
 static constexpr double SCALING_FACTOR = 0.000001;
 static constexpr double PI = 3.141592653589793238;
 // When extruding a closed loop, the loop is interrupted and shortened a bit to reduce the seam.
-static constexpr double LOOP_CLIPPING_LENGTH_OVER_NOZZLE_DIAMETER = 0.15;
+// SoftFever: replaced by seam_gap now
+// static constexpr double LOOP_CLIPPING_LENGTH_OVER_NOZZLE_DIAMETER = 0.15;
 static constexpr double RESOLUTION = 0.0125;
 #define                 SCALED_RESOLUTION (RESOLUTION / SCALING_FACTOR)
 static constexpr double SPARSE_INFILL_RESOLUTION = 0.04;
@@ -76,10 +77,6 @@ static constexpr double BRIDGE_INFILL_MARGIN = 1;
 //inline coord_t scale_(coordf_t v) { return coord_t(floor(v / SCALING_FACTOR + 0.5f)); }
 #define scale_(val) ((val) / SCALING_FACTOR)
 #define unscale_(val) ((val) * SCALING_FACTOR)
-
-//BBS: BBS only support relative E and can't been changed by user at the moment. because
-//BBS need to support skip object when printing.
-static constexpr bool RELATIVE_E_AXIS = 1;
 
 #define SCALED_EPSILON scale_(EPSILON)
 

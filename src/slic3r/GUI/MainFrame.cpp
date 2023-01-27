@@ -72,6 +72,7 @@ namespace GUI {
 wxDEFINE_EVENT(EVT_SELECT_TAB, wxCommandEvent);
 wxDEFINE_EVENT(EVT_HTTP_ERROR, wxCommandEvent);
 wxDEFINE_EVENT(EVT_USER_LOGIN, wxCommandEvent);
+wxDEFINE_EVENT(EVT_SHOW_IP_DIALOG, wxCommandEvent);
 wxDEFINE_EVENT(EVT_UPDATE_PRESET_CB, SimpleEvent);
 
 // BBS: backup
@@ -194,8 +195,6 @@ DPIFrame(NULL, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, BORDERLESS_FRAME_
     panel_topbar->SetSizer(sizer_tobar);
     panel_topbar->Layout();
 #endif
-
-
 
     //wxAuiToolBar* toolbar = new wxAuiToolBar();
 /*
@@ -1456,7 +1455,7 @@ wxBoxSizer* MainFrame::create_side_tools()
     m_print_option_btn->Bind(wxEVT_BUTTON, [this](wxCommandEvent& event)
         {
             SidePopup* p = new SidePopup(this);
-	    
+
             if (wxGetApp().preset_bundle
                 && !wxGetApp().preset_bundle->printers.get_edited_preset().is_bbl_vendor_preset(wxGetApp().preset_bundle)) {
                 // ThirdParty Buttons
@@ -1530,15 +1529,15 @@ wxBoxSizer* MainFrame::create_side_tools()
                     });
 
                 SideButton* send_to_printer_all_btn = new SideButton(p, _L("Send all"), "");
-                    send_to_printer_all_btn->SetCornerRadius(0);
-                    send_to_printer_all_btn->Bind(wxEVT_BUTTON, [this, p](wxCommandEvent&) {
-                        m_print_btn->SetLabel(_L("Send all"));
-                        m_print_select = eSendToPrinterAll;
-                        m_print_enable = get_enable_print_status();
-                        m_print_btn->Enable(m_print_enable);
-                        this->Layout();
-                        p->Dismiss();
-                        });
+                send_to_printer_all_btn->SetCornerRadius(0);
+                send_to_printer_all_btn->Bind(wxEVT_BUTTON, [this, p](wxCommandEvent&) {
+                    m_print_btn->SetLabel(_L("Send all"));
+                    m_print_select = eSendToPrinterAll;
+                    m_print_enable = get_enable_print_status();
+                    m_print_btn->Enable(m_print_enable);
+                    this->Layout();
+                    p->Dismiss();
+                    });
 
                 export_sliced_file_btn->Bind(wxEVT_BUTTON, [this, p](wxCommandEvent&) {
                     m_print_btn->SetLabel(_L("Export plate sliced file"));
@@ -1558,13 +1557,23 @@ wxBoxSizer* MainFrame::create_side_tools()
                     p->Dismiss();
                     });
 
+                SideButton* export_gcode_btn = new SideButton(p, _L("Export G-code file"), "");
+                export_gcode_btn->SetCornerRadius(0);
+                export_gcode_btn->Bind(wxEVT_BUTTON, [this, p](wxCommandEvent&) {
+                    m_print_btn->SetLabel(_L("Export G-code file"));
+                    m_print_select = eExportGcode;
+                    m_print_enable = get_enable_print_status();
+                    m_print_btn->Enable(m_print_enable);
+                    this->Layout();
+                    p->Dismiss();
+                    });
                 p->append_button(print_plate_btn);
                 p->append_button(print_all_btn);
                 p->append_button(send_to_printer_btn);
                 p->append_button(send_to_printer_all_btn);
                 p->append_button(export_sliced_file_btn);
-                //p->append_button(export_gcode_btn);
                 p->append_button(export_all_sliced_file_btn);
+                p->append_button(export_gcode_btn);
             }
 
             p->Popup(m_print_btn);
@@ -2493,8 +2502,6 @@ void MainFrame::init_menubar_as_editor()
         m_menubar->Append(viewMenu, wxString::Format("&%s", _L("View")));
     /*if (publishMenu)
         m_menubar->Append(publishMenu, wxString::Format("&%s", _L("3D Models")));*/
-    if (helpMenu)
-        m_menubar->Append(helpMenu, wxString::Format("&%s", _L("Help")));
 
     // SoftFever calibrations
     auto calib_menu = new wxMenu();
@@ -2510,9 +2517,18 @@ void MainFrame::init_menubar_as_editor()
     calib_menu->AppendSubMenu(flowrate_menu, _L("Flow rate"));
 
     // PA
+<<<<<<< HEAD
     auto pa_menu = new wxMenu();
     append_menu_item(pa_menu, wxID_ANY, _L("Line method - DDE"), _L(""),
         [this](wxCommandEvent&) { if (m_plater) m_plater->calib_pa(true, false); }, "", nullptr,
+=======
+    append_menu_item(calib_menu, wxID_ANY, _L("Pressure advance"), _L("Pressure advance"),
+        [this](wxCommandEvent&) {
+            if (!m_pa_calib_dlg)
+                m_pa_calib_dlg = new PA_Calibration_Dlg((wxWindow*)this, wxID_ANY, m_plater);
+            m_pa_calib_dlg->ShowModal();
+        }, "", nullptr,
+>>>>>>> 52097197 (fix po file erros)
         [this]() {return m_plater->is_view3D_shown();; }, this);
     append_menu_item(pa_menu, wxID_ANY, _L("Line method - Bowden"), _L(""),
         [this](wxCommandEvent&) { if (m_plater) m_plater->calib_pa(true, true); }, "", nullptr,
@@ -2531,7 +2547,8 @@ void MainFrame::init_menubar_as_editor()
         [this]() {return m_plater->is_view3D_shown();; }, this);
     
     m_menubar->Append(calib_menu,wxString::Format("&%s", _L("Calibration")));
-
+    if (helpMenu)
+        m_menubar->Append(helpMenu, wxString::Format("&%s", _L("Help")));
     SetMenuBar(m_menubar);
 
 #endif
@@ -3222,7 +3239,7 @@ void MainFrame::on_select_default_preset(SimpleEvent& evt)
                         "It contains the following information:\n"
                         "1. The Process presets\n"
                         "2. The Filament presets\n"
-                        "3. The Printer presets\n"),
+                        "3. The Printer presets"),
                     _L("Synchronization"),
                     wxCENTER |
                     wxYES_DEFAULT | wxYES_NO |

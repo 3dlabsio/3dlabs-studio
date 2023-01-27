@@ -17,6 +17,7 @@
 #include "libslic3r/Utils.hpp"
 #include "libslic3r/AppConfig.hpp"
 #include "I18N.hpp"
+#include <locale>
 
 namespace Slic3r { namespace GUI {
 
@@ -1232,7 +1233,7 @@ void ExtruderOptionsGroup::on_change_OG(const t_config_option_key& opt_id, const
 
 wxString OptionsGroup::get_url(const std::string& path_end)
 {
-    //BBS
+    // 3dlabs documentation
     return wxString::Format(L"https://docs.3dlabs.io/3dlabs-studio/%s", L"en", from_u8(path_end));
 }
 

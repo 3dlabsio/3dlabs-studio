@@ -321,7 +321,7 @@ void ConfigManipulation::update_print_fff_config(DynamicPrintConfig* config, con
         config->opt_bool("enable_overhang_speed"))
     {
         wxString msg_text = _(L("Arachne engine only works when overhang slowing down is disabled.\n"
-                               "This may cause decline in the quality of overhang surface when print fastly\n"));
+                               "This may cause decline in the quality of overhang surface when print fastly")) + "\n";
         if (is_global_config)
             msg_text += "\n" + _(L("Disable overhang slowing down automatically? \n"
                 "Yes - Enable arachne and disable overhang slowing down\n"
@@ -442,7 +442,7 @@ void ConfigManipulation::update_print_fff_config(DynamicPrintConfig* config, con
                 if (is_global_config)
                     msg_text += "\n" + _L("Switch to rectilinear pattern?\n"
                                           "Yes - switch to rectilinear pattern automaticlly\n"
-                                          "No  - reset density to default non 100% value automaticlly\n");
+                                          "No  - reset density to default non 100% value automaticlly") + "\n";
                 MessageDialog dialog(m_msg_dlg_parent, msg_text, "",
                                                   wxICON_WARNING | (is_global_config ? wxYES | wxNO : wxOK) );
                 DynamicPrintConfig new_conf = *config;
@@ -504,6 +504,10 @@ void ConfigManipulation::apply_null_fff_config(DynamicPrintConfig *config, std::
 
 void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, const bool is_global_config)
 {
+    PresetBundle *preset_bundle  = wxGetApp().preset_bundle;
+    //SoftFever
+    auto gcflavor = preset_bundle->printers.get_edited_preset().config.option<ConfigOptionEnum<GCodeFlavor>>("gcode_flavor")->value;
+    
     bool have_perimeters = config->opt_int("wall_loops") > 0;
     for (auto el : { "ensure_vertical_shell_thickness", "detect_thin_wall", "detect_overhang_wall",
                     "seam_position", "wall_infill_order", "outer_wall_line_width",
@@ -544,7 +548,7 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
 
     bool have_default_jerk = config->opt_float("default_jerk") > 0;
 
-    for (auto el : { "outer_wall_jerk", "inner_wall_jerk", "initial_layer_jerk", "top_surface_jerk","travel_jerk" })
+    for (auto el : { "outer_wall_jerk", "inner_wall_jerk", "initial_layer_jerk", "top_surface_jerk","travel_jerk", "infill_jerk"})
         toggle_field(el, have_default_jerk);
 
     bool have_skirt = config->opt_int("skirt_loops") > 0;
@@ -604,9 +608,9 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
     toggle_field("inner_wall_line_width", have_perimeters || have_skirt || have_brim);
     toggle_field("support_filament", have_support_material || have_skirt);
 
-    toggle_field("raft_contact_distance", have_raft && !have_support_soluble);
-    for (auto el : { "raft_expansion" })
-        toggle_field(el, have_raft);
+    toggle_line("raft_contact_distance", have_raft && !have_support_soluble);
+    for (auto el : { "raft_first_layer_expansion", "raft_first_layer_density"})
+        toggle_line(el, have_raft);
 
     bool has_ironing = (config->opt_enum<IroningType>("ironing_type") != IroningType::NoIroning);
     for (auto el : { "ironing_flow", "ironing_spacing", "ironing_speed" })
@@ -640,7 +644,6 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
         toggle_line(el, has_fuzzy_skin);
 
     // C11 printer is not support smooth timelapse
-    PresetBundle *preset_bundle  = wxGetApp().preset_bundle;
     std::string str_preset_type = preset_bundle->printers.get_edited_preset().get_printer_type(preset_bundle);
     toggle_field("timelapse_type", str_preset_type != "C11");
 
@@ -651,6 +654,16 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
     toggle_field("detect_thin_wall", !have_arachne);
     toggle_field("enable_overhang_speed", !have_arachne);
     toggle_field("only_one_wall_top", !have_arachne);
+    
+    // SoftFever
+    auto is_role_based_wipe_speed = config->opt_bool("role_based_wipe_speed");
+    toggle_field("wipe_speed",!is_role_based_wipe_speed);
+    
+    // SoftFever
+    for (auto el : {"accel_to_decel_enable", "accel_to_decel_factor"})
+        toggle_line(el, gcflavor == gcfKlipper);
+    if(gcflavor == gcfKlipper)
+        toggle_field("accel_to_decel_factor", config->opt_bool("accel_to_decel_enable"));
 }
 
 void ConfigManipulation::update_print_sla_config(DynamicPrintConfig* config, const bool is_global_config/* = false*/)

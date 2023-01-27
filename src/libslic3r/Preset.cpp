@@ -749,10 +749,10 @@ static std::vector<std::string> s_Preset_print_options {
      "wall_generator", "wall_transition_length", "wall_transition_filter_deviation", "wall_transition_angle",
      "wall_distribution_count", "min_feature_size", "min_bead_width",
      // SoftFever
-     "small_perimeter_speed", "small_perimeter_threshold","bridge_angle", "filter_out_gap_fill", "travel_acceleration","inner_wall_acceleration",
-     "default_jerk", "outer_wall_jerk", "inner_wall_jerk", "top_surface_jerk", "initial_layer_jerk","travel_jerk",
+     "small_perimeter_speed", "small_perimeter_threshold","bridge_angle", "filter_out_gap_fill", "post_process", "travel_acceleration","inner_wall_acceleration",
+     "default_jerk", "outer_wall_jerk", "inner_wall_jerk", "infill_jerk", "top_surface_jerk", "initial_layer_jerk","travel_jerk",
      "top_solid_infill_flow_ratio","bottom_solid_infill_flow_ratio","only_one_wall_first_layer",
-     "print_flow_ratio"
+     "print_flow_ratio","seam_gap","role_based_wipe_speed","wipe_speed","accel_to_decel_enable", "accel_to_decel_factor", "wipe_on_loops"
 
 };
 
@@ -776,7 +776,7 @@ static std::vector<std::string> s_Preset_filament_options {
     "filament_wipe_distance", "additional_cooling_fan_speed",
     "bed_temperature_difference", "nozzle_temperature_range_low", "nozzle_temperature_range_high",
     //SoftFever
-    "enable_pressure_advance", "pressure_advance","chamber_temperature"
+    "enable_pressure_advance", "pressure_advance","chamber_temperature" /*,"filament_seam_gap"*/
 };
 
 static std::vector<std::string> s_Preset_machine_limits_options {
@@ -801,7 +801,8 @@ static std::vector<std::string> s_Preset_printer_options {
     "host_type", "print_host", "printhost_apikey", 
     "printhost_cafile","printhost_port","printhost_authorization_type",
     "printhost_user", "printhost_password", "printhost_ssl_ignore_revoke",
-    "z_lift_type", "thumbnails"
+    "z_lift_type", "thumbnails",
+    "use_firmware_retraction", "use_relative_e_distances"
 };
 
 static std::vector<std::string> s_Preset_sla_print_options {
@@ -1686,6 +1687,10 @@ std::pair<Preset*, bool> PresetCollection::load_external_preset(
 {
     // Load the preset over a default preset, so that the missing fields are filled in from the default preset.
     DynamicPrintConfig cfg(this->default_preset_for(combined_config).config);
+    // SoftFever: ignore print connection info from project
+    cfg.erase("print_host");
+    cfg.erase("printhost_apikey");
+    cfg.erase("printhost_cafile");
     const auto        &keys = cfg.keys();
     cfg.apply_only(combined_config, keys, true);
     std::string                 &inherits = Preset::inherits(cfg);

@@ -78,7 +78,9 @@ using namespace nlohmann;
 #include "slic3r/GUI/Camera.hpp"
 #include <GLFW/glfw3.h>
 
-
+#ifdef __WXGTK__
+#include <X11/Xlib.h>
+#endif
 
 #ifdef SLIC3R_GUI
     #include "slic3r/GUI/GUI_Init.hpp"
@@ -332,6 +334,10 @@ int CLI::run(int argc, char **argv)
     // startup if gtk3 is used. This env var has to be set explicitly to
     // instruct the window manager to fall back to X server mode.
     ::setenv("GDK_BACKEND", "x11", /* replace */ true);
+    
+    // Also on Linux, we need to tell Xlib that we will be using threads,
+    // lest we crash when we fire up GStreamer.
+    XInitThreads();
 #endif
 
 	// Switch boost::filesystem to utf8.
@@ -1912,8 +1918,7 @@ int CLI::run(int argc, char **argv)
                                 outfile = outfile_final;
                             }*/
                             // Run the post-processing scripts if defined.
-                            //BBS: TODO, maybe need to open this function later
-                            //run_post_process_scripts(outfile, print->full_print_config());
+                            run_post_process_scripts(outfile, print->full_print_config());
                             BOOST_LOG_TRIVIAL(info) << "Slicing result exported to " << outfile << std::endl;
                             part_plate->update_slice_result_valid_state(true);
 #if defined(__linux__) || defined(__LINUX__)
