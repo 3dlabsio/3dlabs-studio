@@ -101,5 +101,7 @@
     ],
     "filament_start_gcode": [
         "; filament start gcode\n"
-    ]
+    ],
+    "support_expansion": "1.5",
+    "support_style": "snug"
 }
