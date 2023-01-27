@@ -2461,11 +2461,11 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("draft_shield", coEnum);
     //def->label = L("Draft shield");
-    def->label = "Draft shield";
-    def->tooltip = L("With draft shield active, the skirt will be printed skirt_distance from the object, possibly intersecting brim.\n"
+    def->label = "Warp shield";
+    def->tooltip = L("With warp shield active, the skirt will be printed skirt_distance from the object, possibly intersecting brim.\n"
                      "Enabled = skirt is as tall as the highest printed object.\n"
                     "Limited = skirt is as tall as specified by skirt_height.\n"
-    				 "This is useful to protect an ABS or ASA print from warping and detaching from print bed due to wind draft.");
+    				 "Use this feature when you're having trouble printing high-temperature filaments, such as PEEK or PEI, and experience cracks or warping. This helps to keep the heat around the printed object.");
     def->enum_keys_map = &ConfigOptionEnum<DraftShield>::get_enum_values();
     def->enum_values.push_back("disabled");
     def->enum_values.push_back("limited");
