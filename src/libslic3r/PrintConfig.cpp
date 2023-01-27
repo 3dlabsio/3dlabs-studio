@@ -2462,10 +2462,10 @@ void PrintConfigDef::init_fff_params()
     def = this->add("draft_shield", coEnum);
     //def->label = L("Draft shield");
     def->label = "Draft shield";
-    //def->tooltip = L("With draft shield active, the skirt will be printed skirt_distance from the object, possibly intersecting brim.\n"
-    //                 "Enabled = skirt is as tall as the highest printed object.\n"
-    //                "Limited = skirt is as tall as specified by skirt_height.\n"
-    //				 "This is useful to protect an ABS or ASA print from warping and detaching from print bed due to wind draft.");
+    def->tooltip = L("With draft shield active, the skirt will be printed skirt_distance from the object, possibly intersecting brim.\n"
+                     "Enabled = skirt is as tall as the highest printed object.\n"
+                    "Limited = skirt is as tall as specified by skirt_height.\n"
+    				 "This is useful to protect an ABS or ASA print from warping and detaching from print bed due to wind draft.");
     def->enum_keys_map = &ConfigOptionEnum<DraftShield>::get_enum_values();
     def->enum_values.push_back("disabled");
     def->enum_values.push_back("limited");
@@ -2473,7 +2473,7 @@ void PrintConfigDef::init_fff_params()
     def->enum_labels.push_back("Disabled");
     def->enum_labels.push_back("Limited");
     def->enum_labels.push_back("Enabled");
-    def->mode = comDevelop;
+    def->mode = comSimple;
     def->set_default_value(new ConfigOptionEnum<DraftShield>(dsDisabled));
 
     def = this->add("skirt_loops", coInt);
