@@ -28,6 +28,6 @@
     "top_shell_layers": "5",
     "top_shell_thickness": "0.8",
     "top_solid_infill_flow_ratio": "1",
-    "version": "2.0.0.1",
+    "version": "2.1.1.0",
     "wall_infill_order": "inner-outer-inner wall/infill"
 }
