@@ -2329,8 +2329,10 @@ bool GUI_App::on_init_inner()
 
     Bind(EVT_SHOW_IP_DIALOG, &GUI_App::show_ip_address_enter_dialog_handler, this);
 
-    copy_network_if_available();
-    on_init_network();
+    // 3dlabs
+    // dont need bambu networking
+    //copy_network_if_available();
+    //on_init_network();
 
     if (m_agent && m_agent->is_user_login()) {
         enable_user_preset_folder(true);
