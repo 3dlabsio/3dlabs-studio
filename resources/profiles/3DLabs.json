@@ -1,7 +1,7 @@
 {
     "name": "3D Labs",
-    "version": "02.00.00.01",
-    "force_update": "0",
+    "version": "02.01.01.00",
+    "force_update": "1",
     "description": "3D Labs configurations",
     "machine_model_list": [
         {
