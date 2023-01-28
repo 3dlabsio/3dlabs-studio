@@ -1846,7 +1846,7 @@ void TabPrint::build()
         optgroup->append_single_option_line("enable_arc_fitting");
         optgroup->append_single_option_line("xy_hole_compensation");
         optgroup->append_single_option_line("xy_contour_compensation");
-        optgroup->append_single_option_line("elefant_foot_compensation");
+        optgroup->append_single_option_line("elephant_foot_compensation");
 
         optgroup = page->new_optgroup(L("Ironing"), L"param_ironing");
         optgroup->append_single_option_line("ironing_type");
@@ -3154,8 +3154,8 @@ void TabPrinter::build_sla()
     //}
     //optgroup->append_line(line);
     //optgroup->append_single_option_line("absolute_correction");
-    //optgroup->append_single_option_line("elefant_foot_compensation");
-    //optgroup->append_single_option_line("elefant_foot_min_width");
+    //optgroup->append_single_option_line("elephant_foot_compensation");
+    //optgroup->append_single_option_line("elephant_foot_min_width");
     //optgroup->append_single_option_line("gamma_correction");
     //
     //optgroup = page->new_optgroup(L("Exposure"));

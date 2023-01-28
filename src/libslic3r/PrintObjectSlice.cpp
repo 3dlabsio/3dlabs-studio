@@ -952,7 +952,7 @@ void PrintObject::slice_volumes()
         const auto   xy_contour_scaled            = (num_extruders > 1 && this->is_mm_painted()) ? scaled<float>(0.f) : scaled<float>(m_config.xy_contour_compensation.value);
         const float  elephant_foot_compensation_scaled = (m_config.raft_layers == 0) ?
         	// Only enable Elephant foot compensation if printing directly on the print bed.
-            float(scale_(m_config.elefant_foot_compensation.value)) :
+            float(scale_(m_config.elephant_foot_compensation.value)) :
         	0.f;
         // Uncompensated slices for the first layer in case the Elephant foot compensation is applied.
 	    ExPolygons  lslices_1st_layer;
