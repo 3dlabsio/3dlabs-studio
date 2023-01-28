@@ -132,7 +132,7 @@ void ConfigManipulation::check_bed_temperature_difference(int bed_type, DynamicP
 
             if (first_layer_bed_temp > vitrification || bed_temp > vitrification) {
                 const wxString msg_text = wxString::Format(
-                    _L("The bed temperature is higher than the vitrification temperature of this filament.\nThis may cause the filament to soften up and jam or clog.");
+                    _L("The bed temperature is higher than the vitrification temperature of this filament.\nThis may cause the filament to soften up and jam or clog."));
                 MessageDialog dialog(m_msg_dlg_parent, msg_text, "", wxICON_WARNING | wxOK);
                 is_msg_dlg_already_exist = true;
                 dialog.ShowModal();

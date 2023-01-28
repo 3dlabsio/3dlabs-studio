@@ -344,8 +344,8 @@ void PrintConfigDef::init_common_params()
     //BBS: add "bed_exclude_area"
     def = this->add("bed_exclude_area", coPoints);
     def->label = L("Bed exclude area");
-    def->tooltip = L("Unprintable area in XY plane. For example, X1 Series printers use the front left corner to cut filament during filament change. "
-        "The area is expressed as polygon by points in following format: \"XxY, XxY, ...\"");
+    def->tooltip = L("Unprintable area in XY plane. "
+        "The area is expressed as polygon by points in the following format: \"XxY, XxY, ...\"");
     def->mode = comAdvanced;
     def->gui_type = ConfigOptionDef::GUIType::one_string;
     def->set_default_value(new ConfigOptionPoints{ Vec2d(0, 0) });
@@ -363,7 +363,7 @@ void PrintConfigDef::init_common_params()
     def = this->add("elephant_foot_compensation", coFloat);
     def->label = L("Elephant foot compensation");
     def->category = L("Quality");
-    def->tooltip = L("Shrink the initial layer on build plate to compensate for elephant foot effect");
+    def->tooltip = L("Shrink the initial layer on build plate to compensate for the elephant foot effect");
     def->sidetext = L("mm");
     def->min = 0;
     def->mode = comAdvanced;
@@ -372,14 +372,14 @@ void PrintConfigDef::init_common_params()
     def = this->add("layer_height", coFloat);
     def->label = L("Layer height");
     def->category = L("Quality");
-    def->tooltip = L("Slicing height for each layer. Smaller layer height means more accurate and more printing time");
+    def->tooltip = L("Slicing height for each layer. Smaller layer heights means finer detail and longer printing times");
     def->sidetext = L("mm");
     def->min = 0;
     def->set_default_value(new ConfigOptionFloat(0.2));
 
     def = this->add("printable_height", coFloat);
     def->label = L("Printable height");
-    def->tooltip = L("Maximum printable height which is limited by mechanism of printer");
+    def->tooltip = L("Maximum printable height allowed by printer hardware");
     def->sidetext = L("mm");
     def->min = 0;
     def->max = 1000;
@@ -495,9 +495,9 @@ void PrintConfigDef::init_fff_params()
     def = this->add("max_travel_detour_distance", coFloatOrPercent);
     def->label = L("Avoid crossing wall - Max detour length");
     def->category = L("Quality");
-    def->tooltip = L("Maximum detour distance for avoiding crossing wall. "
-                     "Don't detour if the detour distance is large than this value. "
-                     "Detour length could be specified either as an absolute value or as percentage (for example 50%) of a direct travel path. Zero to disable");
+    def->tooltip = L("Maximum detour distance to avoid crossing walls. "
+                     "If the detour distance is longer than this value, the detour will not take place. "
+                     "Detour length can be specified either as an absolute value, or as percentage. (for example 50%) of a direct travel path. 0 to disable");
     def->sidetext = L("mm or %");
     def->min = 0;
     def->max_literal = 1000;
@@ -602,7 +602,7 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("before_layer_change_gcode", coString);
     def->label = L("Before layer change G-code");
-    def->tooltip = L("This G-code is inserted at every layer change before lifting z");
+    def->tooltip = L("This G-code is inserted at every layer change before lifting Z");
     def->multiline = true;
     def->full_width = true;
     def->height = 5;
