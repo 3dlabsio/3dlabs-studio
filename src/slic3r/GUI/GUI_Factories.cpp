@@ -250,7 +250,7 @@ std::map<std::string, std::string> SettingsFactory::CATEGORY_ICON =
     { L("Extruders")            , "blank_14"    },
     { L("Extrusion Width")      , "blank_14"    },
     { L("Wipe options")         , "blank_14"    },
-    { L("Bed adhension")        , "blank_14"    },
+    { L("Bed adhesion")        , "blank_14"    },
 //  { L("Speed > Acceleration") , "time"        },
     { L("Advanced")             , "blank_14"    },
     // BBS: remove SLA categories

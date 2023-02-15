@@ -2003,7 +2003,7 @@ void TabPrint::build()
         //optgroup->append_single_option_line("independent_support_layer_height");
 
     page = add_options_page(L("Others"), "advanced");
-        optgroup = page->new_optgroup(L("Bed adhension"), L"param_adhension");
+        optgroup = page->new_optgroup(L("Bed adhesion"), L"param_adhesion");
         optgroup->append_single_option_line("skirt_loops");
         optgroup->append_single_option_line("skirt_distance");
         optgroup->append_single_option_line("skirt_height");
