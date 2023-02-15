@@ -1,6 +1,6 @@
 {
     "name": "3D Labs",
-    "version": "02.01.01.00",
+    "version": "02.01.01.01",
     "force_update": "1",
     "description": "3D Labs configurations",
     "machine_model_list": [
@@ -185,8 +185,8 @@
             "sub_path": "filament/Aquasys 120 Support.json"
         },
         {
-            "name": "Kexcelled ABS 5 Basic",
-            "sub_path": "filament/Kexcelled ABS 5 Basic.json"
+            "name": "Polymaker ABS",
+            "sub_path": "filament/Polymaker ABS.json"
         },
         {
             "name": "Duramic TPU",
