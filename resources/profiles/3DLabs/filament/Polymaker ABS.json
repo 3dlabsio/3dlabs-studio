@@ -1,13 +1,13 @@
 {
     "type": "filament",
-    "filament_id": "GFB101",
-    "setting_id": "GFSB101-00",
-    "name": "Kexcelled ABS 5 Basic",
+    "filament_id": "GFB99",
+    "setting_id": "GFSB99-00",
+    "name": "Polymaker ABS",
     "from": "system",
     "instantiation": "true",
     "inherits": "fdm_filament_abs",
     "filament_vendor": [
-        "Kexcelled"
+        "Polymaker"
     ],
     "filament_max_volumetric_speed": [
         "12"
@@ -26,7 +26,7 @@
         "36"
     ],
     "filament_flow_ratio": [
-        "1.05"
+        "1"
     ],
     "filament_retraction_length": [
         "0.7"
@@ -50,7 +50,7 @@
         "195"
     ],
     "nozzle_temperature": [
-        "235"
+        "245"
     ],
     "nozzle_temperature_initial_layer": [
         "245"
@@ -67,5 +67,5 @@
     "slow_down_min_speed": [
         "5"
     ],
-    "version": "2.1.1.0"
+    "version": "2.1.1.1"
 }
