@@ -600,7 +600,7 @@ wxBoxSizer *StatusBasePanel::create_machine_control_page(wxWindow *parent)
     m_staticText_control->SetFont(PAGE_TITLE_FONT);
     m_staticText_control->SetForegroundColour(PAGE_TITLE_FONT_COL);
 
-    StateColor btn_bg_green(std::pair<wxColour, int>(AMS_CONTROL_DISABLE_COLOUR, StateColor::Disabled), std::pair<wxColour, int>(wxColour(0, 137, 123), StateColor::Pressed),
+    StateColor btn_bg_green(std::pair<wxColour, int>(AMS_CONTROL_DISABLE_COLOUR, StateColor::Disabled), std::pair<wxColour, int>(wxColour(82, 142, 255), StateColor::Pressed),
         std::pair<wxColour, int>(wxColour(82, 142, 255), StateColor::Hovered), std::pair<wxColour, int>(AMS_CONTROL_BRAND_COLOUR, StateColor::Normal));
     StateColor btn_bd_green(std::pair<wxColour, int>(AMS_CONTROL_WHITE_COLOUR, StateColor::Disabled), std::pair<wxColour, int>(AMS_CONTROL_BRAND_COLOUR, StateColor::Enabled));
 

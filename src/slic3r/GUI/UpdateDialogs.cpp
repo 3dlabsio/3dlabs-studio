@@ -141,7 +141,7 @@ MsgUpdateConfig::MsgUpdateConfig(const std::vector<Update> &updates, bool force_
     sizer_button->Add(0, 0, 1, wxEXPAND, 5);
 
 
-	StateColor btn_bg_green(std::pair<wxColour, int>(wxColour(0, 137, 123), StateColor::Pressed),
+	StateColor btn_bg_green(std::pair<wxColour, int>(wxColour(82, 142, 255), StateColor::Pressed),
                             std::pair<wxColour, int>(wxColour(82, 142, 255), StateColor::Hovered), std::pair<wxColour, int>(AMS_CONTROL_BRAND_COLOUR, StateColor::Normal));
 
     StateColor btn_bg_white(std::pair<wxColour, int>(wxColour(206, 206, 206), StateColor::Pressed),
