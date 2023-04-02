@@ -6,39 +6,16 @@
 		"files": [
 			{
 				"type": "po",
-				"pattern": "bbl/i18n/en/BambuStudio_en.po",
+				"pattern": "bbl/i18n/en/OrcaSlicer_en.po",
 				"lang": "en"
-			},
-			{
-				"type": "po",
-				"pattern": "bbl/i18n/fr/BambuStudio_fr.po",
-				"lang": "fr"
-			},
-			{
-				"type": "po",
-				"pattern": "bbl/i18n/de/BambuStudio_de.po",
-				"lang": "de"
-			},
-			{
-				"type": "po",
-				"pattern": "bbl/i18n/sv/BambuStudio_sv.po",
-				"lang": "sv"
-			},
-			{
-				"type": "po",
-				"pattern": "bbl/i18n/es/BambuStudio_es.po",
-				"lang": "es"
-			},
-			{
-				"type": "po",
-				"pattern": "bbl/i18n/nl/BambuStudio_nl.po",
-				"lang": "nl"
-			},
-			{
-				"type": "po",
-				"pattern": "bbl/i18n/hu/BambuStudio_hu.po",
-				"lang": "hu"
 			}
 		]
+	},
+	"download": {
+		"folder": "bbl/i18n",
+		"includeSourceLang" : "true",
+		"files": {
+			"output": "${lang}/OrcaSlicer_${lang}.po"
+		}
 	}
 }

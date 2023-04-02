@@ -74,7 +74,8 @@ void wxMediaCtrl2::Load(wxURI url)
                     [dll_path] {
                     int res = wxMessageBox(_L("BambuSource has not correctly been registered for media playing! Press Yes to re-register it."), _L("Error"), wxYES_NO);
                     if (res == wxYES) {
-                        SHELLEXECUTEINFO info{sizeof(info), 0, NULL, L"runas", L"regsvr32", dll_path.wstring().c_str(), SW_HIDE };
+                        wstring quoted_dll_path = L"\"" + dll_path.wstring() + "\"";
+                        SHELLEXECUTEINFO info{sizeof(info), 0, NULL, L"runas", L"regsvr32", quoted_dll_path.c_str(), SW_HIDE };
                         ::ShellExecuteEx(&info);
                     }
                 });
@@ -129,7 +130,7 @@ void wxMediaCtrl2::Load(wxURI url)
     
     if (!hasplugins) {
         Slic3r::GUI::wxGetApp().CallAfter([] {
-            wxMessageBox(_L("Your system is missing H.264 codecs for GStreamer, which are required to play video.  (Try installing the gstreamer1.0-plugins-bad or gstreamer1.0-libav packages, then restart Bambu Studio?)"), _L("Error"), wxOK);
+            wxMessageBox(_L("Your system is missing H.264 codecs for GStreamer, which are required to play video.  (Try installing the gstreamer1.0-plugins-bad or gstreamer1.0-libav packages, then restart Orca Slicer?)"), _L("Error"), wxOK);
         });
         m_error = 101;
         wxMediaEvent event(wxEVT_MEDIA_STATECHANGED);

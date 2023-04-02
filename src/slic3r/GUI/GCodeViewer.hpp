@@ -697,7 +697,7 @@ public:
         GCodeWindow gcode_window;
         std::vector<unsigned int> gcode_ids;
         float m_scale = 1.0;
-
+        bool m_show_gcode_window = false;
         //BBS: GUI refactor: add canvas size
         void render(const bool has_render_path, float legend_height, int canvas_width, int canvas_height, const EViewType& view_type) const;
     };
@@ -809,6 +809,8 @@ public:
     void reset_shell();
     void load_shells(const Print& print, bool initialized, bool force_previewing = false);
     void set_shells_on_preview(bool is_previewing) { m_shells.previewing = is_previewing; }
+    //BBS: add all plates filament statistics
+    void render_all_plates_stats(const std::vector<const GCodeProcessorResult*>& gcode_result_list, bool show = true) const;
     //BBS: GUI refactor: add canvas width and height
     void render(int canvas_width, int canvas_height, int right_margin);
     //BBS

@@ -28,6 +28,8 @@ set(SLIC3R_GUI_SOURCES
     GUI/Widgets/SideMenuPopup.cpp
     GUI/Widgets/DropDown.cpp
     GUI/Widgets/DropDown.hpp
+    GUI/Widgets/PopupWindow.cpp
+    GUI/Widgets/PopupWindow.hpp
     GUI/Widgets/Label.cpp
     GUI/Widgets/Label.hpp
     GUI/Widgets/Scrollbar.cpp
@@ -173,8 +175,6 @@ set(SLIC3R_GUI_SOURCES
     GUI/MainFrame.hpp
     GUI/BBLTopbar.cpp
     GUI/BBLTopbar.hpp
-    GUI/BedShapeDialog.cpp
-    GUI/BedShapeDialog.hpp
     GUI/Plater.cpp
     GUI/Plater.hpp
     GUI/PartPlate.cpp
@@ -205,6 +205,8 @@ set(SLIC3R_GUI_SOURCES
     GUI/GUI_ObjectTableSettings.hpp
     GUI/MeshUtils.cpp
     GUI/MeshUtils.hpp
+    GUI/TickCode.cpp
+    GUI/TickCode.hpp
     GUI/Tab.cpp
     GUI/Tab.hpp
     GUI/ParamsDialog.cpp
@@ -273,12 +275,14 @@ set(SLIC3R_GUI_SOURCES
     GUI/RemovableDriveManager.hpp
     GUI/SendSystemInfoDialog.cpp
     GUI/SendSystemInfoDialog.hpp
-    GUI/SetBedTypeDialog.cpp
-    GUI/SetBedTypeDialog.hpp
+    GUI/PlateSettingsDialog.cpp
+    GUI/PlateSettingsDialog.hpp
     GUI/ImGuiWrapper.hpp
     GUI/ImGuiWrapper.cpp
     GUI/DeviceManager.hpp
     GUI/DeviceManager.cpp
+    GUI/HttpServer.hpp
+    GUI/HttpServer.cpp
     Config/Snapshot.cpp
     Config/Snapshot.hpp
     Config/Version.cpp
@@ -364,6 +368,8 @@ set(SLIC3R_GUI_SOURCES
     GUI/PublishDialog.hpp
 	GUI/RecenterDialog.cpp
     GUI/RecenterDialog.hpp
+    GUI/PrivacyUpdateDialog.cpp
+    GUI/PrivacyUpdateDialog.hpp
     GUI/BonjourDialog.cpp
     GUI/BonjourDialog.hpp
     GUI/BindDialog.cpp
@@ -435,6 +441,8 @@ set(SLIC3R_GUI_SOURCES
     Utils/AstroBox.hpp
     Utils/Repetier.cpp
     Utils/Repetier.hpp
+    GUI/calib_dlg.hpp
+    GUI/calib_dlg.cpp
 )
 
 if (WIN32)
@@ -475,6 +483,10 @@ endif ()
 
 add_library(libslic3r_gui STATIC ${SLIC3R_GUI_SOURCES})
 target_include_directories(libslic3r_gui PRIVATE Utils)
+
+if (WIN32)
+    target_include_directories(libslic3r_gui PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../deps/WebView2/include)
+endif()
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SLIC3R_GUI_SOURCES})
 

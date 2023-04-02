@@ -25,7 +25,7 @@ ConfirmHintDialog::ConfirmHintDialog(wxWindow* parent, wxWindowID id, const wxSt
     m_button_confirm->SetFont(Label::Body_14);
     m_button_confirm->SetMinSize(wxSize(-1, FromDIP(24)));
     m_button_confirm->SetCornerRadius(FromDIP(12));
-    StateColor confirm_btn_bg(std::pair<wxColour, int>(wxColour(61, 203, 115), StateColor::Hovered),
+    StateColor confirm_btn_bg(std::pair<wxColour, int>(wxColour(91, 160, 216), StateColor::Hovered),
         std::pair<wxColour, int>(wxColour(72, 94, 112), StateColor::Normal));
     m_button_confirm->SetBackgroundColor(confirm_btn_bg);
     m_button_confirm->SetBorderColor(wxColour(72, 94, 112));
