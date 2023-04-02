@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(OrcaSlicer-native)
+project(3DLabsStudio-native)
 
 add_subdirectory(build-utils)
 add_subdirectory(admesh)
@@ -103,59 +103,59 @@ endif()
 # Create a slic3r executable
 # Process mainfests for various platforms.
 set(MACOSX_BUNDLE_COPYRIGHT "Copyright(C) 2022-2023 Li Jiang All Rights Reserved")
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/BambuStudio.rc.in ${CMAKE_CURRENT_BINARY_DIR}/BambuStudio.rc @ONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/BambuStudio.manifest.in ${CMAKE_CURRENT_BINARY_DIR}/BambuStudio.manifest @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/3DLabsStudio.rc.in ${CMAKE_CURRENT_BINARY_DIR}/3DLabsStudio.rc @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/3DLabsStudio.manifest.in ${CMAKE_CURRENT_BINARY_DIR}/3DLabsStudio.manifest @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/osx/Info.plist.in ${CMAKE_CURRENT_BINARY_DIR}/Info.plist @ONLY)
 if (WIN32)
-    add_library(OrcaSlicer SHARED BambuStudio.cpp BambuStudio.hpp BaseException.cpp BaseException.h StackWalker.cpp StackWalker.h)
+    add_library(3DLabsStudio SHARED BambuStudio.cpp BambuStudio.hpp BaseException.cpp BaseException.h StackWalker.cpp StackWalker.h)
 else ()
-    add_executable(OrcaSlicer BambuStudio.cpp BambuStudio.hpp)
+    add_executable(3DLabsStudio BambuStudio.cpp BambuStudio.hpp)
 endif ()
 
 if (MINGW)
-    target_link_options(OrcaSlicer PUBLIC "-Wl,-allow-multiple-definition")
-    set_target_properties(OrcaSlicer PROPERTIES PREFIX "")
+    target_link_options(3DLabsStudio PUBLIC "-Wl,-allow-multiple-definition")
+    set_target_properties(3DLabsStudio PROPERTIES PREFIX "")
 endif (MINGW)
 
 if (NOT WIN32 AND NOT APPLE)
     # Binary name on unix like systems (Linux, Unix)
-    set_target_properties(BambuStudio PROPERTIES OUTPUT_NAME "3dlabs-studio")
+    set_target_properties(3DLabsStudio PROPERTIES OUTPUT_NAME "3dlabs-studio")
     set(SLIC3R_APP_CMD "3dlabs-studio")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/unix/BuildLinuxImage.sh.in ${CMAKE_CURRENT_BINARY_DIR}/BuildLinuxImage.sh @ONLY)
 endif ()
 
-target_link_libraries(OrcaSlicer libslic3r cereal)
+target_link_libraries(3DLabsStudio libslic3r cereal)
 if (APPLE)
 #    add_compile_options(-stdlib=libc++)
 #    add_definitions(-DBOOST_THREAD_DONT_USE_CHRONO -DBOOST_NO_CXX11_RVALUE_REFERENCES -DBOOST_THREAD_USES_MOVE)
     # -liconv: boost links to libiconv by default
-    target_link_libraries(OrcaSlicer "-liconv -framework IOKit" "-framework CoreFoundation" "-framework AVFoundation" "-framework AVKit" "-framework CoreMedia" "-framework VideoToolbox" -lc++)
+    target_link_libraries(3DLabsStudio "-liconv -framework IOKit" "-framework CoreFoundation" "-framework AVFoundation" "-framework AVKit" "-framework CoreMedia" "-framework VideoToolbox" -lc++)
 elseif (MSVC)
-    # Manifest is provided through BambuStudio.rc, don't generate your own.
+    # Manifest is provided through 3DLabsStudio.rc, don't generate your own.
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /MANIFEST:NO")
 else ()
     # Boost on Raspberry-Pi does not link to pthreads explicitely.
-    target_link_libraries(OrcaSlicer ${CMAKE_DL_LIBS} -lstdc++ Threads::Threads pangoft2-1.0)
+    target_link_libraries(3DLabsStudio ${CMAKE_DL_LIBS} -lstdc++ Threads::Threads pangoft2-1.0)
 endif ()
 
 # Add the Slic3r GUI library, libcurl, OpenGL and GLU libraries.
 if (SLIC3R_GUI)
-#    target_link_libraries(OrcaSlicer ws2_32 uxtheme setupapi libslic3r_gui ${wxWidgets_LIBRARIES})
-target_link_libraries(OrcaSlicer libslic3r_gui)
+#    target_link_libraries(3DLabsStudio ws2_32 uxtheme setupapi libslic3r_gui ${wxWidgets_LIBRARIES})
+target_link_libraries(3DLabsStudio libslic3r_gui)
     if (MSVC)
         # Generate debug symbols even in release mode.
-        target_link_options(OrcaSlicer PUBLIC "$<$<CONFIG:RELEASE>:/DEBUG>")
-        target_link_libraries(OrcaSlicer user32.lib Setupapi.lib)
+        target_link_options(3DLabsStudio PUBLIC "$<$<CONFIG:RELEASE>:/DEBUG>")
+        target_link_libraries(3DLabsStudio user32.lib Setupapi.lib)
     elseif (MINGW)
-        target_link_libraries(OrcaSlicer ws2_32 uxtheme setupapi)
+        target_link_libraries(3DLabsStudio ws2_32 uxtheme setupapi)
     elseif (APPLE)
-        target_link_libraries(OrcaSlicer "-framework OpenGL")
+        target_link_libraries(3DLabsStudio "-framework OpenGL")
     else ()
-        target_link_libraries(OrcaSlicer -ldl)
+        target_link_libraries(3DLabsStudio -ldl)
     endif ()
     #if (WIN32)
     #    find_library(PSAPI_LIB NAMES Psapi)
-    #    target_link_libraries(OrcaSlicer ${PSAPI_LIB})
+    #    target_link_libraries(3DLabsStudio ${PSAPI_LIB})
     #endif ()
 endif ()
 
@@ -166,15 +166,15 @@ if (WIN32)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -municode")
     endif()
 
-    add_executable(OrcaSlicer_app_gui WIN32 BambuStudio_app_msvc.cpp ${CMAKE_CURRENT_BINARY_DIR}/BambuStudio.rc)
+    add_executable(3DLabsStudio_app_gui WIN32 BambuStudio_app_msvc.cpp ${CMAKE_CURRENT_BINARY_DIR}/3DLabsStudio.rc)
     # Generate debug symbols even in release mode.
     if(MSVC)
-        target_link_options(OrcaSlicer_app_gui PUBLIC "$<$<CONFIG:RELEASE>:/DEBUG>")
+        target_link_options(3DLabsStudio_app_gui PUBLIC "$<$<CONFIG:RELEASE>:/DEBUG>")
     endif()
-    target_compile_definitions(BambuStudio_app_gui PRIVATE -DSLIC3R_WRAPPER_NOCONSOLE)
-    add_dependencies(BambuStudio_app_gui BambuStudio)
-    set_target_properties(BambuStudio_app_gui PROPERTIES OUTPUT_NAME "3dlabs-studio")
-    target_link_libraries(BambuStudio_app_gui PRIVATE boost_headeronly)
+    target_compile_definitions(3DLabsStudio_app_gui PRIVATE -DSLIC3R_WRAPPER_NOCONSOLE)
+    add_dependencies(3DLabsStudio_app_gui 3DLabsStudio)
+    set_target_properties(3DLabsStudio_app_gui PROPERTIES OUTPUT_NAME "3dlabs-studio")
+    target_link_libraries(3DLabsStudio_app_gui PRIVATE boost_headeronly)
 endif ()
 
 # Link the resources dir to where Slic3r GUI expects it
@@ -183,13 +183,13 @@ set(output_dlls_Debug "")
 set(output_dlls_RelWithDebInfo "")
 if (WIN32)
     # This has to be a separate target due to the windows command line lenght limits
-    add_custom_target(COPY_DLLS ALL DEPENDS OrcaSlicer)
+    add_custom_target(COPY_DLLS ALL DEPENDS 3DLabsStudio)
 
     if (CMAKE_CONFIGURATION_TYPES)
         foreach (CONF ${CMAKE_CONFIGURATION_TYPES})
             file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CONF}" WIN_CONF_OUTPUT_DIR)
             file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CONF}/resources" WIN_RESOURCES_SYMLINK)
-            add_custom_command(TARGET OrcaSlicer POST_BUILD
+            add_custom_command(TARGET 3DLabsStudio POST_BUILD
                 COMMAND if exist "${WIN_CONF_OUTPUT_DIR}" "("
                         if not exist "${WIN_RESOURCES_SYMLINK}" "("
                             mklink /J "${WIN_RESOURCES_SYMLINK}" "${SLIC3R_RESOURCES_DIR_WIN}"
@@ -209,7 +209,7 @@ if (WIN32)
         endif()
     else ()
         file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/resources" WIN_RESOURCES_SYMLINK)
-        add_custom_command(TARGET OrcaSlicer POST_BUILD
+        add_custom_command(TARGET 3DLabsStudio POST_BUILD
             COMMAND if not exist "${WIN_RESOURCES_SYMLINK}" "(" mklink /J "${WIN_RESOURCES_SYMLINK}" "${SLIC3R_RESOURCES_DIR_WIN}" ")"
             COMMENT "Symlinking the resources directory into the build tree"
             VERBATIM
@@ -220,13 +220,13 @@ if (WIN32)
 else ()
     if (APPLE AND NOT CMAKE_MACOSX_BUNDLE)
         # On OSX, the name of the binary matches the name of the Application.
-        add_custom_command(TARGET BambuStudio POST_BUILD
-            COMMAND ln -sf BambuStudio 3dlabs-studio
-            WORKING_DIRECTORY "$<TARGET_FILE_DIR:BambuStudio>"
+        add_custom_command(TARGET 3DLabsStudio POST_BUILD
+            COMMAND ln -sf 3DLabsStudio 3dlabs-studio
+            WORKING_DIRECTORY "$<TARGET_FILE_DIR:3DLabsStudio>"
             VERBATIM)
     else ()
-        add_custom_command(TARGET OrcaSlicer POST_BUILD
-            WORKING_DIRECTORY "$<TARGET_FILE_DIR:OrcaSlicer>"
+        add_custom_command(TARGET 3DLabsStudio POST_BUILD
+            WORKING_DIRECTORY "$<TARGET_FILE_DIR:3DLabsStudio>"
             VERBATIM)
     endif ()
     if (XCODE)
@@ -237,13 +237,13 @@ else ()
         set(BIN_RESOURCES_DIR "${CMAKE_CURRENT_BINARY_DIR}/../resources")
     endif ()
     if (CMAKE_MACOSX_BUNDLE)
-        set(BIN_RESOURCES_DIR "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/OrcaSlicer.app/Contents/Resources")
+        set(BIN_RESOURCES_DIR "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/3DLabsStudio.app/Contents/Resources")
         set(MACOSX_BUNDLE_ICON_FILE Icon.icns)
         set(MACOSX_BUNDLE_BUNDLE_NAME "Bambu Studio")
         set(MACOSX_BUNDLE_SHORT_VERSION_STRING ${SLIC3R_VERSION})
         set(MACOSX_BUNDLE_COPYRIGHT "Copyright(C) 2021-2023 Lunkuo All Rights Reserved")
     endif()
-    add_custom_command(TARGET OrcaSlicer POST_BUILD
+    add_custom_command(TARGET 3DLabsStudio POST_BUILD
         COMMAND ln -sfn "${SLIC3R_RESOURCES_DIR}" "${BIN_RESOURCES_DIR}"
         COMMENT "Symlinking the resources directory into the build tree"
         VERBATIM)
@@ -263,11 +263,11 @@ endif()
 message(STATUS "libslic3r-CMAKE_BUILD_TYPE: ${build_type}")
 message(STATUS "CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
 if (WIN32)
-    install(TARGETS OrcaSlicer RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}")
+    install(TARGETS 3DLabsStudio RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}")
     if (MSVC)
-        install(TARGETS OrcaSlicer_app_gui RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}")
+        install(TARGETS 3DLabsStudio_app_gui RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}")
     endif ()
     install(FILES ${output_dlls_${build_type}} DESTINATION "${CMAKE_INSTALL_PREFIX}")
 else ()
-    install(TARGETS OrcaSlicer RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS 3DLabsStudio RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}" BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif ()

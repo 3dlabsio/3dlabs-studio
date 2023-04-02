@@ -3207,7 +3207,7 @@ GCode::LayerResult GCode::process_layer(
                              get_instance_name(&instance_to_print.print_object, instance_to_print.instance_id) + "\n";
                     reset_e = true;
                 }
-                // ref to: https://github.com/SoftFever/OrcaSlicer/pull/205/commits/7f1fe0bd544077626080aa1a9a0576aa735da1a4#r1083470162
+                // ref to: https://github.com/SoftFever/3DLabsStudio/pull/205/commits/7f1fe0bd544077626080aa1a9a0576aa735da1a4#r1083470162
                 if (reset_e && !m_config.use_relative_e_distances)
                     gcode += m_writer.reset_e(true);
                 m_extrusion_quality_estimator.set_current_object(&instance_to_print.print_object);

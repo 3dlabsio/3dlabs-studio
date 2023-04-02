@@ -51,7 +51,7 @@ string &replace_str(string &str, const string &to_replaced, const string &newcha
 
 int ZUserLogin::web_sequence_id = 20000;
 
-ZUserLogin::ZUserLogin() : wxDialog((wxWindow *) (wxGetApp().mainframe), wxID_ANY, "OrcaSlicer")
+ZUserLogin::ZUserLogin() : wxDialog((wxWindow *) (wxGetApp().mainframe), wxID_ANY, "3DLabsStudio")
 {
     SetBackgroundColour(*wxWHITE);
     // Url

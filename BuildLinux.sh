@@ -192,7 +192,7 @@ then
         make -j$NCORES
         echo "done"
 
-        # rename wxscintilla # TODO: DeftDawg: Does OrcaSlicer need this?
+        # rename wxscintilla # TODO: DeftDawg: Does 3DLabsStudio need this?
         # echo "[5/9] Renaming wxscintilla library..."
         # pushd destdir/usr/local/lib
         #     if [[ -z "$FOUND_GTK3_DEV" ]]
@@ -234,7 +234,7 @@ then
         
         # make Slic3r
         echo "[8/9] Building Slic3r..."
-        make -j$NCORES OrcaSlicer # Slic3r
+        make -j$NCORES 3DLabsStudio # Slic3r
 
         # make .mo
         # make gettext_po_to_mo # FIXME: DeftDawg: complains about msgfmt not existing even in SuperSlicer, did this ever work?

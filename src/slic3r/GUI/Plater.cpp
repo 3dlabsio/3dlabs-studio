@@ -305,12 +305,16 @@ struct Sidebar::priv
     wxStaticLine* m_staticline1;
     StaticBox* m_panel_filament_title;
     wxStaticText* m_staticText_filament_settings;
+    ScalableButton *  m_bpButton_add_filament;
+    ScalableButton *  m_bpButton_del_filament;
+    ScalableButton *  m_bpButton_ams_filament;
     ScalableButton *  m_bpButton_set_filament;
     wxPanel* m_panel_filament_content;
     wxScrolledWindow* m_scrolledWindow_filament_content;
     wxStaticLine* m_staticline2;
     wxPanel* m_panel_project_title;
     ScalableButton* m_filament_icon = nullptr;
+    Button * m_flushing_volume_btn = nullptr;
 
     // BBS printer config
     StaticBox* m_panel_printer_title = nullptr;
@@ -633,7 +637,7 @@ Sidebar::Sidebar(Plater *parent)
             SetCursor(wxCURSOR_ARROW);
         });
         bed_type_title->Bind(wxEVT_LEFT_UP, [bed_type_title, this](wxMouseEvent &e) {
-            wxLaunchDefaultBrowser("https://docs.3dlabs.io/en/x1/manual/compatibility-and-parameter-settings-of-filaments");
+            wxLaunchDefaultBrowser("https://wiki.bambulab.com/en/x1/manual/compatibility-and-parameter-settings-of-filaments");
         });
 
         AppConfig *app_config = wxGetApp().app_config;
@@ -673,7 +677,9 @@ Sidebar::Sidebar(Plater *parent)
     p->m_panel_filament_title->SetBackgroundColor(title_bg);
     p->m_panel_filament_title->SetBackgroundColor2(0xF1F1F1);
     p->m_panel_filament_title->Bind(wxEVT_LEFT_UP, [this](wxMouseEvent &e) {
-
+        if (e.GetPosition().x > (p->m_flushing_volume_btn->IsShown()
+                ? p->m_flushing_volume_btn->GetPosition().x : p->m_bpButton_add_filament->GetPosition().x))
+            return;
         if (p->m_panel_filament_content->GetMaxHeight() == 0)
             p->m_panel_filament_content->SetMaxSize({-1, -1});
         else
@@ -684,7 +690,7 @@ Sidebar::Sidebar(Plater *parent)
     wxBoxSizer* bSizer39;
     bSizer39 = new wxBoxSizer( wxHORIZONTAL );
     p->m_filament_icon = new ScalableButton(p->m_panel_filament_title, wxID_ANY, "filament");
-    p->m_staticText_filament_settings = new Label(p->m_panel_filament_title, _L("Extruder"), LB_PROPAGATE_MOUSE_EVENT);
+    p->m_staticText_filament_settings = new Label(p->m_panel_filament_title, _L("Filament"), LB_PROPAGATE_MOUSE_EVENT);
     bSizer39->Add(p->m_filament_icon, 0, wxALIGN_CENTER | wxLEFT | wxRIGHT, FromDIP(10));
     bSizer39->Add( p->m_staticText_filament_settings, 0, wxALIGN_CENTER );
     bSizer39->Add(FromDIP(10), 0, 0, 0, 0);
@@ -705,7 +711,119 @@ Sidebar::Sidebar(Plater *parent)
     // BBS
     // add wiping dialog
     //wiping_dialog_button->SetFont(wxGetApp().normal_font());
-    
+    p->m_flushing_volume_btn = new Button(p->m_panel_filament_title, _L("Flushing volumes"));
+    p->m_flushing_volume_btn->SetFont(Label::Body_10);
+    p->m_flushing_volume_btn->SetPaddingSize(wxSize(FromDIP(8),FromDIP(3)));
+    p->m_flushing_volume_btn->SetCornerRadius(FromDIP(8));
+
+    StateColor flush_bg_col(std::pair<wxColour, int>(wxColour(219, 253, 231), StateColor::Pressed),
+                            std::pair<wxColour, int>(wxColour(238, 238, 238), StateColor::Hovered),
+                            std::pair<wxColour, int>(wxColour(238, 238, 238), StateColor::Normal));
+
+    StateColor flush_fg_col(std::pair<wxColour, int>(wxColour(107, 107, 106), StateColor::Pressed),
+                            std::pair<wxColour, int>(wxColour(107, 107, 106), StateColor::Hovered),
+                            std::pair<wxColour, int>(wxColour(107, 107, 106), StateColor::Normal));
+
+    StateColor flush_bd_col(std::pair<wxColour, int>(wxColour(0, 150, 136), StateColor::Pressed),
+                            std::pair<wxColour, int>(wxColour(0, 150, 136), StateColor::Hovered),
+                            std::pair<wxColour, int>(wxColour(172, 172, 172), StateColor::Normal));
+
+    p->m_flushing_volume_btn->SetBackgroundColor(flush_bg_col);
+    p->m_flushing_volume_btn->SetBorderColor(flush_bd_col);
+    p->m_flushing_volume_btn->SetTextColor(flush_fg_col);
+    p->m_flushing_volume_btn->SetFocus();
+    p->m_flushing_volume_btn->SetId(wxID_RESET);
+    p->m_flushing_volume_btn->Rescale();
+
+    p->m_flushing_volume_btn->Bind(wxEVT_BUTTON, ([parent](wxCommandEvent &e)
+        {
+            auto& project_config = wxGetApp().preset_bundle->project_config;
+            auto& printer_config = wxGetApp().preset_bundle->printers.get_edited_preset().config;
+            const std::vector<double>& init_matrix = (project_config.option<ConfigOptionFloats>("flush_volumes_matrix"))->values;
+            const std::vector<double>& init_extruders = (project_config.option<ConfigOptionFloats>("flush_volumes_vector"))->values;
+            ConfigOption* extra_flush_volume_opt = printer_config.option("nozzle_volume");
+            int extra_flush_volume = extra_flush_volume_opt ? (int)extra_flush_volume_opt->getFloat() : 0;
+            ConfigOptionFloat* flush_multi_opt = project_config.option<ConfigOptionFloat>("flush_multiplier");
+            float flush_multiplier = flush_multi_opt ? flush_multi_opt->getFloat() : 1.f;
+
+            const std::vector<std::string> extruder_colours = wxGetApp().plater()->get_extruder_colors_from_plater_config();
+
+            WipingDialog dlg(parent, cast<float>(init_matrix), cast<float>(init_extruders), extruder_colours, extra_flush_volume, flush_multiplier);
+
+            if (dlg.ShowModal() == wxID_OK) {
+                std::vector<float> matrix = dlg.get_matrix();
+                std::vector<float> extruders = dlg.get_extruders();
+                (project_config.option<ConfigOptionFloats>("flush_volumes_matrix"))->values = std::vector<double>(matrix.begin(), matrix.end());
+                (project_config.option<ConfigOptionFloats>("flush_volumes_vector"))->values = std::vector<double>(extruders.begin(), extruders.end());
+                (project_config.option<ConfigOptionFloat>("flush_multiplier"))->set(new ConfigOptionFloat(dlg.get_flush_multiplier()));
+
+                wxGetApp().app_config->set("flush_multiplier", std::to_string(dlg.get_flush_multiplier()));
+                wxGetApp().preset_bundle->export_selections(*wxGetApp().app_config);
+
+                wxGetApp().plater()->update_project_dirty_from_presets();
+                wxPostEvent(parent, SimpleEvent(EVT_SCHEDULE_BACKGROUND_PROCESS, parent));
+            }
+        }));
+    bSizer39->Add(p->m_flushing_volume_btn, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, FromDIP(5));
+    bSizer39->Hide(p->m_flushing_volume_btn);
+    bSizer39->Add(FromDIP(10), 0, 0, 0, 0 );
+
+    ScalableButton* add_btn = new ScalableButton(p->m_panel_filament_title, wxID_ANY, "add_filament");
+    add_btn->SetToolTip(_L("Add one filament"));
+    add_btn->Bind(wxEVT_BUTTON, [this, scrolled_sizer](wxCommandEvent& e){
+        // BBS: limit filament choices to 16
+        if (p->combos_filament.size() >= 16)
+            return;
+
+        int filament_count = p->combos_filament.size() + 1;
+        wxColour new_col = Plater::get_next_color_for_filament();
+        std::string new_color = new_col.GetAsString(wxC2S_HTML_SYNTAX).ToStdString();
+        wxGetApp().preset_bundle->set_num_filaments(filament_count, new_color);
+        wxGetApp().plater()->on_filaments_change(filament_count);
+        wxGetApp().get_tab(Preset::TYPE_PRINT)->update();
+        wxGetApp().preset_bundle->export_selections(*wxGetApp().app_config);
+    });
+    p->m_bpButton_add_filament = add_btn;
+
+    bSizer39->Add(add_btn, 0, wxALIGN_CENTER|wxALL, FromDIP(5));
+    bSizer39->Add(FromDIP(10), 0, 0, 0, 0 );
+
+    ScalableButton* del_btn = new ScalableButton(p->m_panel_filament_title, wxID_ANY, "delete_filament");
+    del_btn->SetToolTip(_L("Remove last filament"));
+    del_btn->Bind(wxEVT_BUTTON, [this, scrolled_sizer](wxCommandEvent &e) {
+        if (p->combos_filament.size() <= 1)
+            return;
+
+        size_t filament_count = p->combos_filament.size() - 1;
+        if (wxGetApp().preset_bundle->is_the_only_edited_filament(filament_count) || (filament_count == 1)) {
+            wxGetApp().get_tab(Preset::TYPE_FILAMENT)->select_preset(wxGetApp().preset_bundle->filament_presets[0], false, "", true);
+        }
+
+        if (p->editing_filament >= filament_count) {
+            p->editing_filament = -1;
+        }
+
+        wxGetApp().preset_bundle->set_num_filaments(filament_count);
+        wxGetApp().plater()->on_filaments_change(filament_count);
+        wxGetApp().get_tab(Preset::TYPE_PRINT)->update();
+        wxGetApp().preset_bundle->export_selections(*wxGetApp().app_config);
+    });
+    p->m_bpButton_del_filament = del_btn;
+
+    bSizer39->Add(del_btn, 0, wxALIGN_CENTER_VERTICAL, FromDIP(5));
+    bSizer39->Add(FromDIP(20), 0, 0, 0, 0);
+
+    ams_btn = new ScalableButton(p->m_panel_filament_title, wxID_ANY, "ams_fila_sync", wxEmptyString, wxDefaultSize, wxDefaultPosition,
+                                                 wxBU_EXACTFIT | wxNO_BORDER, false, 18);
+    ams_btn->SetToolTip(_L("Synchronize filament list from AMS"));
+    ams_btn->Bind(wxEVT_BUTTON, [this, scrolled_sizer](wxCommandEvent &e) {
+        sync_ams_list();
+    });
+    p->m_bpButton_ams_filament = ams_btn;
+
+    bSizer39->Add(ams_btn, 0, wxALIGN_CENTER|wxALL, FromDIP(5));
+    bSizer39->Add(FromDIP(10), 0, 0, 0, 0 );
+
     ScalableButton* set_btn = new ScalableButton(p->m_panel_filament_title, wxID_ANY, "settings");
     set_btn->SetToolTip(_L("Set filaments to use"));
     set_btn->Bind(wxEVT_BUTTON, [this](wxCommandEvent &e) {
@@ -907,6 +1025,7 @@ void Sidebar::update_all_preset_comboboxes()
         //only show connection button for not-BBL printer
         connection_btn->Hide();
         //only show sync-ams button for BBL printer
+        ams_btn->Show();
         //update print button default value for bbl or third-party printer
         p_mainframe->set_print_button_to_default(MainFrame::PrintSelectType::ePrintPlate);
         m_bed_type_list->Enable();
@@ -914,6 +1033,7 @@ void Sidebar::update_all_preset_comboboxes()
 
     } else {
         connection_btn->Show();
+        ams_btn->Hide();
         p_mainframe->set_print_button_to_default(MainFrame::PrintSelectType::eSendGcode);
         auto cfg = preset_bundle.printers.get_edited_preset().config;
         wxString url = cfg.opt_string("print_host_webui").empty() ? cfg.opt_string("print_host") : cfg.opt_string("print_host_webui");
@@ -956,22 +1076,24 @@ void Sidebar::update_presets(Preset::Type preset_type)
     switch (preset_type) {
     case Preset::TYPE_FILAMENT:
     {
+        // BBS
+#if 0
         const size_t extruder_cnt = print_tech != ptFFF ? 1 :
                                 dynamic_cast<ConfigOptionFloats*>(preset_bundle.printers.get_edited_preset().config.option("nozzle_diameter"))->values.size();
         const size_t filament_cnt = p->combos_filament.size() > extruder_cnt ? extruder_cnt : p->combos_filament.size();
+#else
+        const size_t filament_cnt = p->combos_filament.size();
+#endif
         const std::string &name = preset_bundle.filaments.get_selected_preset_name();
         if (p->editing_filament >= 0) {
             preset_bundle.set_filament_preset(p->editing_filament, name);
-        } else {
-            // synchronize the filament presets.
-            for(int idx=0;idx<filament_cnt;++idx)
-                preset_bundle.set_filament_preset(idx, name);
+        } else if (filament_cnt == 1) {
+            // Single filament printer, synchronize the filament presets.
+            preset_bundle.set_filament_preset(0, name);
         }
 
-        for (size_t i = 0; i < filament_cnt; i++){
+        for (size_t i = 0; i < filament_cnt; i++)
             p->combos_filament[i]->update();
-        }
-            
 
         dynamic_filament_list.update();
         break;
@@ -1068,7 +1190,11 @@ void Sidebar::msw_rescale()
     p->m_printer_icon->msw_rescale();
     p->m_printer_setting->msw_rescale();
     p->m_filament_icon->msw_rescale();
+    p->m_bpButton_add_filament->msw_rescale();
+    p->m_bpButton_del_filament->msw_rescale();
+    p->m_bpButton_ams_filament->msw_rescale();
     p->m_bpButton_set_filament->msw_rescale();
+    p->m_flushing_volume_btn->Rescale();
     //BBS
     m_bed_type_list->Rescale();
     m_bed_type_list->SetMinSize({-1, 3 * wxGetApp().em_unit()});
@@ -1132,13 +1258,12 @@ void Sidebar::sys_color_changed()
     p->m_printer_icon->msw_rescale();
     p->m_printer_setting->msw_rescale();
     p->m_filament_icon->msw_rescale();
-    /*
     p->m_bpButton_add_filament->msw_rescale();
     p->m_bpButton_del_filament->msw_rescale();
     p->m_bpButton_ams_filament->msw_rescale();
     p->m_bpButton_set_filament->msw_rescale();
     p->m_flushing_volume_btn->Rescale();
-    */
+
     // BBS
 #if 0
     if (p->mode_sizer)
@@ -1230,12 +1355,15 @@ void Sidebar::on_filaments_change(size_t num_filaments)
     remove_unused_filament_combos(num_filaments);
 
     auto sizer = p->m_panel_filament_title->GetSizer();
+   
+    /*
     if (p->m_flushing_volume_btn != nullptr && sizer != nullptr) {
         if (num_filaments > 1)
             sizer->Show(p->m_flushing_volume_btn);
         else
             sizer->Hide(p->m_flushing_volume_btn);
     }
+    */
 
     Layout();
     p->m_panel_filament_title->Refresh();
@@ -2668,8 +2796,7 @@ wxColour Plater::get_next_color_for_filament()
     static int curr_color_filamenet = 0;
     // refs to https://www.ebaomonthly.com/window/photo/lesson/colorList.htm
     wxColour colors[FILAMENT_SYSTEM_COLORS_NUM] = {
-        wxColour(227, 140, 31),
-        //*wxYELLOW,
+        *wxYELLOW,
         * wxRED,
         *wxBLUE,
         *wxCYAN,
@@ -2984,12 +3111,11 @@ std::vector<size_t> Plater::priv::load_files(const std::vector<fs::path>& input_
                         // do not reset the model config
                         load_config = false;
                         if(load_type != LoadType::LoadGeometry)
-                            show_info(q, _L("The 3mf is not from 3DLabs Studio, loading geometry data only."), _L("Load 3mf"));
+                            show_info(q, _L("The 3mf is not from Bambu Lab, load geometry data only."), _L("Load 3mf"));
                     }
                     else if (load_config && (file_version.maj() != app_version.maj())) {
                         // version mismatch, only load geometries
-
-			            load_config = false;
+                        load_config = false;
                         if (!load_model) {
                             // only load config case, return directly
                             show_info(q, _L("The Config can not be loaded."), _L("Load 3mf"));
@@ -3003,9 +3129,9 @@ std::vector<size_t> Plater::priv::load_files(const std::vector<fs::path>& input_
                         q->select_plate(0);
                         if (load_type != LoadType::LoadGeometry) {
                             if (en_3mf_file_type == En3mfType::From_BBS)
-                                show_info(q, _L("The 3mf is generated by an old version of 3DLabs Studio, loading geometry data only."), _L("Load 3mf"));
+                                show_info(q, _L("The 3mf is generated by old Orca Slicer, load geometry data only."), _L("Load 3mf"));
                             else
-                                show_info(q, _L("The 3mf is not from 3DLabs Studio, loading geometry data only."), _L("Load 3mf"));
+                                show_info(q, _L("The 3mf is not from Bambu Lab, load geometry data only."), _L("Load 3mf"));
                         }
                         for (ModelObject *model_object : model.objects) {
                             model_object->config.reset();
@@ -6573,8 +6699,6 @@ void Plater::get_print_job_data(PrintPrepareData* data)
         data->plate_idx = p->m_print_job_data.plate_idx;
         data->_3mf_path = p->m_print_job_data._3mf_path;
         data->_3mf_config_path = p->m_print_job_data._3mf_config_path;
-        std::string temp_file = Slic3r::resources_dir() + "/check_access_code.txt";
-        data->_temp_path = encode_path(temp_file.c_str());
     }
 }
 
@@ -7350,7 +7474,7 @@ void Plater::priv::bring_instance_forward() const
         BOOST_LOG_TRIVIAL(debug) << "Couldnt bring instance forward - mainframe is null";
         return;
     }
-    BOOST_LOG_TRIVIAL(debug) << "3DLabs Studio window going forward";
+    BOOST_LOG_TRIVIAL(debug) << "Orca Slicer window going forward";
     //this code maximize app window on Fedora
     {
         main_frame->Iconize(false);
@@ -7935,7 +8059,7 @@ void Plater::calib_pa(const Calib_Params& params) {
         auto printer_config = &wxGetApp().preset_bundle->printers.get_edited_preset().config;
         auto filament_config = &wxGetApp().preset_bundle->filaments.get_edited_preset().config;
         filament_config->set_key_value("slow_down_layer_time", new ConfigOptionFloats{ 1.0f });
-        print_config->set_key_value("default_jerk", new ConfigOptionFloat(9.0f));
+        print_config->set_key_value("default_jerk", new ConfigOptionFloat(1.0f));
         print_config->set_key_value("outer_wall_jerk", new ConfigOptionFloat(1.0f));
         print_config->set_key_value("inner_wall_jerk", new ConfigOptionFloat(1.0f));
         if(print_config->option<ConfigOptionEnum<PerimeterGeneratorType>>("wall_generator")->value == PerimeterGeneratorType::Arachne)
@@ -8062,174 +8186,6 @@ void Plater::calib_flowrate(int pass) {
     print_config->set_key_value("reduce_crossing_wall", new ConfigOptionBool(true));
     //filament_config->set_key_value("filament_max_volumetric_speed", new ConfigOptionFloats{ 9. });
 
-    wxGetApp().get_tab(Preset::TYPE_PRINT)->update_dirty();
-    wxGetApp().get_tab(Preset::TYPE_FILAMENT)->update_dirty();
-    wxGetApp().get_tab(Preset::TYPE_PRINTER)->update_dirty();
-    wxGetApp().get_tab(Preset::TYPE_PRINT)->reload_config();
-    wxGetApp().get_tab(Preset::TYPE_FILAMENT)->reload_config();
-    wxGetApp().get_tab(Preset::TYPE_PRINTER)->reload_config();
-
-}
-
-void Plater::calib_temp(const Calib_Params& params) {
-    const auto calib_temp_name = wxString::Format(L"Nozzle temperature test");
-    new_project(false, false, calib_temp_name);
-    wxGetApp().mainframe->select_tab(size_t(MainFrame::tp3DEditor));
-    if (params.mode != CalibMode::Calib_Temp_Tower)
-        return;
-    
-    add_model(false, Slic3r::resources_dir() + "/calib/temperature_tower/temperature_tower.stl");
-    auto filament_config = &wxGetApp().preset_bundle->filaments.get_edited_preset().config;
-    auto start_temp = lround(params.start);
-    filament_config->set_key_value("nozzle_temperature_initial_layer", new ConfigOptionInts(1,(int)start_temp));
-    filament_config->set_key_value("nozzle_temperature", new ConfigOptionInts(1,(int)start_temp));
-    model().objects[0]->config.set_key_value("brim_type", new ConfigOptionEnum<BrimType>(btOuterOnly));
-    model().objects[0]->config.set_key_value("brim_width", new ConfigOptionFloat(5.0));
-    model().objects[0]->config.set_key_value("brim_object_gap", new ConfigOptionFloat(0.0));
-
-    changed_objects({ 0 });
-    wxGetApp().get_tab(Preset::TYPE_PRINT)->update_dirty();
-    wxGetApp().get_tab(Preset::TYPE_FILAMENT)->update_dirty();
-    wxGetApp().get_tab(Preset::TYPE_PRINT)->reload_config();
-    wxGetApp().get_tab(Preset::TYPE_FILAMENT)->reload_config();
-
-    // cut upper
-    auto obj_bb = model().objects[0]->bounding_box();
-    auto block_count = lround((350 - params.end) / 5 + 1);
-    if(block_count > 0){
-        // add EPSILON offset to avoid cutting at the exact location where the flat surface is
-        auto new_height = block_count * 10.0 + EPSILON;
-        if (new_height < obj_bb.size().z()) {
-            std::array<Vec3d, 4> plane_pts;
-            plane_pts[0] = Vec3d(obj_bb.min(0), obj_bb.min(1), new_height);
-            plane_pts[1] = Vec3d(obj_bb.min(0), obj_bb.max(1), new_height);
-            plane_pts[2] = Vec3d(obj_bb.max(0), obj_bb.max(1), new_height);
-            plane_pts[3] = Vec3d(obj_bb.max(0), obj_bb.min(1), new_height);
-            cut(0, 0, plane_pts, ModelObjectCutAttribute::KeepLower);
-        }
-    }
-    
-    // cut bottom
-    obj_bb = model().objects[0]->bounding_box();
-    block_count = lround((350 - params.start) / 5);
-    if(block_count > 0){
-        auto new_height = block_count * 10.0 + EPSILON;
-        if (new_height < obj_bb.size().z()) {
-            std::array<Vec3d, 4> plane_pts;
-            plane_pts[0] = Vec3d(obj_bb.min(0), obj_bb.min(1), new_height);
-            plane_pts[1] = Vec3d(obj_bb.min(0), obj_bb.max(1), new_height);
-            plane_pts[2] = Vec3d(obj_bb.max(0), obj_bb.max(1), new_height);
-            plane_pts[3] = Vec3d(obj_bb.max(0), obj_bb.min(1), new_height);
-            cut(0, 0, plane_pts, ModelObjectCutAttribute::KeepUpper);
-        }
-    }
-    
-    p->background_process.fff_print()->set_calib_params(params);
-}
-
-void Plater::calib_max_vol_speed(const Calib_Params& params)
-{
-    const auto calib_vol_speed_name = wxString::Format(L"Max volumetric speed test");
-    new_project(false, false, calib_vol_speed_name);
-    wxGetApp().mainframe->select_tab(size_t(MainFrame::tp3DEditor));
-    if (params.mode != CalibMode::Calib_Vol_speed_Tower)
-        return;
-
-    add_model(false, Slic3r::resources_dir() + "/calib/volumetric_speed/SpeedTestStructure.step");
-
-    auto print_config = &wxGetApp().preset_bundle->prints.get_edited_preset().config;
-    auto filament_config = &wxGetApp().preset_bundle->filaments.get_edited_preset().config;
-    auto printer_config = &wxGetApp().preset_bundle->printers.get_edited_preset().config;
-    auto obj = model().objects[0];
-
-    auto bed_shape = printer_config->option<ConfigOptionPoints>("printable_area")->values;
-    BoundingBoxf bed_ext = get_extents(bed_shape);
-    auto scale_obj = (bed_ext.size().x() - 10) / obj->bounding_box().size().x();
-    if (scale_obj < 1.0)
-        obj->scale(scale_obj, 1, 1);
-
-    const ConfigOptionFloats* nozzle_diameter_config = printer_config->option<ConfigOptionFloats>("nozzle_diameter");
-    assert(nozzle_diameter_config->values.size() > 0);
-    double nozzle_diameter = nozzle_diameter_config->values[0];
-    double line_width = nozzle_diameter * 1.75;
-    double layer_height = nozzle_diameter * 0.8;
-
-    auto max_lh = printer_config->option<ConfigOptionFloats>("max_layer_height");
-    if (max_lh->values[0] < layer_height)
-        max_lh->values[0] = { layer_height };
-
-    filament_config->set_key_value("filament_max_volumetric_speed", new ConfigOptionFloats { 200 });
-    filament_config->set_key_value("slow_down_layer_time", new ConfigOptionFloats{0.0});
-    
-    print_config->set_key_value("enable_overhang_speed", new ConfigOptionBool { false });
-    print_config->set_key_value("timelapse_type", new ConfigOptionEnum<TimelapseType>(tlTraditional));
-    print_config->set_key_value("wall_loops", new ConfigOptionInt(1));
-    print_config->set_key_value("top_shell_layers", new ConfigOptionInt(0));
-    print_config->set_key_value("bottom_shell_layers", new ConfigOptionInt(1));
-    print_config->set_key_value("sparse_infill_density", new ConfigOptionPercent(0));
-    print_config->set_key_value("spiral_mode", new ConfigOptionBool(true));
-    print_config->set_key_value("outer_wall_line_width", new ConfigOptionFloat(line_width));
-    print_config->set_key_value("initial_layer_print_height", new ConfigOptionFloat(layer_height));
-    print_config->set_key_value("layer_height", new ConfigOptionFloat(layer_height));
-    obj->config.set_key_value("brim_type", new ConfigOptionEnum<BrimType>(btOuterAndInner));
-    obj->config.set_key_value("brim_width", new ConfigOptionFloat(3.0));
-    obj->config.set_key_value("brim_object_gap", new ConfigOptionFloat(0.0));
-
-    changed_objects({ 0 });
-    wxGetApp().get_tab(Preset::TYPE_PRINT)->update_dirty();
-    wxGetApp().get_tab(Preset::TYPE_FILAMENT)->update_dirty();
-    wxGetApp().get_tab(Preset::TYPE_PRINTER)->update_dirty();
-    wxGetApp().get_tab(Preset::TYPE_PRINT)->reload_config();
-    wxGetApp().get_tab(Preset::TYPE_FILAMENT)->reload_config();
-    wxGetApp().get_tab(Preset::TYPE_PRINTER)->reload_config();
-
-    //  cut upper
-    auto obj_bb = obj->bounding_box();
-    auto height = (params.end - params.start + 1) / params.step;
-    if (height < obj_bb.size().z()) {
-        std::array<Vec3d, 4> plane_pts;
-        plane_pts[0] = Vec3d(obj_bb.min(0), obj_bb.min(1), height);
-        plane_pts[1] = Vec3d(obj_bb.min(0), obj_bb.max(1), height);
-        plane_pts[2] = Vec3d(obj_bb.max(0), obj_bb.max(1), height);
-        plane_pts[3] = Vec3d(obj_bb.max(0), obj_bb.min(1), height);
-        cut(0, 0, plane_pts, ModelObjectCutAttribute::KeepLower);
-    }
-
-    auto new_params = params;
-    auto mm3_per_mm = Flow(line_width, layer_height, nozzle_diameter).mm3_per_mm() *
-                      filament_config->option<ConfigOptionFloats>("filament_flow_ratio")->get_at(0);
-    new_params.end = params.end / mm3_per_mm;
-    new_params.start = params.start / mm3_per_mm;
-    new_params.step = params.step / mm3_per_mm;
-
-
-    p->background_process.fff_print()->set_calib_params(new_params);
-}
-void Plater::calib_VFA(const Calib_Params& params)
-{
-    const auto calib_vfa_name = wxString::Format(L"VFA test");
-    new_project(false, false, calib_vfa_name);
-    wxGetApp().mainframe->select_tab(size_t(MainFrame::tp3DEditor));
-    if (params.mode != CalibMode::Calib_VFA_Tower)
-        return;
-
-    add_model(false, Slic3r::resources_dir() + "/calib/vfa/VFA.stl");
-    auto print_config = &wxGetApp().preset_bundle->prints.get_edited_preset().config;
-    auto filament_config = &wxGetApp().preset_bundle->filaments.get_edited_preset().config;
-    filament_config->set_key_value("slow_down_layer_time", new ConfigOptionFloats { 0.0 });
-    filament_config->set_key_value("filament_max_volumetric_speed", new ConfigOptionFloats { 200 });
-    print_config->set_key_value("enable_overhang_speed", new ConfigOptionBool { false });
-    print_config->set_key_value("timelapse_type", new ConfigOptionEnum<TimelapseType>(tlTraditional));
-    print_config->set_key_value("wall_loops", new ConfigOptionInt(1));
-    print_config->set_key_value("top_shell_layers", new ConfigOptionInt(0));
-    print_config->set_key_value("bottom_shell_layers", new ConfigOptionInt(1));
-    print_config->set_key_value("sparse_infill_density", new ConfigOptionPercent(0));
-    print_config->set_key_value("spiral_mode", new ConfigOptionBool(true));
-    model().objects[0]->config.set_key_value("brim_type", new ConfigOptionEnum<BrimType>(btOuterOnly));
-    model().objects[0]->config.set_key_value("brim_width", new ConfigOptionFloat(3.0));
-    model().objects[0]->config.set_key_value("brim_object_gap", new ConfigOptionFloat(0.0));
-
-    changed_objects({ 0 });
     wxGetApp().get_tab(Preset::TYPE_PRINT)->update_dirty();
     wxGetApp().get_tab(Preset::TYPE_FILAMENT)->update_dirty();
     wxGetApp().get_tab(Preset::TYPE_PRINTER)->update_dirty();
@@ -8637,7 +8593,7 @@ ProjectDropDialog::ProjectDropDialog(const std::string &filename)
     SetBackgroundColour(m_def_color);
 
     // icon
-    std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
+    std::string icon_path = (boost::format("%1%/images/BambuStudioTitle.ico") % resources_dir()).str();
     SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
 
     wxBoxSizer *m_sizer_main = new wxBoxSizer(wxVERTICAL);
@@ -8725,11 +8681,11 @@ ProjectDropDialog::ProjectDropDialog(const std::string &filename)
     wxBoxSizer *m_sizer_right  = new wxBoxSizer(wxHORIZONTAL);
 
     m_confirm = new Button(this, _L("OK"));
-    StateColor btn_bg_green(std::pair<wxColour, int>(wxColour(27, 136, 68), StateColor::Pressed), std::pair<wxColour, int>(wxColour(91, 160, 216), StateColor::Hovered),
-                            std::pair<wxColour, int>(wxColour(72, 94, 112), StateColor::Normal));
+    StateColor btn_bg_green(std::pair<wxColour, int>(wxColour(0, 137, 123), StateColor::Pressed), std::pair<wxColour, int>(wxColour(38, 166, 154), StateColor::Hovered),
+                            std::pair<wxColour, int>(wxColour(0, 150, 136), StateColor::Normal));
 
     m_confirm->SetBackgroundColor(btn_bg_green);
-    m_confirm->SetBorderColor(wxColour(72, 94, 112));
+    m_confirm->SetBorderColor(wxColour(0, 150, 136));
     m_confirm->SetTextColor(wxColour("#FFFFFE"));
     m_confirm->SetSize(PROJECT_DROP_DIALOG_BUTTON_SIZE);
     m_confirm->SetMinSize(PROJECT_DROP_DIALOG_BUTTON_SIZE);
@@ -9263,7 +9219,7 @@ int GUI::Plater::close_with_confirm(std::function<bool(bool)> second_check)
         return wxID_NO;
     }
 
-    auto result = MessageDialog(static_cast<wxWindow*>(this), _L("The current project has unsaved changes, save before exiting?"),
+    auto result = MessageDialog(static_cast<wxWindow*>(this), _L("The current project has unsaved changes, save it before continue?"),
         wxString(SLIC3R_APP_FULL_NAME) + " - " + _L("Save"), wxYES_NO | wxCANCEL | wxYES_DEFAULT | wxCENTRE).ShowModal();
     if (result == wxID_CANCEL)
         return result;

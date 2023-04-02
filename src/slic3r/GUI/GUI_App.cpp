@@ -290,33 +290,24 @@ public:
         memDc.DrawLabel(m_constant_text.version, version_rect, wxALIGN_LEFT | wxALIGN_BOTTOM);
 
 // #if BBL_INTERNAL_TESTING
-        /* 
-	auto sf_version = wxString::Format("SoftFever %s",std::string(SoftFever_VERSION)).ToStdString();
-        wxSize text_rect = memDc.GetTextExtent(sf_version);
-        int start_x = (title_rect.GetLeft() + version_rect.GetRight()) / 2 - text_rect.GetWidth();
         auto bs_version = wxString::Format("Based on BambuStudio %s",std::string(SLIC3R_VERSION)).ToStdString();
         memDc.SetFont(Label::Body_12);
         wxSize text_rect = memDc.GetTextExtent(bs_version);
         int start_x = (title_rect.GetLeft() + version_rect.GetRight()) / 2 - text_rect.GetWidth()/2;
         int start_y = version_rect.GetBottom() + 10;
         wxRect internal_sign_rect(wxPoint(start_x, start_y), wxSize(text_rect));
-        memDc.SetFont(m_constant_text.version_font);
-        memDc.DrawLabel(sf_version, internal_sign_rect, wxALIGN_CENTER);
-	*/
-	// #endif
         memDc.DrawLabel(bs_version, internal_sign_rect, wxALIGN_RIGHT);
 // #endif
 
         // load bitmap for logo
         BitmapCache bmp_cache;
-        int logo_margin = FromDIP(32 * m_scale);
-        int logo_size = FromDIP(200 * m_scale);
-        int logo_width = FromDIP(250 * m_scale);
-        wxBitmap logo_bmp = *bmp_cache.load_svg("3dlabs/splash_logo", logo_size, logo_size);
+        int logo_margin = FromDIP(72 * m_scale);
+        int logo_size = FromDIP(122 * m_scale);
+        int logo_width = FromDIP(94 * m_scale);
+        wxBitmap logo_bmp = *bmp_cache.load_svg("splash_logo", logo_size, logo_size);
         int logo_y = top_margin + title_rect.GetHeight() + logo_margin;
-        //memDc.DrawBitmap(logo_bmp, (width - logo_width) / 2, logo_y, true);
-        memDc.DrawBitmap(logo_bmp, 10, logo_y, true);
-        
+        memDc.DrawBitmap(logo_bmp, (width - logo_width) / 2, logo_y, true);
+
         // calculate position for the dynamic text
         int text_margin = FromDIP(80 * m_scale);
         m_action_line_y_position = logo_y + logo_size + text_margin;
@@ -577,7 +568,6 @@ private:
 // #if BBL_INTERNAL_TESTING
             // version = _L("Internal Version") + " " + std::string(SLIC3R_VERSION);
 // #else
-            version = _L("3DLabs Studio") + " " + std::string(SLIC3R_VERSION);
             // version = _L("") + " " + std::string(SoftFever_VERSION);
 // #endif
 
@@ -1284,22 +1274,22 @@ std::string GUI_App::get_http_url(std::string country_code)
 {
     std::string url;
     if (country_code == "US") {
-        url = "https://api.3dlabs.io/";
+        url = "https://api.bambulab.com/";
     }
     else if (country_code == "CN") {
-        url = "https://api.3dlabs.io/";
+        url = "https://api.bambulab.cn/";
     }
     else if (country_code == "ENV_CN_DEV") {
-        url = "https://api.3dlabs.io/";
+        url = "https://api-dev.bambu-lab.com/";
     }
     else if (country_code == "ENV_CN_QA") {
-        url = "https://api.3dlabs.io/";
+        url = "https://api-qa.bambu-lab.com/";
     }
     else if (country_code == "ENV_CN_PRE") {
-        url = "https://api.3dlabs.io/";
+        url = "https://api-pre.bambu-lab.com/";
     }
     else {
-        url = "https://api.3dlabs.io/";
+        url = "https://api.bambulab.com/";
     }
 
     url += "v1/iot-service/api/slicer/resource";
@@ -2282,7 +2272,6 @@ bool GUI_App::on_init_inner()
                /* wxString tips = wxString::Format(_L("Click to download new version in default browser: %s"), version_info.version_str);
                 DownloadDialog dialog(this->mainframe,
                     tips,
-                    _L("New version of 3DLabs Studio"),
                     _L("New version of Orca Slicer"),
                     false,
                     wxCENTER | wxICON_INFORMATION);
@@ -2331,7 +2320,6 @@ bool GUI_App::on_init_inner()
                 wxString tips = wxString::Format(_L("Click to download new version in default browser: %s"), version_str);
                 DownloadDialog dialog(this->mainframe,
                     tips,
-                    _L("3DLabs Studio needs an upgrade"),
                     _L("The Orca Slicer needs an upgrade"),
                     false,
                     wxCENTER | wxICON_INFORMATION);
@@ -2385,10 +2373,10 @@ bool GUI_App::on_init_inner()
 
     Bind(EVT_SHOW_IP_DIALOG, &GUI_App::show_ip_address_enter_dialog_handler, this);
 
-    // 3dlabs
-    // dont need bambu networking
-    //copy_network_if_available();
-    //on_init_network();
+    Bind(EVT_SHOW_IP_DIALOG, &GUI_App::show_ip_address_enter_dialog_handler, this);
+
+    copy_network_if_available();
+    on_init_network();
 
     if (m_agent && m_agent->is_user_login()) {
         enable_user_preset_folder(true);
@@ -3602,7 +3590,7 @@ std::string GUI_App::handle_web_request(std::string cmd)
                     }
                 }
             }
-            else if (command_str.compare("homepage_open_sample") == 0) {
+            else if (command_str.compare("homepage_open_ccabin") == 0) {
                 if (root.get_child_optional("data") != boost::none) {
                     pt::ptree                    data_node = root.get_child("data");
                     boost::optional<std::string> path      = data_node.get_optional<std::string>("file");
@@ -3955,7 +3943,7 @@ void GUI_App::check_new_version_sf(bool show_tips, int by_user)
             //at least two number, use '.' as separator. can be followed by -Az23 for prereleased and +Az42 for metadata
             std::regex matcher("[0-9]+\\.[0-9]+(\\.[0-9]+)*(-[A-Za-z0-9]+)?(\\+[A-Za-z0-9]+)?");
 
-            Semver current_version = get_version(SLIC3R_VERSION, matcher);
+            Semver current_version = get_version(SoftFever_VERSION, matcher);
             Semver best_pre(1, 0, 0);
             Semver best_release(1, 0, 0);
             std::string best_pre_url;
@@ -4767,7 +4755,6 @@ bool GUI_App::load_language(wxString language, bool initial)
 
     if (! wxLocale::IsAvailable(language_info->Language)) {
     	// Loading the language dictionary failed.
-    	wxString message = "Switching 3DLabs Studio to language " + language_info->CanonicalName + " failed.";
     	wxString message = "Switching Orca Slicer to language " + language_info->CanonicalName + " failed.";
 #if !defined(_WIN32) && !defined(__APPLE__)
         // likely some linux system
@@ -4775,7 +4762,6 @@ bool GUI_App::load_language(wxString language, bool initial)
 #endif
         if (initial)
         	message + "\n\nApplication will close.";
-        wxMessageBox(message, "3DLabs Studio - Switching language failed", wxOK | wxICON_ERROR);
         wxMessageBox(message, "Orca Slicer - Switching language failed", wxOK | wxICON_ERROR);
         if (initial)
 			std::exit(EXIT_FAILURE);
@@ -4815,10 +4801,6 @@ Tab* GUI_App::get_model_tab(bool part)
 
 ConfigOptionMode GUI_App::get_mode()
 {
-    //3dlabs testing
-    // force develop mode
-    //return comDevelop;
-    
     if (!app_config->has("user_mode"))
         return comSimple;
     //BBS

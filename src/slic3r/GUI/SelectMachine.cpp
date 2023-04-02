@@ -2846,7 +2846,7 @@ bool SelectMachineDialog::is_show_timelapse()
                 }
                 break;
             }
-            if (line == "BambuStudio" || line == "OrcaSlicer")
+            if (line == "BambuStudio" || line == "3DLabsStudio")
                 is_version = true;
         }
     }

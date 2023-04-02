@@ -6,7 +6,7 @@
 		"files": [
 			{
 				"type": "po",
-				"pattern": "bbl/i18n/en/OrcaSlicer_en.po",
+				"pattern": "bbl/i18n/en/3DLabsStudio_en.po",
 				"lang": "en"
 			}
 		]
@@ -15,7 +15,7 @@
 		"folder": "bbl/i18n",
 		"includeSourceLang" : "true",
 		"files": {
-			"output": "${lang}/OrcaSlicer_${lang}.po"
+			"output": "${lang}/3DLabsStudio_${lang}.po"
 		}
 	}
 }
