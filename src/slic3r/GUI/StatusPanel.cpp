@@ -601,7 +601,7 @@ wxBoxSizer *StatusBasePanel::create_machine_control_page(wxWindow *parent)
     m_staticText_control->SetForegroundColour(PAGE_TITLE_FONT_COL);
 
     StateColor btn_bg_green(std::pair<wxColour, int>(AMS_CONTROL_DISABLE_COLOUR, StateColor::Disabled), std::pair<wxColour, int>(wxColour(0, 137, 123), StateColor::Pressed),
-        std::pair<wxColour, int>(wxColour(38, 166, 154), StateColor::Hovered), std::pair<wxColour, int>(AMS_CONTROL_BRAND_COLOUR, StateColor::Normal));
+        std::pair<wxColour, int>(wxColour(82, 142, 255), StateColor::Hovered), std::pair<wxColour, int>(AMS_CONTROL_BRAND_COLOUR, StateColor::Normal));
     StateColor btn_bd_green(std::pair<wxColour, int>(AMS_CONTROL_WHITE_COLOUR, StateColor::Disabled), std::pair<wxColour, int>(AMS_CONTROL_BRAND_COLOUR, StateColor::Enabled));
 
     m_options_btn = new Button(m_panel_control_title, _L("Print Options"));
@@ -807,7 +807,7 @@ wxBoxSizer *StatusBasePanel::create_misc_control(wxWindow *parent)
     m_switch_nozzle_fan->SetTextColor(StateColor(std::make_pair(DISCONNECT_TEXT_COL, (int) StateColor::Disabled), std::make_pair(NORMAL_FAN_TEXT_COL, (int) StateColor::Normal)));
 
     m_switch_nozzle_fan->Bind(wxEVT_ENTER_WINDOW, [this](auto& e) {
-        m_fan_panel->SetBackgroundColor(wxColour(0, 150, 136));
+        m_fan_panel->SetBackgroundColor(wxColour(82, 142, 255));
     });
 
     m_switch_nozzle_fan->Bind(wxEVT_LEAVE_WINDOW, [this, parent](auto& e) {
@@ -827,7 +827,7 @@ wxBoxSizer *StatusBasePanel::create_misc_control(wxWindow *parent)
         StateColor(std::make_pair(DISCONNECT_TEXT_COL, (int) StateColor::Disabled), std::make_pair(NORMAL_FAN_TEXT_COL, (int) StateColor::Normal)));
 
     m_switch_printing_fan->Bind(wxEVT_ENTER_WINDOW, [this](auto& e) {
-        m_fan_panel->SetBackgroundColor(wxColour(0, 150, 136));
+        m_fan_panel->SetBackgroundColor(wxColour(82, 142, 255));
     });
 
     m_switch_printing_fan->Bind(wxEVT_LEAVE_WINDOW, [this, parent](auto& e) {
@@ -847,7 +847,7 @@ wxBoxSizer *StatusBasePanel::create_misc_control(wxWindow *parent)
         StateColor(std::make_pair(DISCONNECT_TEXT_COL, (int)StateColor::Disabled), std::make_pair(NORMAL_FAN_TEXT_COL, (int)StateColor::Normal)));
 
     m_switch_cham_fan->Bind(wxEVT_ENTER_WINDOW, [this](auto& e) {
-        m_fan_panel->SetBackgroundColor(wxColour(0, 150, 136));
+        m_fan_panel->SetBackgroundColor(wxColour(82, 142, 255));
     });
 
     m_switch_cham_fan->Bind(wxEVT_LEAVE_WINDOW, [this, parent](auto& e) {
