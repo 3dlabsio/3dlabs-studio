@@ -145,6 +145,7 @@ bool Print::invalidate_state_by_config_options(const ConfigOptionResolver & /* n
         "curr_bed_type",
         "nozzle_volume",
         "chamber_temperature",
+        "idle_temperature",
         "thumbnails",
         "nozzle_hrc",
         "required_nozzle_HRC",
@@ -205,6 +206,7 @@ bool Print::invalidate_state_by_config_options(const ConfigOptionResolver & /* n
             || opt_key == "single_extruder_multi_material"
             || opt_key == "nozzle_temperature"
             // BBS
+            || opt_key == "idle_temperature"
             || opt_key == "cool_plate_temp"
             || opt_key == "eng_plate_temp"
             || opt_key == "hot_plate_temp"
@@ -406,7 +408,7 @@ std::vector<ObjectID> Print::print_object_ids() const
 
 bool Print::has_infinite_skirt() const
 {
-    return (m_config.draft_shield == dsEnabled && m_config.skirt_loops > 0) || (m_config.ooze_prevention && this->extruders().size() > 1);
+    return (m_config.draft_shield == dsEnabled && m_config.skirt_loops > 0);
 }
 
 bool Print::has_skirt() const
@@ -949,8 +951,8 @@ StringObjectException Print::validate(StringObjectException *warning, Polygons* 
         if (! m_config.use_relative_e_distances)
             return { ("The Wipe Tower is currently only supported with the relative extruder addressing (use_relative_e_distances=1).") };
         
-        if (m_config.ooze_prevention)
-            return { ("Ooze prevention is currently not supported with the prime tower enabled.") };
+        //if (m_config.ooze_prevention)
+        //    return { ("Ooze prevention is currently not supported with the prime tower enabled.") };
 
         // BBS: remove following logic and _L()
 #if 0
