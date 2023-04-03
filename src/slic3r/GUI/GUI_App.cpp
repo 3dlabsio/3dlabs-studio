@@ -289,7 +289,7 @@ public:
         memDc.SetTextForeground(StateColor::darkModeColorFor(wxColor(134, 134, 134)));
         memDc.DrawLabel(m_constant_text.version, version_rect, wxALIGN_LEFT | wxALIGN_BOTTOM);
 
-// #if BBL_INTERNAL_TESTING
+#if BBL_INTERNAL_TESTING
         auto bs_version = wxString::Format("Based on BambuStudio %s",std::string(SLIC3R_VERSION)).ToStdString();
         memDc.SetFont(Label::Body_12);
         wxSize text_rect = memDc.GetTextExtent(bs_version);
@@ -297,7 +297,7 @@ public:
         int start_y = version_rect.GetBottom() + 10;
         wxRect internal_sign_rect(wxPoint(start_x, start_y), wxSize(text_rect));
         memDc.DrawLabel(bs_version, internal_sign_rect, wxALIGN_RIGHT);
-// #endif
+#endif
 
         // load bitmap for logo
         BitmapCache bmp_cache;
@@ -2376,8 +2376,10 @@ bool GUI_App::on_init_inner()
 
     Bind(EVT_SHOW_IP_DIALOG, &GUI_App::show_ip_address_enter_dialog_handler, this);
 
-    copy_network_if_available();
-    on_init_network();
+    // 3dlabs
+    // dont need bambu networking
+    //copy_network_if_available();
+    //on_init_network();
 
     if (m_agent && m_agent->is_user_login()) {
         enable_user_preset_folder(true);
