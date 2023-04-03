@@ -3136,6 +3136,16 @@ void PrintConfigDef::init_fff_params()
     def->max = max_temp;
     def->set_default_value(new ConfigOptionInts { 200 });
 
+    def = this->add("idle_temperature", coInts);
+    def->label = L("Idle temperature");
+    def->tooltip = L("Nozzle temperature when the tool is currently not used in multi-tool setups."
+                     "This is only used when 'Ooze prevention is active in Print Settings.'");
+    def->sidetext = L("°C");
+    def->full_label = L("Idle temperature");
+    def->min = 0;
+    def->max = max_temp;
+    def->set_default_value(new ConfigOptionInts { 150 });
+
     def = this->add("nozzle_temperature_range_low", coInts);
     def->label = L("Min");
     //def->tooltip = "";
@@ -3747,15 +3757,6 @@ void PrintConfigDef::init_sla_params()
     def->sidetext = L(" ");
     def->min = 0;
     def->set_default_value(new ConfigOptionFloat(0.3));
-
-    def = this->add_nullable("idle_temperature", coInts);
-    def->label = L("Idle temperature");
-    def->tooltip = L("Nozzle temperature when the tool is currently not used in multi-tool setups."
-                     "This is only used when 'Ooze prevention is active in Print Settings.'");
-    def->sidetext = L("°C");
-    //def->min = 0;
-    //def->max = max_temp;
-    def->set_default_value(new ConfigOptionIntsNullable { ConfigOptionIntsNullable::nil_value() });
 
     def = this->add("bottle_volume", coFloat);
     def->label = L(" ");
