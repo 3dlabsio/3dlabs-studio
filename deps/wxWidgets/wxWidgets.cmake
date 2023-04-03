@@ -20,7 +20,7 @@ endif ()
 
 bambustudio_add_cmake_project(wxWidgets
     GIT_REPOSITORY "https://github.com/3dlabsio/wxWidgets"
-    GIT_TAG "v3.1.5-patch"
+    GIT_TAG "v3.1.5-patched"
     DEPENDS ${PNG_PKG} ${ZLIB_PKG} ${EXPAT_PKG} dep_TIFF dep_JPEG
     CMAKE_ARGS
         -DwxBUILD_PRECOMP=ON
