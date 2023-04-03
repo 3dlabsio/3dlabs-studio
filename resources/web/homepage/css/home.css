@@ -201,12 +201,12 @@ body
 
 .BtnItem:hover
 {
-	background-color: #E0FCEB;
+	background-color: #528EFF;
 }
 
 .BtnItemSelected
 {
-	background-color: #E0FCEB;
+	background-color: #528EFF;
 }
 
 .BtnIcon
@@ -269,7 +269,7 @@ body
 .MenuItem:hover
 {
 	border-color: #4CAA50;
-	background-color: #E0FCEB;
+	background-color: #528EFF;
 }
 
 .MenuIcon

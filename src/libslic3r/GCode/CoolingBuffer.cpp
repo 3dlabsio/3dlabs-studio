@@ -244,22 +244,22 @@ float new_feedrate_to_reach_time_stretch(
 {
 	float new_feedrate = min_feedrate;
     for (size_t iter = 0; iter < max_iter; ++ iter) {
-        float nomin = 0;
-        float denom = time_stretch;
+        double nomin = 0;
+        double denom = time_stretch;
         for (auto it = it_begin; it != it_end; ++ it) {
 			assert((*it)->slow_down_min_speed < min_feedrate + EPSILON);
 			for (size_t i = 0; i < (*it)->n_lines_adjustable; ++i) {
 				const CoolingLine &line = (*it)->lines[i];
                 if (line.feedrate > min_feedrate) {
-                    nomin += line.time * line.feedrate;
-                    denom += line.time;
+                    nomin += (double)line.time * (double)line.feedrate;
+                    denom += (double)line.time;
                 }
             }
         }
         assert(denom > 0);
         if (denom < 0)
             return min_feedrate;
-        new_feedrate = nomin / denom;
+        new_feedrate = (float)(nomin / denom);
         assert(new_feedrate > min_feedrate - EPSILON);
         if (new_feedrate < min_feedrate + EPSILON)
             goto finished;
@@ -775,7 +775,7 @@ std::string CoolingBuffer::apply_layer_cooldown(
                 new_gcode  += GCodeWriter::set_fan(m_config.gcode_flavor, m_fan_speed);
         }
         //BBS
-        if (additional_fan_speed_new != m_additional_fan_speed && m_config.auxiliary_fan.value) {
+        if (additional_fan_speed_new != m_additional_fan_speed) {
             m_additional_fan_speed = additional_fan_speed_new;
             if (immediately_apply && m_config.auxiliary_fan.value)
                 new_gcode += GCodeWriter::set_additional_fan(m_additional_fan_speed);

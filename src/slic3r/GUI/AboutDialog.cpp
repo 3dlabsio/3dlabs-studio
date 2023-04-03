@@ -245,8 +245,6 @@ AboutDialog::AboutDialog()
     text_list.push_back(_L("3DLabs Studio is based on Bambu Studio by Bambu Labs, PrusaSlicer by PrusaResearch and SuperSlicer by Merill(supermerill)."));
     text_list.push_back(_L("PrusaSlicer is originally based on Slic3r by Alessandro Ranellucci."));
     text_list.push_back(_L("Slic3r was created by Alessandro Ranellucci with the help of many other contributors."));
-    text_list.push_back(_L("Bambu Studio also referenced some ideas from Cura by Ultimaker."));
-    text_list.push_back(_L("There many parts of the software that come from community contributions, so we're unable to list them one-by-one, and instead, they'll be attributed in the corresponding code comments."));
 
     text_sizer->Add( 0, 0, 0, wxTOP, FromDIP(33));
     bool is_zh = wxGetApp().app_config->get("language") == "zh_CN";

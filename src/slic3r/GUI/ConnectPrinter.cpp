@@ -55,7 +55,7 @@ ConnectPrinterDialog::ConnectPrinterDialog(wxWindow *parent, wxWindowID id, cons
 
     StateColor btn_bg(
         std::pair<wxColour, int>(wxColour(27, 136, 68), StateColor::Pressed),
-        std::pair<wxColour, int>(wxColour(61, 203, 115), StateColor::Hovered),
+        std::pair<wxColour, int>(wxColour(91, 160, 216), StateColor::Hovered),
         std::pair<wxColour, int>(wxColour(72, 94, 112), StateColor::Normal)
     );
 
@@ -148,7 +148,7 @@ void ConnectPrinterDialog::on_button_confirm(wxCommandEvent &event)
         }
     }
     if (m_obj) {
-        m_obj->set_access_code(code.ToStdString());
+        m_obj->set_user_access_code(code.ToStdString());
         wxGetApp().getDeviceManager()->set_selected_machine(m_obj->dev_id);
     }
     EndModal(wxID_OK);

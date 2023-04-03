@@ -1,12 +1,12 @@
 #
-# This CMake project downloads, configures and builds BambuStudio dependencies on Unix and Windows.
+# This CMake project downloads, configures and builds 3DLabsStudio dependencies on Unix and Windows.
 #
 # When using this script, it's recommended to perform an out-of-source build using CMake.
 #
 # All the dependencies are installed in a `destdir` directory in the root of the build directory,
 # in a traditional Unix-style prefix structure. The destdir can be used directly by CMake
-# when building BambuStudio - to do this, set the CMAKE_PREFIX_PATH to ${destdir}/usr/local.
-# Warning: On UNIX/Linux, you also need to set -DSLIC3R_STATIC=1 when building BambuStudio.
+# when building 3DLabsStudio - to do this, set the CMAKE_PREFIX_PATH to ${destdir}/usr/local.
+# Warning: On UNIX/Linux, you also need to set -DSLIC3R_STATIC=1 when building 3DLabsStudio.
 #
 # For better clarity of console output, it's recommended to _not_ use a parallelized build
 # for the top-level command, ie. use `make -j 1` or `ninja -j 1` to force single-threaded top-level
@@ -20,7 +20,7 @@
 # therefore, unfortunatelly, the installation cannot be copied/moved elsewhere without re-installing wxWidgets.
 #
 
-project(BambuStudio-deps)
+project(3DLabsStudio-deps)
 cmake_minimum_required(VERSION 3.2)
 
 include(ExternalProject)
@@ -38,6 +38,10 @@ option(DEP_DEBUG "Build debug variants (only applicable on Windows)" ON)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     option(DEP_WX_GTK3 "Build wxWidgets against GTK3" OFF)
+else() 
+    if(POLICY CMP0135) # DOWNLOAD_EXTRACT_TIMESTAMP
+        cmake_policy(SET CMP0135 NEW)
+    endif()
 endif()
 
 set(IS_CROSS_COMPILE FALSE)
@@ -65,9 +69,9 @@ endif ()
 # Slic3r compiles with a different version which will cause runtime errors.
 # option(DEP_BUILD_IGL_STATIC "Build IGL as a static library. Might cause link errors and increase binary size." OFF)
 
-message(STATUS "BambuStudio deps DESTDIR: ${DESTDIR}")
-message(STATUS "BambuStudio dowload dir for source packages: ${DEP_DOWNLOAD_DIR}")
-message(STATUS "BambuStudio deps debug build: ${DEP_DEBUG}")
+message(STATUS "3DLabsStudio deps DESTDIR: ${DESTDIR}")
+message(STATUS "3DLabsStudio dowload dir for source packages: ${DEP_DOWNLOAD_DIR}")
+message(STATUS "3DLabsStudio deps debug build: ${DEP_DEBUG}")
 
 find_package(Git REQUIRED)
 

@@ -1,9 +1,12 @@
 #!/bin/sh
 
-while getopts ":a:sdhn" opt; do
+while getopts ":a:sdphn" opt; do
   case ${opt} in
     d )
         export BUILD_TARGET="deps"
+        ;;
+    p )
+        export PACK_DEPS="1"
         ;;
     a )
         export ARCH="$OPTARG"
@@ -32,15 +35,24 @@ fi
 echo "Arch: $ARCH"
 echo "BUILD_TARGET: $BUILD_TARGET"
 
-brew --prefix libiconv
-brew --prefix zstd
-export LIBRARY_PATH=$LIBRARY_PATH:$(brew --prefix zstd)/lib/
+if which -s brew; then
+	brew --prefix libiconv
+	brew --prefix zstd
+	export LIBRARY_PATH=$LIBRARY_PATH:$(brew --prefix zstd)/lib/
+elif which -s port; then
+	port install libiconv
+	port install zstd
+	export LIBRARY_PATH=$LIBRARY_PATH:/opt/local/lib
+else
+	echo "Need either brew or macports to successfully build deps"
+	exit 1
+fi
 
 WD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd $WD/deps
-mkdir -p build
-cd build
-DEPS=$PWD/BambuStudio_dep
+mkdir -p build_$ARCH
+cd build_$ARCH
+DEPS=$PWD/3DLabsStudio_dep_$ARCH
 mkdir -p $DEPS
 if [ "studio." != $BUILD_TARGET. ]; 
 then
@@ -48,6 +60,10 @@ then
     echo "cmake ../ -DDESTDIR=$DEPS -DOPENSSL_ARCH=darwin64-${ARCH}-cc -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES:STRING=${ARCH}"
     cmake ../ -DDESTDIR="$DEPS" -DOPENSSL_ARCH="darwin64-${ARCH}-cc" -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES:STRING=${ARCH}
     cmake --build . --config Release --target all 
+    if [ "1." == "$PACK_DEPS". ];
+    then
+        tar -zcvf 3DLabsStudio_dep_mac_${ARCH}_$(date +"%d-%m-%Y").tar.gz 3DLabsStudio_dep_$ARCH
+    fi
 fi
 
 
@@ -57,29 +73,28 @@ then
 fi
 
 cd $WD
-mkdir -p build
-cd build
+mkdir -p build_$ARCH
+cd build_$ARCH
 echo "building studio..."
-cmake .. -GXcode -DBBL_RELEASE_TO_PUBLIC=1 -DCMAKE_PREFIX_PATH="$DEPS/usr/local" -DCMAKE_INSTALL_PREFIX="$PWD/BambuStudio-SoftFever" -DCMAKE_BUILD_TYPE=Release -DCMAKE_MACOSX_RPATH=ON -DCMAKE_INSTALL_RPATH="$DEPS/usr/local" -DCMAKE_MACOSX_BUNDLE=ON -DCMAKE_OSX_ARCHITECTURES=${ARCH}
+cmake .. -GXcode -DBBL_RELEASE_TO_PUBLIC=1 -DCMAKE_PREFIX_PATH="$DEPS/usr/local" -DCMAKE_INSTALL_PREFIX="$PWD/3DLabsStudio" -DCMAKE_BUILD_TYPE=Release -DCMAKE_MACOSX_RPATH=ON -DCMAKE_INSTALL_RPATH="$DEPS/usr/local" -DCMAKE_MACOSX_BUNDLE=ON -DCMAKE_OSX_ARCHITECTURES=${ARCH}
 cmake --build . --config Release --target ALL_BUILD 
-mkdir -p BambuStudio-SoftFever
-cd BambuStudio-SoftFever
-rm -r ./BambuStudio-SoftFever.app
-cp -pR ../src/Release/BambuStudio.app ./BambuStudio-SoftFever.app
-resources_path=$(readlink ./BambuStudio-SoftFever.app/Contents/Resources)
-rm ./BambuStudio-SoftFever.app/Contents/Resources
-cp -R $resources_path ./BambuStudio-SoftFever.app/Contents/Resources
+mkdir -p 3DLabsStudio
+cd 3DLabsStudio
+rm -r ./3DLabsStudio.app
+cp -pR ../src/Release/3DLabsStudio.app ./3DLabsStudio.app
+resources_path=$(readlink ./3DLabsStudio.app/Contents/Resources)
+rm ./3DLabsStudio.app/Contents/Resources
+cp -R $resources_path ./3DLabsStudio.app/Contents/Resources
 # delete .DS_Store file
-find ./BambuStudio-SoftFever.app/ -name '.DS_Store' -delete
+find ./3DLabsStudio.app/ -name '.DS_Store' -delete
 # extract version
-export ver="_dev"
-echo $PWD
-if [ "1." != "$NIGHTLY_BUILD". ];
-then
-    ver=$(grep '^#define SoftFever_VERSION' ../src/libslic3r/libslic3r_version.h | cut -d ' ' -f3)
-    ver="_V${ver//\"}"
-fi
+# export ver=$(grep '^#define SoftFever_VERSION' ../src/libslic3r/libslic3r_version.h | cut -d ' ' -f3)
+# ver="_V${ver//\"}"
+# echo $PWD
+# if [ "1." != "$NIGHTLY_BUILD". ];
+# then
+#     ver=${ver}_dev
+# fi
 
 
-zip -FSr BambuStudio-SoftFever${ver}_Mac_${ARCH}.zip BambuStudio-SoftFever.app
-
+# zip -FSr 3DLabsStudio${ver}_Mac_${ARCH}.zip 3DLabsStudio.app

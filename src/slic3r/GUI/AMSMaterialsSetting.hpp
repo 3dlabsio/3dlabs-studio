@@ -90,7 +90,7 @@ protected:
     Button *            m_button_confirm;
     wxStaticText*       m_tip_readonly;
     Button *            m_button_close;
-    Button *          m_clr_picker;
+    Button *            m_clr_picker;
     wxColourData *      m_clrData;
 
     wxPanel *           m_panel_kn;
@@ -98,13 +98,14 @@ protected:
     TextInput*          m_input_k_val;
     wxStaticText*       m_n_param;
     TextInput*          m_input_n_val;
+    int                 m_filament_selection;
 
 #ifdef __APPLE__
     wxComboBox *m_comboBox_filament;
 #else
     ComboBox *m_comboBox_filament;
 #endif
-    TextInput*          m_readonly_filament;
+    TextInput*       m_readonly_filament;
 };
 
 }} // namespace Slic3r::GUI

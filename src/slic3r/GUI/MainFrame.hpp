@@ -29,6 +29,7 @@
 
 
 #include "PrinterWebView.hpp"
+#include "calib_dlg.hpp"
 
 #define ENABEL_PRINT_ALL 0
 
@@ -324,11 +325,18 @@ public:
     //BBS
     void        load_url(wxString url);
     void        load_printer_url(wxString url);
+    void        load_printer_url();
+    bool        is_printer_view() const;
     void        refresh_plugin_tips();
     void RunScript(wxString js);
 
     //SoftFever
     void show_device(bool bBBLPrinter);
+
+    PA_Calibration_Dlg* m_pa_calib_dlg{ nullptr };
+    Temp_Calibration_Dlg* m_temp_calib_dlg{ nullptr };
+    MaxVolumetricSpeed_Test_Dlg* m_vol_test_dlg { nullptr };
+    VFA_Test_Dlg* m_vfa_test_dlg { nullptr };
 
     // BBS. Replace title bar and menu bar with top bar.
     BBLTopbar*            m_topbar{ nullptr };
@@ -380,8 +388,14 @@ public:
 
 wxDECLARE_EVENT(EVT_HTTP_ERROR, wxCommandEvent);
 wxDECLARE_EVENT(EVT_USER_LOGIN, wxCommandEvent);
+wxDECLARE_EVENT(EVT_USER_LOGIN_HANDLE, wxCommandEvent);
+wxDECLARE_EVENT(EVT_CHECK_PRIVACY_VER, wxCommandEvent);
+wxDECLARE_EVENT(EVT_CHECK_PRIVACY_SHOW, wxCommandEvent);
 wxDECLARE_EVENT(EVT_SHOW_IP_DIALOG, wxCommandEvent);
+wxDECLARE_EVENT(EVT_SET_SELECTED_MACHINE, wxCommandEvent);
 wxDECLARE_EVENT(EVT_UPDATE_PRESET_CB, SimpleEvent);
+
+
 
 } // GUI
 } //Slic3r

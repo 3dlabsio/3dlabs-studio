@@ -14,13 +14,14 @@
 #include "GCode/ThumbnailData.hpp"
 #include "GCode/GCodeProcessor.hpp"
 #include "MultiMaterialSegmentation.hpp"
-
 #include "libslic3r.h"
 
 #include <Eigen/Geometry>
 
 #include <functional>
 #include <set>
+
+#include "calib.hpp"
 
 namespace Slic3r {
 
@@ -31,7 +32,6 @@ class Print;
 class PrintObject;
 class SupportLayer;
 // BBS
-class TreeSupportLayer;
 class TreeSupportData;
 class TreeSupport;
 
@@ -85,15 +85,10 @@ enum PrintStep {
 
 enum PrintObjectStep {
     posSlice, posPerimeters, posPrepareInfill,
-    posInfill, posIroning, posSupportMaterial, posSimplifyPath, posSimplifySupportPath, posCount,
-};
-
-enum CalibMode {
-    Calib_None = 0,
-    Calib_PA_DDE,
-    Calib_PA_Bowden,
-    Calib_PA_Tower_DDE,
-    Calib_PA_Tower_Bowden
+    posInfill, posIroning, posSupportMaterial, posSimplifyPath, posSimplifySupportPath,
+    // BBS
+    posDetectOverhangsForLift,
+    posCount,
 };
 
 // A PrintRegion object represents a group of volumes to print
@@ -183,13 +178,6 @@ class ConstSupportLayerPtrsAdaptor : public ConstVectorOfPtrsAdaptor<SupportLaye
     ConstSupportLayerPtrsAdaptor(const SupportLayerPtrs *data) : ConstVectorOfPtrsAdaptor<SupportLayer>(data) {}
 };
 
-// BBS
-typedef std::vector<TreeSupportLayer*>        TreeSupportLayerPtrs;
-class ConstTreeSupportLayerPtrsAdaptor : public ConstVectorOfPtrsAdaptor<TreeSupportLayer> {
-    friend PrintObject;
-    ConstTreeSupportLayerPtrsAdaptor(const TreeSupportLayerPtrs* data) : ConstVectorOfPtrsAdaptor<TreeSupportLayer>(data) {}
-};
-
 class BoundingBoxf3;        // TODO: for temporary constructor parameter
 
 // Single instance of a PrintObject.
@@ -203,6 +191,13 @@ struct PrintInstance
 	const ModelInstance *model_instance;
 	// Shift of this instance's center into the world coordinates.
 	Point 				 shift;
+    
+    BoundingBoxf3   get_bounding_box();
+    Polygon get_convex_hull_2d();
+    // SoftFever
+    // 
+    // instance id
+    size_t               id;
 };
 
 typedef std::vector<PrintInstance> PrintInstances;
@@ -304,14 +299,11 @@ public:
     Transform3d                  trafo_centered() const
         { Transform3d t = this->trafo(); t.pretranslate(Vec3d(- unscale<double>(m_center_offset.x()), - unscale<double>(m_center_offset.y()), 0)); return t; }
     const PrintInstances&        instances() const      { return m_instances; }
-    // BBS
-    ConstTreeSupportLayerPtrsAdaptor tree_support_layers() const { return ConstTreeSupportLayerPtrsAdaptor(&m_tree_support_layers); }
+    PrintInstances &instances() { return m_instances; }
 
     // Whoever will get a non-const pointer to PrintObject will be able to modify its layers.
     LayerPtrs&                   layers()               { return m_layers; }
     SupportLayerPtrs&            support_layers()       { return m_support_layers; }
-    // BBS
-    TreeSupportLayerPtrs&        tree_support_layers() { return m_tree_support_layers; }
 
     template<typename PolysType>
     static void remove_bridges_from_contacts(
@@ -334,7 +326,9 @@ public:
     // BBS
     void generate_support_preview();
     const std::vector<VolumeSlices>& firstLayerObjSlice() const { return firstLayerObjSliceByVolume; }
+    std::vector<VolumeSlices>& firstLayerObjSliceMod() { return firstLayerObjSliceByVolume; }
     const std::vector<groupedVolumeSlices>& firstLayerObjGroups() const { return firstLayerObjSliceByGroups; }
+    std::vector<groupedVolumeSlices>& firstLayerObjGroupsMod() { return firstLayerObjSliceByGroups; }
 
     bool                         has_brim() const       {
         return ((this->config().brim_type != btNoBrim && this->config().brim_width.value > 0.) || this->config().brim_type == btAutoBrim)
@@ -372,12 +366,7 @@ public:
     Layer*          add_layer(int id, coordf_t height, coordf_t print_z, coordf_t slice_z);
 
     // BBS
-    TreeSupportLayer* get_tree_support_layer(int idx) { return m_tree_support_layers[idx]; }
-    const TreeSupportLayer* get_tree_support_layer_at_printz(coordf_t print_z, coordf_t epsilon) const;
-    TreeSupportLayer* get_tree_support_layer_at_printz(coordf_t print_z, coordf_t epsilon);
-    TreeSupportLayer* add_tree_support_layer(int id, coordf_t height, coordf_t print_z, coordf_t slice_z);
-    void  clear_tree_support_layers();
-    size_t tree_support_layer_count() const { return m_tree_support_layers.size(); }
+    SupportLayer* add_tree_support_layer(int id, coordf_t height, coordf_t print_z, coordf_t slice_z);
     std::shared_ptr<TreeSupportData> alloc_tree_support_preview_cache();
     void clear_tree_support_preview_cache() { m_tree_support_preview_cache.reset(); }
 
@@ -388,7 +377,6 @@ public:
     SupportLayer*   get_support_layer_at_printz(coordf_t print_z, coordf_t epsilon);
     SupportLayer*   add_support_layer(int id, int interface_id, coordf_t height, coordf_t print_z);
     SupportLayerPtrs::iterator insert_support_layer(SupportLayerPtrs::iterator pos, size_t id, size_t interface_id, coordf_t height, coordf_t print_z, coordf_t slice_z);
-    void            delete_support_layer(int idx);
 
     // Initialize the layer_height_profile from the model_object's layer_height_profile, from model_object's layer height table, or from slicing parameters.
     // Returns true, if the layer_height_profile was changed.
@@ -437,7 +425,12 @@ public:
 
     // BBS: Boundingbox of the first layer
     BoundingBox                 firstLayerObjectBrimBoundingBox;
-private:
+
+    // SoftFever
+    size_t get_id() const { return m_id; }
+    void set_id(size_t id) { m_id = id; }
+
+  private:
     // to be called from Print only.
     friend class Print;
 
@@ -471,6 +464,10 @@ private:
     void slice_volumes();
     //BBS
     ExPolygons _shrink_contour_holes(double contour_delta, double hole_delta, const ExPolygons& polys) const;
+    // BBS
+    void detect_overhangs_for_lift();
+    void clear_overhangs_for_lift();
+
     // Has any support (not counting the raft).
     void detect_surfaces_type();
     void process_external_surfaces();
@@ -505,7 +502,6 @@ private:
     LayerPtrs                               m_layers;
     SupportLayerPtrs                        m_support_layers;
     // BBS
-    TreeSupportLayerPtrs                    m_tree_support_layers;
     std::shared_ptr<TreeSupportData>        m_tree_support_preview_cache;
 
     // this is set to true when LayerRegion->slices is split in top/internal/bottom
@@ -517,6 +513,12 @@ private:
     ExtrusionEntityCollection               m_skirt;
 
     PrintObject*                            m_shared_object{ nullptr };
+
+    
+    // SoftFever
+    // 
+    // object id
+    size_t               m_id;
 
  public:
     //BBS: When printing multi-material objects, this settings will make slicer to clip the overlapping object parts one by the other.
@@ -668,7 +670,7 @@ public:
 
     std::vector<unsigned int> object_extruders() const;
     std::vector<unsigned int> support_material_extruders() const;
-    std::vector<unsigned int> extruders() const;
+    std::vector<unsigned int> extruders(bool conside_custom_gcode = false) const;
     double              max_allowed_layer_height() const;
     bool                has_support_material() const;
     // Make sure the background processing has no access to this model_object during this call!
@@ -676,7 +678,7 @@ public:
 
     const PrintConfig&          config() const { return m_config; }
     const PrintObjectConfig&    default_object_config() const { return m_default_object_config; }
-    const PrintRegionConfig&    default_region_config() const { return m_default_region_config; }
+    const PrintRegionConfig& default_region_config() const { return m_default_region_config; }
     ConstPrintObjectPtrsAdaptor objects() const { return ConstPrintObjectPtrsAdaptor(&m_objects); }
     PrintObject*                get_object(size_t idx) { return const_cast<PrintObject*>(m_objects[idx]); }
     const PrintObject*          get_object(size_t idx) const { return m_objects[idx]; }
@@ -744,8 +746,10 @@ public:
     //SoftFever
     bool &is_BBL_printer() { return m_isBBLPrinter; }
     const bool is_BBL_printer() const { return m_isBBLPrinter; }
-    CalibMode& calib_mode() { return m_calib_mode; }
-    const CalibMode calib_mode() const { return m_calib_mode; }
+    CalibMode& calib_mode() { return m_calib_params.mode; }
+    const CalibMode calib_mode() const { return m_calib_params.mode; }
+    void set_calib_params(const Calib_Params& params);
+    const Calib_Params& calib_params() const { return m_calib_params; }
   protected:
     // Invalidates the step, and its depending steps in Print.
     bool                invalidate_step(PrintStep step);
@@ -798,8 +802,8 @@ private:
     //BBS: modified_count
     int     m_modified_count {0};
     
-    //SoftFever: calibration mode, change to enum later
-    CalibMode m_calib_mode;
+    //SoftFever: calibration
+    Calib_Params m_calib_params;
 
     // To allow GCode to set the Print's GCodeExport step status.
     friend class GCode;

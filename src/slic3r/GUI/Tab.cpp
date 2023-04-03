@@ -1404,7 +1404,7 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
     // reload scene to update timelapse wipe tower
     if (opt_key == "timelapse_type") {
         bool wipe_tower_enabled = m_config->option<ConfigOptionBool>("enable_prime_tower")->value;
-        if (!wipe_tower_enabled && boost::any_cast<int>(value) == int(TimelapseType::tlSmooth)) {
+        if (!wipe_tower_enabled && boost::any_cast<int>(value) == (int)TimelapseType::tlSmooth) {
             MessageDialog dlg(wxGetApp().plater(), _L("Prime tower is required for smooth timelapse. There may be flaws on the model without prime tower. Do you want to enable prime tower?"),
                               _L("Warning"), wxICON_WARNING | wxYES | wxNO);
             if (dlg.ShowModal() == wxID_YES) {
@@ -1416,6 +1416,13 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
         } else {
             wxGetApp().plater()->update();
         }
+    }
+
+    // BBS set support style to default when support type changes
+    if (opt_key == "support_type") {
+        DynamicPrintConfig new_conf = *m_config;
+        new_conf.set_key_value("support_style", new ConfigOptionEnum<SupportMaterialStyle>(smsDefault));
+        m_config_manipulation.apply(m_config, &new_conf);
     }
 
     // BBS popup a message to ask the user to set optimum parameters for tree support
@@ -1636,10 +1643,12 @@ void Tab::on_presets_changed()
     wxGetApp().plater()->sidebar().update_presets(m_type);
 
     bool is_bbl_vendor_preset = wxGetApp().preset_bundle->printers.get_edited_preset().is_bbl_vendor_preset(wxGetApp().preset_bundle);
+    auto& printer_cfg = wxGetApp().preset_bundle->printers.get_edited_preset().config;
     if (is_bbl_vendor_preset)
-        wxGetApp().plater()->get_partplate_list().set_render_option(true, true);
+        wxGetApp().plater()->get_partplate_list().set_render_option(
+            !printer_cfg.option<ConfigOptionBool>("bbl_calib_mark_logo")->value, true);
     else
-        wxGetApp().plater()->get_partplate_list().set_render_option(false, false);
+        wxGetApp().plater()->get_partplate_list().set_render_option(false, true);
 
     // Printer selected at the Printer tab, update "compatible" marks at the print and filament selectors.
     for (auto t: m_dependent_tabs)
@@ -1847,6 +1856,7 @@ void TabPrint::build()
         optgroup->append_single_option_line("xy_hole_compensation");
         optgroup->append_single_option_line("xy_contour_compensation");
         optgroup->append_single_option_line("elephant_foot_compensation");
+        optgroup->append_single_option_line("precise_outer_wall");
 
         optgroup = page->new_optgroup(L("Ironing"), L"param_ironing");
         optgroup->append_single_option_line("ironing_type");
@@ -1909,6 +1919,7 @@ void TabPrint::build()
         optgroup = page->new_optgroup(L("Initial layer speed"), L"param_speed_first", 15);
         optgroup->append_single_option_line("initial_layer_speed");
         optgroup->append_single_option_line("initial_layer_infill_speed");
+        optgroup->append_single_option_line("initial_layer_travel_speed");
         optgroup = page->new_optgroup(L("Other layers speed"), L"param_speed", 15);
         optgroup->append_single_option_line("outer_wall_speed");
         optgroup->append_single_option_line("inner_wall_speed");
@@ -1917,7 +1928,12 @@ void TabPrint::build()
         optgroup->append_single_option_line("sparse_infill_speed");
         optgroup->append_single_option_line("internal_solid_infill_speed");
         optgroup->append_single_option_line("top_surface_speed");
+        optgroup->append_single_option_line("gap_infill_speed");
+        optgroup->append_single_option_line("support_speed");
+        optgroup->append_single_option_line("support_interface_speed");
+        optgroup = page->new_optgroup(L("Overhang speed"), L"param_speed", 15);
         optgroup->append_single_option_line("enable_overhang_speed", "slow-down-for-overhang");
+        optgroup->append_single_option_line("overhang_speed_classic", "slow-down-for-overhang");
         Line line = { L("Overhang speed"), L("This is the speed for various overhang degrees. Overhang degrees are expressed as a percentage of line width. 0 speed means no slowing down for the overhang degree range and wall speed is used") };
         line.label_path = "slow-down-for-overhang";
         line.append_option(optgroup->get_option("overhang_1_4_speed"));
@@ -1926,9 +1942,6 @@ void TabPrint::build()
         line.append_option(optgroup->get_option("overhang_4_4_speed"));
         optgroup->append_line(line);
         optgroup->append_single_option_line("bridge_speed");
-        optgroup->append_single_option_line("gap_infill_speed");
-        optgroup->append_single_option_line("support_speed");
-        optgroup->append_single_option_line("support_interface_speed");
 
         optgroup = page->new_optgroup(L("Travel speed"), L"param_travel_speed", 15);
         optgroup->append_single_option_line("travel_speed");
@@ -1937,13 +1950,16 @@ void TabPrint::build()
         optgroup->append_single_option_line("default_acceleration");
         optgroup->append_single_option_line("outer_wall_acceleration");
         optgroup->append_single_option_line("inner_wall_acceleration");
+        optgroup->append_single_option_line("bridge_acceleration");
+        optgroup->append_single_option_line("sparse_infill_acceleration");
+        optgroup->append_single_option_line("internal_solid_infill_acceleration");
         optgroup->append_single_option_line("initial_layer_acceleration");
         optgroup->append_single_option_line("top_surface_acceleration");
         optgroup->append_single_option_line("travel_acceleration");
         optgroup->append_single_option_line("accel_to_decel_enable");
         optgroup->append_single_option_line("accel_to_decel_factor");
 
-        optgroup = page->new_optgroup(L("Jerk(XY)"));
+        optgroup = page->new_optgroup(L("Jerk(XY)"), L"param_speed", 15);
         optgroup->append_single_option_line("default_jerk");
         optgroup->append_single_option_line("outer_wall_jerk");
         optgroup->append_single_option_line("inner_wall_jerk");
@@ -1985,11 +2001,14 @@ void TabPrint::build()
         optgroup->append_single_option_line("tree_support_branch_diameter", "support#tree-support-only-options");
         optgroup->append_single_option_line("tree_support_branch_angle", "support#tree-support-only-options");
         optgroup->append_single_option_line("tree_support_wall_count");
+        optgroup->append_single_option_line("tree_support_adaptive_layer_height");
+        optgroup->append_single_option_line("tree_support_auto_brim");
+        optgroup->append_single_option_line("tree_support_brim_width");
         optgroup->append_single_option_line("support_top_z_distance", "support#top-z-distance");
         optgroup->append_single_option_line("support_bottom_z_distance", "support#bottom-z-distance");
         optgroup->append_single_option_line("support_base_pattern", "support#base-pattern");
         optgroup->append_single_option_line("support_base_pattern_spacing", "support#base-pattern");
-        //optgroup->append_single_option_line("support_angle");
+        optgroup->append_single_option_line("support_angle");
         optgroup->append_single_option_line("support_interface_top_layers", "support#base-pattern");
         optgroup->append_single_option_line("support_interface_bottom_layers", "support#base-pattern");
         optgroup->append_single_option_line("support_interface_pattern", "support#base-pattern");
@@ -2041,6 +2060,9 @@ void TabPrint::build()
         optgroup = page->new_optgroup(L("G-code output"), L"param_gcode");
         optgroup->append_single_option_line("reduce_infill_retraction");
         optgroup->append_single_option_line("gcode_add_line_number");
+        optgroup->append_single_option_line("gcode_comments");
+        optgroup->append_single_option_line("gcode_label_objects");
+        optgroup->append_single_option_line("exclude_object");
         Option option = optgroup->get_option("filename_format");
         // option.opt.full_width = true;
         option.opt.is_code = true;
@@ -2101,6 +2123,27 @@ void TabPrint::toggle_options()
     if (!m_active_page) return;
 
     m_config_manipulation.toggle_print_fff_options(m_config, m_type < Preset::TYPE_COUNT);
+
+    Field *field = m_active_page->get_field("support_style");
+    auto   support_type = m_config->opt_enum<SupportType>("support_type");
+    if (auto choice = dynamic_cast<Choice*>(field)) {
+        auto def = print_config_def.get("support_style");
+        std::vector<int> enum_set_normal = {0, 1, 2};
+        std::vector<int> enum_set_tree   = {0, 3, 4, 5};
+        auto &           set             = is_tree(support_type) ? enum_set_tree : enum_set_normal;
+        auto &           opt             = const_cast<ConfigOptionDef &>(field->m_opt);
+        auto             cb              = dynamic_cast<ComboBox *>(choice->window);
+        auto             n               = cb->GetValue();
+        opt.enum_values.clear();
+        opt.enum_labels.clear();
+        cb->Clear();
+        for (auto i : set) {
+            opt.enum_values.push_back(def->enum_values[i]);
+            opt.enum_labels.push_back(def->enum_labels[i]);
+            cb->Append(_(def->enum_labels[i]));
+        }
+        cb->SetValue(n);
+    }
 }
 
 void TabPrint::update()
@@ -2473,6 +2516,7 @@ void TabFilament::add_filament_overrides_page()
 
     for (const std::string opt_key : {  "filament_retraction_length",
                                         "filament_z_hop",
+                                        "filament_z_hop_types",
                                         "filament_retraction_speed",
                                         "filament_deretraction_speed",
                                         "filament_retract_restart_extra",
@@ -2506,6 +2550,7 @@ void TabFilament::update_filament_overrides_page()
 
     std::vector<std::string> opt_keys = {   "filament_retraction_length",
                                             "filament_z_hop",
+                                            "filament_z_hop_types",
                                             "filament_retraction_speed",
                                             "filament_deretraction_speed",
                                             "filament_retract_restart_extra",
@@ -2563,6 +2608,7 @@ void TabFilament::build()
         optgroup->append_single_option_line("pressure_advance");
 
         optgroup->append_single_option_line("filament_density");
+        optgroup->append_single_option_line("filament_shrink");
         optgroup->append_single_option_line("filament_cost");
         //BBS
         optgroup->append_single_option_line("temperature_vitrification");
@@ -2653,7 +2699,7 @@ void TabFilament::build()
         //};
         //optgroup->append_line(line);
         optgroup = page->new_optgroup(L("Cooling for specific layer"), L"param_cooling");
-    optgroup->append_single_option_line("close_fan_the_first_x_layers", "auto-cooling");
+        optgroup->append_single_option_line("close_fan_the_first_x_layers", "auto-cooling");
         //optgroup->append_single_option_line("full_fan_speed_layer");
 
         optgroup = page->new_optgroup(L("Part cooling fan"), L"param_cooling_fan");
@@ -2796,14 +2842,17 @@ void TabFilament::toggle_options()
               m_preset_bundle);
     }
 
-    if (m_active_page->title() == "Cooling")
-    {
-        bool cooling = m_config->opt_bool("slow_down_for_layer_cooling", 0);
-        toggle_option("slow_down_min_speed", cooling);
+    if (m_active_page->title() == "Cooling") {
+      bool cooling = m_config->opt_bool("slow_down_for_layer_cooling", 0);
+      toggle_option("slow_down_min_speed", cooling);
 
-        bool has_enable_overhang_bridge_fan = m_config->opt_bool("enable_overhang_bridge_fan", 0);
-        for (auto el : { "overhang_fan_speed", "overhang_fan_threshold" })
+      bool has_enable_overhang_bridge_fan = m_config->opt_bool("enable_overhang_bridge_fan", 0);
+      for (auto el : {"overhang_fan_speed", "overhang_fan_threshold"})
             toggle_option(el, has_enable_overhang_bridge_fan);
+
+      toggle_option(
+          "additional_cooling_fan_speed",
+          m_preset_bundle->printers.get_edited_preset().config.option<ConfigOptionBool>("auxiliary_fan")->value);
     }
     if (m_active_page->title() == "Filament")
     {
@@ -2916,6 +2965,7 @@ void TabPrinter::build_fff()
         optgroup->append_single_option_line(option);
         // optgroup->append_single_option_line("printable_area");
         optgroup->append_single_option_line("printable_height");
+        optgroup->append_single_option_line("bbl_calib_mark_logo");
         optgroup->append_single_option_line("nozzle_volume");
         // BBS
         //optgroup->append_single_option_line("z_offset");
@@ -3395,7 +3445,7 @@ void TabPrinter::build_unregular_pages(bool from_initial_build/* = false*/)
             optgroup->append_single_option_line("retraction_length", "", extruder_idx);
             optgroup->append_single_option_line("retract_restart_extra", "", extruder_idx);
             optgroup->append_single_option_line("z_hop", "", extruder_idx);
-            optgroup->append_single_option_line("z_lift_type", "", extruder_idx);
+            optgroup->append_single_option_line("z_hop_types", "", extruder_idx);
             optgroup->append_single_option_line("retraction_speed", "", extruder_idx);
             optgroup->append_single_option_line("deretraction_speed", "", extruder_idx);
             optgroup->append_single_option_line("retraction_minimum_travel", "", extruder_idx);
@@ -3549,8 +3599,6 @@ void TabPrinter::toggle_options()
     //}
     if (m_active_page->title() == "Basic information") {
         toggle_option("single_extruder_multi_material", have_multiple_extruders);
-        // Hide relative extrusion option for BBL printers
-        toggle_line("use_relative_e_distances", !is_BBL_printer);
 
         auto flavor = m_config->option<ConfigOptionEnum<GCodeFlavor>>("gcode_flavor")->value;
         bool is_marlin_flavor = flavor == gcfMarlinLegacy || flavor == gcfMarlinFirmware;
@@ -3562,14 +3610,12 @@ void TabPrinter::toggle_options()
 
         // SoftFever: hide BBL specific settings
         for (auto el :
-             {"scan_first_layer", "machine_load_filament_time",
-                        "machine_unload_filament_time", "nozzle_type"})
+             {"scan_first_layer", "machine_load_filament_time", "machine_unload_filament_time", "nozzle_type", "bbl_calib_mark_logo"})
           toggle_line(el, is_BBL_printer);
 
         // SoftFever: hide non-BBL settings
-        for (auto el :
-            { "use_firmware_retraction" })
-            toggle_line(el, !is_BBL_printer);
+        for (auto el : {"use_firmware_retraction", "use_relative_e_distances"})
+          toggle_line(el, !is_BBL_printer);
     }
 
     wxString extruder_number;
@@ -3595,9 +3641,6 @@ void TabPrinter::toggle_options()
         std::vector<std::string> vec = { "z_hop", "retract_when_changing_layer" };
         for (auto el : vec)
             toggle_option(el, retraction, i);
-
-        // retract lift above / below only applies if using retract lift
-        vec.resize(0);
 
         // some options only apply when not using firmware retraction
         vec.resize(0);
@@ -3636,16 +3679,16 @@ void TabPrinter::toggle_options()
         toggle_option("retract_restart_extra_toolchange", have_multiple_extruders && toolchange_retraction, i);
     }
 
-    auto gcf = m_config->option<ConfigOptionEnum<GCodeFlavor>>("gcode_flavor")->value;
-    if (m_active_page->title() == "Motion ability") {
-        assert(gcf == gcfMarlinLegacy || gcf == gcfMarlinFirmware || gcf == gcfKlipper);
-        bool silent_mode = m_config->opt_bool("silent_mode");
-        int  max_field = silent_mode ? 2 : 1;
-        //BBS: limits of BBL printer can't be edited.
-    	for (const std::string &opt : Preset::machine_limits_options())
-            for (int i = 0; i < max_field; ++ i)
-	            toggle_option(opt, !is_BBL_printer, i);
-    }
+    //auto gcf = m_config->option<ConfigOptionEnum<GCodeFlavor>>("gcode_flavor")->value;
+    //if (m_active_page->title() == "Motion ability") {
+    //    assert(gcf == gcfMarlinLegacy || gcf == gcfMarlinFirmware || gcf == gcfKlipper);
+    //    bool silent_mode = m_config->opt_bool("silent_mode");
+    //    int  max_field = silent_mode ? 2 : 1;
+    //    //BBS: limits of BBL printer can't be edited.
+    //	for (const std::string &opt : Preset::machine_limits_options())
+    //        for (int i = 0; i < max_field; ++ i)
+	   //         toggle_option(opt, !is_BBL_printer, i);
+    //}
 }
 
 void TabPrinter::update()
@@ -4035,9 +4078,9 @@ bool Tab::select_preset(std::string preset_name, bool delete_current /*=false*/,
         try {
             //BBS delete preset
             Preset &current_preset = m_presets->get_selected_preset();
-            current_preset.sync_info = "delete";
             if (!current_preset.setting_id.empty()) {
                 BOOST_LOG_TRIVIAL(info) << "delete preset = " << current_preset.name << ", setting_id = " << current_preset.setting_id;
+                m_presets->set_sync_info_and_save(current_preset.name, current_preset.setting_id, "delete");
                 wxGetApp().delete_preset_from_cloud(current_preset.setting_id);
             }
             BOOST_LOG_TRIVIAL(info) << boost::format("will delete current preset...");
@@ -4654,14 +4697,6 @@ void Tab::delete_preset()
     // delete selected preset from printers and printer, if it's needed
     if (m_type == Preset::TYPE_PRINTER && !physical_printers.empty())
         physical_printers.delete_preset_from_printers(current_preset.name);
-
-    //BBS delete preset
-    //will delete in select_preset
-    current_preset.sync_info = "delete";
-    if (!current_preset.setting_id.empty()) {
-        BOOST_LOG_TRIVIAL(info) << "delete preset = " << current_preset.name << ", setting_id = " << current_preset.setting_id;
-        wxGetApp().delete_preset_from_cloud(current_preset.setting_id);
-    }
 
     // Select will handle of the preset dependencies, of saving & closing the depending profiles, and
     // finally of deleting the preset.
