@@ -242,8 +242,12 @@ AboutDialog::AboutDialog()
     text_sizer_horiz->Add( 0, 0, 0, wxLEFT, FromDIP(23));
 
     std::vector<wxString> text_list;
-    text_list.push_back(_L("3DLabs Studio is based on Bambu Studio by Bambu Labs, PrusaSlicer by PrusaResearch and SuperSlicer by Merill(supermerill)."));
+    text_list.push_back(_L("3DLabs Studio is based on Bambu Studio, PrusaSlicer, and SuperSlicer."));
+    text_list.push_back(_L("Developed by Shane Warner and Li Jiang (SoftFever) for commercial use at 3D Laboratories LLC."));
+    text_list.push_back(_L("3DLabs Studio also uses contributions from Cura by Ultimaker."));
+    text_list.push_back(_L("BambuStudio is originally based on PrusaSlicer by PrusaResearch."));
     text_list.push_back(_L("PrusaSlicer is originally based on Slic3r by Alessandro Ranellucci."));
+    text_list.push_back(_L("SuperSlicer originally based on PrusaSlicer, and was created by SuperMerril and many other contributors."));
     text_list.push_back(_L("Slic3r was created by Alessandro Ranellucci with the help of many other contributors."));
 
     text_sizer->Add( 0, 0, 0, wxTOP, FromDIP(33));
