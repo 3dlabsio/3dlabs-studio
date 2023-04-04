@@ -1229,22 +1229,7 @@ void ExtruderOptionsGroup::on_change_OG(const t_config_option_key& opt_id, const
 wxString OptionsGroup::get_url(const std::string& path_end)
 {
     // 3dlabs documentation
-    wxString str = from_u8(path_end);
-    auto     pos = str.find(L'#');
-    if (pos != size_t(-1)) {
-        pos++;
-        wxString anchor = str.Mid(pos).Lower();
-        anchor.Replace(L" ", "-");
-        str = str.Left(pos) + anchor;
-    }
-    // Softfever: point to sf wiki for seam parameters
-    if (path_end == "Seam") {
-        return wxString::Format(L"https://docs.3dlabs.io/%s/3dlabs-studio/%s", from_u8(path_end));
-    }
-    else {
-        //BBS
-        return wxString::Format(L"https://docs.3dlabs.io/%s/3dlabs-studio/", L"en", str);
-    }
+    return wxString::Format(L"https://docs.3dlabs.io/%s/3dlabs-studio/", L"en", from_u8(path_end));
 }
 
 bool OptionsGroup::launch_browser(const std::string& path_end)
