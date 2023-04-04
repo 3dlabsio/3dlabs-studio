@@ -9,6 +9,9 @@
     "filament_vendor": [
         "3DXTech"
     ],
+    "default_filament_colour": [
+        "#FFFF80"
+    ],
     "filament_max_volumetric_speed": [
         "12"
     ],

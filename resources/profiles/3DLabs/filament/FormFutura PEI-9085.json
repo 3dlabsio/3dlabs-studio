@@ -6,6 +6,9 @@
     "filament_vendor": [
         "FormFutura"
     ],
+    "default_filament_colour": [
+        "#FF8040"
+    ],
     "from": "system",
     "inherits": "fdm_filament_pei",
     "instantiation": "true",

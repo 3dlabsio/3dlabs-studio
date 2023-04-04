@@ -6,6 +6,9 @@
     "filament_vendor": [
         "Kimya"
     ],
+    "default_filament_colour": [
+        "#FFFF00"
+    ],
     "from": "system",
     "inherits": "fdm_filament_pei",
     "instantiation": "true",

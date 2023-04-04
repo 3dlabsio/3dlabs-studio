@@ -9,6 +9,9 @@
     "filament_vendor": [
         "Essentium"
     ],
+    "default_filament_colour": [
+        "#FF8040"
+    ],
     "compatible_prints": [
         "PA-CF 0.25mm Standard @3D Labs"
     ],

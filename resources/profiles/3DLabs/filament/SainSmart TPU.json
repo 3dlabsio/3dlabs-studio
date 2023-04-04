@@ -9,6 +9,9 @@
     "filament_vendor": [
         "SainSmart"
     ],
+    "default_filament_colour": [
+        "#FFFF00"
+    ],
     "additional_cooling_fan_speed": [
         "0"
     ],

@@ -9,6 +9,9 @@
     "filament_vendor": [
         "Polymaker"
     ],
+    "default_filament_colour": [
+        "#FF8040"
+    ],
     "filament_max_volumetric_speed": [
         "12"
     ],

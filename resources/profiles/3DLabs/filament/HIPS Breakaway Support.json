@@ -12,6 +12,9 @@
     "filament_vendor": [
         "Generic"
     ],
+    "default_filament_colour": [
+        "#8080FF"
+    ],
     "from": "system",
     "inherits": "fdm_filament_hips",
     "instantiation": "true",

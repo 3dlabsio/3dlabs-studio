@@ -9,6 +9,9 @@
     "filament_vendor": [
         "Duramic"
     ],
+    "default_filament_colour": [
+        "#FF8040"
+    ],
     "additional_cooling_fan_speed": [
         "0"
     ],
