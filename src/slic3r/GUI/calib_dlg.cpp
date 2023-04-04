@@ -44,12 +44,14 @@ PA_Calibration_Dlg::PA_Calibration_Dlg(wxWindow* parent, wxWindowID id, Plater* 
 	int m_rbExtruderTypeNChoices = sizeof(m_rbExtruderTypeChoices) / sizeof(wxString);
 	m_rbExtruderType = new wxRadioBox(this, wxID_ANY, _L("Extruder type"), wxDefaultPosition, wxDefaultSize, m_rbExtruderTypeNChoices, m_rbExtruderTypeChoices, 2, wxRA_SPECIFY_COLS);
 	m_rbExtruderType->SetSelection(0);
+    m_rbExtruderType->Hide(); //3DL - Hide the Extruder type radio box
 	choice_sizer->Add(m_rbExtruderType, 0, wxALL, 5);
 	choice_sizer->Add(FromDIP(5), 0, 0, wxEXPAND, 5);
 	wxString m_rbMethodChoices[] = { _L("PA Tower"), _L("PA Line") };
 	int m_rbMethodNChoices = sizeof(m_rbMethodChoices) / sizeof(wxString);
 	m_rbMethod = new wxRadioBox(this, wxID_ANY, _L("Method"), wxDefaultPosition, wxDefaultSize, m_rbMethodNChoices, m_rbMethodChoices, 2, wxRA_SPECIFY_COLS);
 	m_rbMethod->SetSelection(0);
+    m_rbMethod->Hide(); //3DL - Hide the Method radio box
 	choice_sizer->Add(m_rbMethod, 0, wxALL, 5);
 
 	v_sizer->Add(choice_sizer);
@@ -140,7 +142,7 @@ void PA_Calibration_Dlg::on_start(wxCommandEvent& event) {
         msg_dlg.ShowModal();
         return;
     }
-    m_params.mode = m_rbMethod->GetSelection() == 0 ? CalibMode::Calib_PA_Tower : CalibMode::Calib_PA_Line;
+    m_params.mode = CalibMode::Calib_PA_Line;
     m_params.print_numbers = m_cbPrintNum->GetValue();
 
     m_plater->calib_pa(m_params);
@@ -149,7 +151,8 @@ void PA_Calibration_Dlg::on_start(wxCommandEvent& event) {
 }
 void PA_Calibration_Dlg::on_extruder_type_changed(wxCommandEvent& event) { 
     int selection = event.GetSelection();
-    m_bDDE = selection == 0 ? true : false;
+    //3DL - Always DDE on 3DLabs printers
+    m_bDDE = true;
     m_tiEndPA->GetTextCtrl()->SetValue(wxString::FromDouble(m_bDDE ? 0.1 : 1.0));
     m_tiStartPA->GetTextCtrl()->SetValue(wxString::FromDouble(0.0));
     m_tiPAStep->GetTextCtrl()->SetValue(wxString::FromDouble(m_bDDE ? 0.002 : 0.02));
@@ -157,7 +160,8 @@ void PA_Calibration_Dlg::on_extruder_type_changed(wxCommandEvent& event) {
 }
 void PA_Calibration_Dlg::on_method_changed(wxCommandEvent& event) { 
     int selection = event.GetSelection();
-    m_params.mode = selection == 0 ? CalibMode::Calib_PA_Tower : CalibMode::Calib_PA_Line;
+    //3DL - Always line method
+    m_params.mode = CalibMode::Calib_PA_Line;
     if (selection == 0)
         m_cbPrintNum->Enable(false);
     else
@@ -282,8 +286,9 @@ Temp_Calibration_Dlg::Temp_Calibration_Dlg(wxWindow* parent, wxWindowID id, Plat
         unsigned long t = 0;
         if(!ti->GetTextCtrl()->GetValue().ToULong(&t))
             return;
-        if(t> 350 || t < 180){
-            MessageDialog msg_dlg(nullptr, wxString::Format(L"Supported range: 180%s - 350%s",_L("\u2103"),_L("\u2103")), wxEmptyString, wxICON_WARNING | wxOK);
+        //3DL - Increase max temp to 500C
+        if(t> 500 || t < 180){
+            MessageDialog msg_dlg(nullptr, wxString::Format(L"Supported range: 180%s - 500%s",_L("\u2103"),_L("\u2103")), wxEmptyString, wxICON_WARNING | wxOK);
             msg_dlg.ShowModal();
             if(t > 350)
                 t = 350;
