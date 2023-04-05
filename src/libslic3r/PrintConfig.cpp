@@ -1091,7 +1091,7 @@ void PrintConfigDef::init_fff_params()
     def->sidetext = L("mm");
     def->min = 0;
     def->mode = comAdvanced;
-    def->set_default_value(new ConfigOptionFloat(0));
+    def->set_default_value(new ConfigOptionFloat(6.5));
 
     def = this->add("wall_infill_order", coEnum);
     def->label = L("Order of inner wall/outer wall/infil");
@@ -2254,7 +2254,7 @@ void PrintConfigDef::init_fff_params()
     //3dlabs
     def->mode = comSimple;
     //def->mode = comDevelop;
-    def->set_default_value(new ConfigOptionBool(false));
+    def->set_default_value(new ConfigOptionBool(true));
 
     def = this->add("filename_format", coString);
     def->label = L("Filename format");
@@ -3264,9 +3264,9 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("enable_prime_tower", coBool);
     def->label = L("Enable");
-    def->tooltip = L("Printsa a tower to prime the material in the nozzle after switching to a new extruder.");
+    def->tooltip = L("Prints a tower to prime the material in the nozzle after switching to a new extruder.");
     def->mode = comSimple;
-    def->set_default_value(new ConfigOptionBool(false));
+    def->set_default_value(new ConfigOptionBool(true));
 
     def = this->add("flush_volumes_vector", coFloats);
     // BBS: remove _L()
