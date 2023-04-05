@@ -954,6 +954,9 @@ StringObjectException Print::validate(StringObjectException *warning, Polygons* 
         //if (m_config.ooze_prevention)
         //    return { ("Ooze prevention is currently not supported with the prime tower enabled.") };
 
+        if (m_config.ooze_prevention && m_config.single_extruder_multi_material)
+            return  { ("Ooze prevention is only supported with the wipe tower when 'single_extruder_multi_material' is off.") };
+
         // BBS: remove following logic and _L()
 #if 0
         if (m_config.gcode_flavor != gcfRepRapSprinter && m_config.gcode_flavor != gcfRepRapFirmware &&

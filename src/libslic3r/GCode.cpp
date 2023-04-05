@@ -254,10 +254,14 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
                 // we assume that heating is always slower than cooling, so no need to block
                 gcode += gcodegen.writer().set_temperature
                 (this->_get_temp(gcodegen) + gcodegen.config().standby_temperature_delta.value, false, extruder_id);
+                gcode.pop_back();
+                gcode += " ;cooldown\n"; // this is a marker for GCodeProcessor, so it can supress the commands when needed
             }
         } else {
             // Use the value from filament settings. That one is absolute, not delta.
             gcode += gcodegen.writer().set_temperature(filament_idle_temp.get_at(extruder_id), false, extruder_id);
+            gcode.pop_back();
+            gcode += " ;cooldown\n"; // this is a marker for GCodeProcessor, so it can supress the commands when needed
         }
 
         return gcode;
@@ -442,6 +446,7 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
 
         // Process the custom change_filament_gcode. If it is empty, provide a simple Tn command to change the filament.
         // Otherwise, leave control to the user completely.
+        /*
         std::string toolchange_gcode_str;
         const std::string& change_filament_gcode = gcodegen.config().change_filament_gcode.value;
 //        m_max_layer_z = std::max(m_max_layer_z, tcr.print_z);
@@ -534,7 +539,7 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
             toolchange_gcode_str += gcodegen.unretract();
             check_add_eol(toolchange_gcode_str);
         }
-
+        
         std::string toolchange_command;
         if (tcr.priming || (new_extruder_id >= 0 && gcodegen.writer().need_toolchange(new_extruder_id)))
             toolchange_command = gcodegen.writer().toolchange(new_extruder_id);
@@ -542,26 +547,22 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
             toolchange_gcode_str += toolchange_command;
         else {
             // We have informed the m_writer about the current extruder_id, we can ignore the generated G-code.
+        }*/
+
+        std::string toolchange_gcode_str;
+        std::string deretraction_str;
+        if (tcr.priming || (new_extruder_id >= 0 && gcodegen.writer().need_toolchange(new_extruder_id))) {
+            if (gcodegen.config().single_extruder_multi_material)
+                gcodegen.m_wipe.reset_path(); // We don't want wiping on the ramming lines.
+            toolchange_gcode_str = gcodegen.set_extruder(new_extruder_id, tcr.print_z); // TODO: toolchange_z vs print_z
+            if (gcodegen.config().wipe_tower_no_sparse_layers)
+                deretraction_str = gcodegen.unretract();
         }
 
-        gcodegen.placeholder_parser().set("current_extruder", new_extruder_id);
-
-        // Process the start filament gcode.
-        std::string start_filament_gcode_str;
-        const std::string& filament_start_gcode = gcodegen.config().filament_start_gcode.get_at(new_extruder_id);
-        if (!filament_start_gcode.empty()) {
-            // Process the filament_start_gcode for the active filament only.
-            DynamicConfig config;
-            config.set_key_value("filament_extruder_id", new ConfigOptionInt(new_extruder_id));
-            start_filament_gcode_str = gcodegen.placeholder_parser_process("filament_start_gcode", filament_start_gcode, new_extruder_id, &config);
-            check_add_eol(start_filament_gcode_str);
-        }
-
-        // Insert the end filament, toolchange, and start filament gcode into the generated gcode.
+        // Insert the toolchange and deretraction gcode into the generated gcode.
         DynamicConfig config;
-        config.set_key_value("filament_end_gcode", new ConfigOptionString(end_filament_gcode_str));
         config.set_key_value("change_filament_gcode", new ConfigOptionString(toolchange_gcode_str));
-        config.set_key_value("filament_start_gcode", new ConfigOptionString(start_filament_gcode_str));
+        config.set_key_value("deretraction_from_wipe_tower_generator", new ConfigOptionString(deretraction_str));
         std::string tcr_gcode, tcr_escaped_gcode = gcodegen.placeholder_parser_process("tcr_rotated_gcode", tcr_rotated_gcode, new_extruder_id, &config);
         unescape_string_cstyle(tcr_escaped_gcode, tcr_gcode);
         gcode += tcr_gcode;
@@ -1204,7 +1205,34 @@ namespace DoExport {
 
     static void init_ooze_prevention(const Print &print, OozePrevention &ooze_prevention)
 	{
-	    ooze_prevention.enable = print.config().ooze_prevention.value && ! print.config().single_extruder_multi_material;
+	    // Calculate wiping points if needed
+	    if (print.config().ooze_prevention.value && ! print.config().single_extruder_multi_material) {
+	        Points skirt_points;
+	        for (const ExtrusionEntity *ee : print.skirt().entities)
+	            for (const ExtrusionPath &path : dynamic_cast<const ExtrusionLoop*>(ee)->paths)
+	                append(skirt_points, path.polyline.points);
+	        if (! skirt_points.empty()) {
+	            Polygon outer_skirt = Slic3r::Geometry::convex_hull(skirt_points);
+	            Polygons skirts;
+	            for (unsigned int extruder_id : print.extruders()) {
+	                const Vec2d &extruder_offset = print.config().extruder_offset.get_at(extruder_id);
+	                Polygon s(outer_skirt);
+	                s.translate(Point::new_scale(-extruder_offset(0), -extruder_offset(1)));
+	                skirts.emplace_back(std::move(s));
+	            }
+	            ooze_prevention.enable = true;
+	            //ooze_prevention.standby_points = offset(Slic3r::Geometry::convex_hull(skirts), float(scale_(3.))).front().equally_spaced_points(float(scale_(10.)));
+	#if 0
+	                require "Slic3r/SVG.pm";
+	                Slic3r::SVG::output(
+	                    "ooze_prevention.svg",
+	                    red_polygons    => \@skirts,
+	                    polygons        => [$outer_skirt],
+	                    points          => $gcodegen->ooze_prevention->standby_points,
+	                );
+	#endif
+	        }
+	    }
 	}
 
     //BBS: add plate id for thumbnail generate param
@@ -4445,8 +4473,7 @@ std::string GCode::set_extruder(unsigned int extruder_id, double print_z)
     m_wipe.reset_path();
 
     if (m_writer.extruder() != nullptr) {
-        // Process the custom filament_end_gcode. set_extruder() is only called if there is no wipe tower
-        // so it should not be injected twice.
+        // Process the custom end_filament_gcode
         unsigned int        old_extruder_id     = m_writer.extruder()->id();
         const std::string  &filament_end_gcode  = m_config.filament_end_gcode.get_at(old_extruder_id);
         if (! filament_end_gcode.empty()) {
