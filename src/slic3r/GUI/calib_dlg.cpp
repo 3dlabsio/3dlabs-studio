@@ -290,8 +290,8 @@ Temp_Calibration_Dlg::Temp_Calibration_Dlg(wxWindow* parent, wxWindowID id, Plat
         if(t> 500 || t < 180){
             MessageDialog msg_dlg(nullptr, wxString::Format(L"Supported range: 180%s - 500%s",_L("\u2103"),_L("\u2103")), wxEmptyString, wxICON_WARNING | wxOK);
             msg_dlg.ShowModal();
-            if(t > 350)
-                t = 350;
+            if(t > 500)
+                t = 500;
             else
                 t = 180;
         }
@@ -324,8 +324,8 @@ void Temp_Calibration_Dlg::on_start(wxCommandEvent& event) {
     read_long = m_tiStart->GetTextCtrl()->GetValue().ToULong(&start);
     read_long = read_long && m_tiEnd->GetTextCtrl()->GetValue().ToULong(&end);
 
-    if (!read_long || start > 350 || end < 180  || end > (start - 5)) {
-        MessageDialog msg_dlg(nullptr, _L("Please input valid values:\nStart temp: <= 350\nEnd temp: >= 180\nStart temp > End temp + 5)"), wxEmptyString, wxICON_WARNING | wxOK);
+    if (!read_long || start > 500 || end < 180  || end > (start - 5)) {
+        MessageDialog msg_dlg(nullptr, _L("Please input valid values:\nStart temp: <= 500\nEnd temp: >= 180\nStart temp > End temp + 5)"), wxEmptyString, wxICON_WARNING | wxOK);
         msg_dlg.ShowModal();
         return;
     }
