@@ -1120,17 +1120,21 @@ void GUI_App::post_init()
         BOOST_LOG_TRIVIAL(info) << "after check_updates";
         CallAfter([this] {
             bool cw_showed = this->config_wizard_startup();
-
+            /*3DL - updates here not required 
             std::string http_url = get_http_url(app_config->get_country_code());
             std::string language = GUI::into_u8(current_language_code());
             std::string network_ver = Slic3r::NetworkAgent::get_version();
             this->preset_updater->sync(http_url, language, network_ver, preset_bundle);
+            */
 
             //BBS: check new version
             this->check_new_version_sf();
 			//BBS: check privacy version
+
+            /* 3DL - not needed at this time
             if (is_user_login())
                 this->check_privacy_version(0);
+            */
         });
     }
 

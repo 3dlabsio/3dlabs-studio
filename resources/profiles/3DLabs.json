@@ -1,6 +1,6 @@
 {
     "name": "3D Labs",
-    "version": "02.01.01.01",
+    "version": "02.02.00.00",
     "force_update": "1",
     "description": "3D Labs configurations",
     "machine_model_list": [
@@ -157,6 +157,10 @@
             "sub_path": "filament/fdm_filament_pei.json"
         },
         {
+            "name": "fdm_filament_psu",
+            "sub_path": "filament/fdm_filament_psu.json"
+        },
+        {
             "name": "fdm_filament_pekk",
             "sub_path": "filament/fdm_filament_pekk.json"
         },
@@ -219,6 +223,10 @@
         {
             "name": "FormFutura PEI-9085",
             "sub_path": "filament/FormFutura PEI-9085.json"
+        },
+        {
+            "name": "ThermaX PSU",
+            "sub_path": "filament/ThermaX PSU.json"
         },
         {
             "name": "HIPS Breakaway Support",

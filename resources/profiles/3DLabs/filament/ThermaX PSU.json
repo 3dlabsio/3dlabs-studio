@@ -6,8 +6,11 @@
     "filament_vendor": [
         "3DXTech"
     ],
+    "default_filament_colour": [
+        "#FFFF00"
+    ],
     "from": "system",
-    "inherits": "fdm_filament_pekk",
+    "inherits": "fdm_filament_psu",
     "instantiation": "true",
     "name": "ThermaX PSU",
     "setting_id": "GFSB115-00",
@@ -104,5 +107,5 @@
     "temperature_vitrification": [
         "200"
     ],
-    "version": "2.1.1.0"
+    "version": "2.2.0"
 }

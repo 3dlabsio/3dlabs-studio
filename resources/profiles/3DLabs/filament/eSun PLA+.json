@@ -9,6 +9,9 @@
     "filament_vendor": [
         "eSun"
     ],
+    "default_filament_colour": [
+        "#FF8040"
+    ],
     "compatible_prints": [
         "PLA 0.15mm Fine @3D Labs",
         "PLA 0.20mm Standard @3D Labs",
@@ -100,5 +103,5 @@
     "temperature_vitrification": [
         "60"
     ],
-    "version": "2.1.1.0"
+    "version": "2.2.0"
 }

@@ -9,6 +9,9 @@
     "filament_vendor": [
         "SainSmart"
     ],
+    "default_filament_colour": [
+        "#FFFF00"
+    ],
     "additional_cooling_fan_speed": [
         "0"
     ],
@@ -60,5 +63,5 @@
     "temperature_vitrification": [
         "80"
     ],
-    "version": "2.1.1.0"
+    "version": "2.2.0"
 }

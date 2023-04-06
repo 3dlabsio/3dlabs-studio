@@ -9,6 +9,9 @@
     "filament_vendor": [
         "Infinite Material Solutions"
     ],
+    "default_filament_colour": [
+        "#00FF00"
+    ],
     "compatible_prints": [
         "ABS 0.15mm Fine @3D Labs",
         "ABS 0.20mm Standard @3D Labs",
@@ -99,5 +102,5 @@
     "slow_down_min_speed": [
         "5"
     ],
-    "version": "2.1.1.0"
+    "version": "2.2.0"
 }

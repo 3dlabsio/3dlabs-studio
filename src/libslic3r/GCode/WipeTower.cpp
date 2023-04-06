@@ -955,7 +955,7 @@ void WipeTower::toolchange_Change(
 
     // This is where we want to place the custom gcodes. We will use placeholders for this.
     // These will be substituted by the actual gcodes when the gcode is generated.
-    writer.append("[filament_end_gcode]\n");
+    //writer.append("[filament_end_gcode]\n");
     writer.append("[change_filament_gcode]\n");
 
     // BBS: do travel in GCode::append_tcr() for lazy_lift
@@ -969,11 +969,12 @@ void WipeTower::toolchange_Change(
                              +  " Y"  + Slic3r::float_to_string_decimal_point(current_pos.y())
                              + never_skip_tag() + "\n");
 #endif
+    writer.append("[deretraction_from_wipe_tower_generator]");
 
     // The toolchange Tn command will be inserted later, only in case that the user does
     // not provide a custom toolchange gcode.
 	writer.set_tool(new_tool); // This outputs nothing, the writer just needs to know the tool has changed.
-    writer.append("[filament_start_gcode]\n");
+    //writer.append("[filament_start_gcode]\n");
 
 	writer.flush_planner_queue();
 	m_current_tool = new_tool;

@@ -1091,7 +1091,7 @@ void PrintConfigDef::init_fff_params()
     def->sidetext = L("mm");
     def->min = 0;
     def->mode = comAdvanced;
-    def->set_default_value(new ConfigOptionFloat(0));
+    def->set_default_value(new ConfigOptionFloat(6.5));
 
     def = this->add("wall_infill_order", coEnum);
     def->label = L("Order of inner wall/outer wall/infil");
@@ -2254,7 +2254,7 @@ void PrintConfigDef::init_fff_params()
     //3dlabs
     def->mode = comSimple;
     //def->mode = comDevelop;
-    def->set_default_value(new ConfigOptionBool(false));
+    def->set_default_value(new ConfigOptionBool(true));
 
     def = this->add("filename_format", coString);
     def->label = L("Filename format");
@@ -2583,11 +2583,12 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("draft_shield", coEnum);
     //def->label = L("Draft shield");
-    def->label = "Warp shield";
+    def->label = "Warp/Ooze shield";
     def->tooltip = L("With warp shield active, the skirt will be printed skirt_distance from the object, possibly intersecting brim.\n"
                      "Enabled = skirt is as tall as the highest printed object.\n"
                     "Limited = skirt is as tall as specified by skirt_height.\n"
-    				 "Use this feature when you're having trouble printing high-temperature filaments, such as PEEK or PEI, and experience cracks or warping. This helps to keep the heat around the printed object.");
+                     "Use this feature if you're having problems with dual extrusion prints and bits of filament getting on your parts.\n"
+    				 "Also use this feature when you're having trouble printing high-temperature filaments, such as PEEK or PEI, and experience cracks or warping. This helps to keep the heat around the printed object.");
     def->enum_keys_map = &ConfigOptionEnum<DraftShield>::get_enum_values();
     def->enum_values.push_back("disabled");
     def->enum_values.push_back("limited");
@@ -3263,9 +3264,9 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("enable_prime_tower", coBool);
     def->label = L("Enable");
-    def->tooltip = L("Printsa a tower to prime the material in the nozzle after switching to a new extruder.");
+    def->tooltip = L("Prints a tower to prime the material in the nozzle after switching to a new extruder.");
     def->mode = comSimple;
-    def->set_default_value(new ConfigOptionBool(false));
+    def->set_default_value(new ConfigOptionBool(true));
 
     def = this->add("flush_volumes_vector", coFloats);
     // BBS: remove _L()

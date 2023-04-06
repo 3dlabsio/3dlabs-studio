@@ -12,6 +12,9 @@
     "filament_vendor": [
         "Generic"
     ],
+    "default_filament_colour": [
+        "#8080FF"
+    ],
     "from": "system",
     "inherits": "fdm_filament_hips",
     "instantiation": "true",
@@ -86,5 +89,5 @@
     "slow_down_min_speed": [
         "5"
     ],
-    "version": "2.1.1.0"
+    "version": "2.2.0"
 }

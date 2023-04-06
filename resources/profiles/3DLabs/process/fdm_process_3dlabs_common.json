@@ -103,7 +103,7 @@
     "gap_infill_speed": "45",
     "sparse_infill_speed": "120",
     "travel_speed": "300",
-    "enable_prime_tower": "0",
+    "enable_prime_tower": "1",
     "wipe_tower_no_sparse_layers": "0",
     "prime_tower_width": "35",
     "xy_hole_compensation": "0",
@@ -113,5 +113,5 @@
       "3D Labs HTX 0.4 nozzle",
       "3D Labs X400 0.4 nozzle"
     ],
-    "version": "2.1.1.0"
+    "version": "2.2.0"
 }

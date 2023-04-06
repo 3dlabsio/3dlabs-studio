@@ -6,6 +6,9 @@
     "filament_vendor": [
         "FormFutura"
     ],
+    "default_filament_colour": [
+        "#FF8040"
+    ],
     "from": "system",
     "inherits": "fdm_filament_pp",
     "instantiation": "true",
@@ -98,5 +101,5 @@
     "temperature_vitrification": [
         "120"
     ],
-    "version": "2.1.1.0"
+    "version": "2.2.0"
 }

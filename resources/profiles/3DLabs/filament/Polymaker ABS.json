@@ -9,6 +9,9 @@
     "filament_vendor": [
         "Polymaker"
     ],
+    "default_filament_colour": [
+        "#FF8040"
+    ],
     "filament_max_volumetric_speed": [
         "12"
     ],
@@ -50,10 +53,10 @@
         "195"
     ],
     "nozzle_temperature": [
-        "245"
+        "255"
     ],
     "nozzle_temperature_initial_layer": [
-        "245"
+        "255"
     ],
     "nozzle_temperature_range_low": [
         "230"
@@ -67,5 +70,5 @@
     "slow_down_min_speed": [
         "5"
     ],
-    "version": "2.1.1.1"
+    "version": "2.2.0"
 }

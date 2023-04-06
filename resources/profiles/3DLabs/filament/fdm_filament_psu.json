@@ -1,13 +1,13 @@
 {
     "type": "filament",
-    "name": "fdm_filament_hips",
+    "name": "fdm_filament_psu",
     "from": "system",
     "instantiation": "false",
     "compatible_prints": [
 	    ""
     ],
     "idle_temperature": [
-        "195"
+        "250"
     ],
     "compatible_printers": [
         "3D Labs HTX 0.4 nozzle",
@@ -20,7 +20,7 @@
         "0"
     ],
     "filament_type": [
-        "HIPS"
+        "PSU"
     ],
     "filament_vendor": [
         "Generic"
