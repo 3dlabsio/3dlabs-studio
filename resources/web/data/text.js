@@ -84,7 +84,9 @@ var LangText={
 		"t89":"Open Containing Folder",
 		"t90":"3D Model",
 		"t91":"Download 3D models",
-		"t92":"Bambu Christmas Cabin"
+		"t92":"Bambu Christmas Cabin",
+		"t93":"Printer Connection",
+		"t94":"Please set up your printer connection to view the device."
 	},
 	"zh_CN":{
 		"t1":"欢迎使用3DLabs Studio",

@@ -185,7 +185,7 @@ std::vector<SurfaceFill> group_fills(const Layer &layer)
 		        params.bridge = is_bridge || Fill::use_bridge_flow(params.pattern);
 				params.flow   = params.bridge ?
 					//BBS: always enable thick bridge for internal bridge
-					layerm.bridging_flow(extrusion_role, (surface.is_bridge() && !surface.is_external()) || object_config.thick_bridges, surface.is_external() ? region_config.bridge_density.get_abs_value(1.0) : 1.0f) :
+					layerm.bridging_flow(extrusion_role, (surface.is_bridge() && !surface.is_external()) || object_config.thick_bridges) :
 					layerm.flow(extrusion_role, (surface.thickness == -1) ? layer.height : surface.thickness);
 
 				// Calculate flow spacing for infill pattern generation.
@@ -199,8 +199,13 @@ std::vector<SurfaceFill> group_fills(const Layer &layer)
 					// so that internall infill will be aligned over all layers of the current region.
 		            params.spacing = layerm.region().flow(*layer.object(), frInfill, layer.object()->config().layer_height, false).spacing();
 		            // Anchor a sparse infill to inner perimeters with the following anchor length:
-				    params.anchor_length = float(Fill::infill_anchor * 0.01 * params.spacing);
-					params.anchor_length_max = Fill::infill_anchor_max;
+					// Anchor a sparse infill to inner perimeters with the following anchor length:
+			        params.anchor_length = float(region_config.infill_anchor);
+					if (region_config.infill_anchor.percent)
+						params.anchor_length = float(params.anchor_length * 0.01 * params.spacing);
+					params.anchor_length_max = float(region_config.infill_anchor_max);
+					if (region_config.infill_anchor_max.percent)
+						params.anchor_length_max = float(params.anchor_length_max * 0.01 * params.spacing);
 					params.anchor_length = std::min(params.anchor_length, params.anchor_length_max);
 				}
 
@@ -490,10 +495,15 @@ void Layer::make_fills(FillAdaptive::Octree* adaptive_fill_octree, FillAdaptive:
 
 		params.config = &layerm->region().config();
 		for (ExPolygon& expoly : surface_fill.expolygons) {
-            f->no_overlap_expolygons = intersection_ex(surface_fill.no_overlap_expolygons, ExPolygons() = {expoly});
+            f->no_overlap_expolygons = intersection_ex(surface_fill.no_overlap_expolygons, ExPolygons() = {expoly}, ApplySafetyOffset::Yes);
 			// Spacing is modified by the filler to indicate adjustments. Reset it for each expolygon.
 			f->spacing = surface_fill.params.spacing;
 			surface_fill.surface.expolygon = std::move(expoly);
+
+			if(surface_fill.params.bridge && surface_fill.surface.is_external() && surface_fill.params.density > 99.0){
+				params.density = layerm->region().config().bridge_density.get_abs_value(1.0);
+				params.dont_adjust = true;
+			}
 			// BBS: make fill
 			f->fill_surface_extrusion(&surface_fill.surface,
 				params,

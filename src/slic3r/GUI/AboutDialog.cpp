@@ -239,7 +239,7 @@ AboutDialog::AboutDialog()
 
     wxBoxSizer *text_sizer_horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer *text_sizer = new wxBoxSizer(wxVERTICAL);
-    text_sizer_horiz->Add( 0, 0, 0, wxLEFT, FromDIP(23));
+    text_sizer_horiz->Add( 0, 0, 0, wxLEFT, FromDIP(20));
 
     std::vector<wxString> text_list;
     text_list.push_back(_L("3DLabs Studio is based on Bambu Studio, PrusaSlicer, and SuperSlicer."));
@@ -372,10 +372,10 @@ AboutDialog::AboutDialog()
     copyright_button_ver->Add( 0, 0, 0, wxTOP, FromDIP(10));
     copyright_button_ver->Add(button_portions, 0, wxALL,0);
 
-    copyright_hor_sizer->Add(copyright_button_ver, 0, wxALL,0);
-    copyright_hor_sizer->Add( 0, 0, 0, wxRIGHT, FromDIP(13));
+    copyright_hor_sizer->AddStretchSpacer();
+    copyright_hor_sizer->Add(copyright_button_ver, 0, wxRIGHT, FromDIP(20));
 
-    ver_sizer->Add(copyright_hor_sizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL,0);
+    ver_sizer->Add(copyright_hor_sizer, 0, wxEXPAND ,0);
     ver_sizer->Add( 0, 0, 0, wxTOP, FromDIP(30));
     button_portions->Bind(wxEVT_BUTTON, &AboutDialog::onCopyrightBtn, this);
 

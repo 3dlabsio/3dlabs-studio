@@ -75,11 +75,11 @@ GuideFrame::GuideFrame(GUI_App *pGUI, long style)
     wxSize pSize = FromDIP(wxSize(820, 660));
     SetSize(pSize);
 
-    CenterOnParent();
-    //int screenheight = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y, NULL);
-    //int screenwidth  = wxSystemSettings::GetMetric(wxSYS_SCREEN_X, NULL);
-    //int MaxY         = (screenheight - pSize.y) > 0 ? (screenheight - pSize.y) / 2 : 0;
-    //MoveWindow(this->m_hWnd, (screenwidth - pSize.x) / 2, MaxY, pSize.x, pSize.y, TRUE);
+    int screenheight = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y, NULL);
+    int screenwidth  = wxSystemSettings::GetMetric(wxSYS_SCREEN_X, NULL);
+    int MaxY         = (screenheight - pSize.y) > 0 ? (screenheight - pSize.y) / 2 : 0;
+    wxPoint tmpPT((screenwidth - pSize.x) / 2, MaxY);
+    Move(tmpPT);
 #ifdef __WXMSW__
     this->Bind(wxEVT_CHAR_HOOK, [this](wxKeyEvent& e) {
         if ((m_page == BBL_FILAMENT_ONLY || m_page == BBL_MODELS_ONLY) && e.GetKeyCode() == WXK_ESCAPE) {
@@ -1354,7 +1354,13 @@ int GuideFrame::LoadProfileFamily(std::string strVendor, std::string strFilePath
 
             // wxString strCoverPath = wxString::Format("%s\\%s\\%s_cover.png", strFolder, strVendor, std::string(s1.mb_str()));
             std::string             cover_file = s1 + "_cover.png";
-            boost::filesystem::path cover_path = boost::filesystem::absolute(vendor_dir / cover_file).make_preferred();
+            boost::filesystem::path cover_path = boost::filesystem::absolute(boost::filesystem::path(resources_dir()) / "/profiles/" / strVendor / cover_file).make_preferred();
+            if (!boost::filesystem::exists(cover_path)) {
+                cover_path =
+                    (boost::filesystem::absolute(boost::filesystem::path(resources_dir()) / "/web/image/printer/") /
+                     cover_file)
+                        .make_preferred();
+            }
             OneModel["cover"]                  = cover_path.string();
 
             OneModel["nozzle_selected"] = "";
