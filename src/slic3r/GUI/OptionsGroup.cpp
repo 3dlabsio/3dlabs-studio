@@ -287,7 +287,7 @@ void OptionsGroup::activate_line(Line& line)
 		const auto h_sizer = new wxBoxSizer(wxHORIZONTAL);
 		sizer->Add(h_sizer, 1, wxEXPAND | wxALL, wxOSX ? 0 : 5);
 		if (is_window_field(field))
-			h_sizer->Add(field->getWindow(), 1, wxEXPAND | wxLEFT, titleWidth * wxGetApp().em_unit());
+			h_sizer->Add(field->getWindow(), 1, wxEXPAND | wxLEFT, option.opt.multiline ? 0 : titleWidth * wxGetApp().em_unit());
 		if (is_sizer_field(field))
 			h_sizer->Add(field->getSizer(), 1, wxEXPAND | wxLEFT, titleWidth * wxGetApp().em_unit());
 		return;
@@ -652,7 +652,7 @@ void ConfigOptionsGroup::back_to_config_value(const DynamicPrintConfig& config, 
 	if (opt_key == "extruders_count") {
 		auto   *nozzle_diameter = dynamic_cast<const ConfigOptionFloats*>(config.option("nozzle_diameter"));
 		value = int(nozzle_diameter->values.size());
-	}
+        }
 #if 0
     // BBS
     else if (opt_key == "bed_temperature" || opt_key == "bed_temperature_initial_layer") {
@@ -669,21 +669,19 @@ void ConfigOptionsGroup::back_to_config_value(const DynamicPrintConfig& config, 
         }
     }
 #endif
-    else if (m_opt_map.find(opt_key) == m_opt_map.end() ||
-		    // This option don't have corresponded field
-		     opt_key == "printable_area"				||
-		     opt_key == "compatible_printers"	|| opt_key == "compatible_prints" || opt_key == "thumbnails" ) {
+        else if (m_opt_map.find(opt_key) == m_opt_map.end() ||
+                 // This option don't have corresponded field
+                 opt_key == "printable_area" || opt_key == "compatible_printers" || opt_key == "compatible_prints" ||
+                 opt_key == "thumbnails" || opt_key == "bed_custom_texture" || opt_key == "bed_custom_model") {
         value = get_config_value(config, opt_key);
         this->change_opt_value(opt_key, value);
         return;
-    }
-	else
-	{
-		auto opt_id = m_opt_map.find(opt_key)->first;
-		std::string opt_short_key = m_opt_map.at(opt_id).first;
-		int opt_index = m_opt_map.at(opt_id).second;
-		value = get_config_value(config, opt_short_key, opt_index);
-	}
+        } else {
+        auto opt_id = m_opt_map.find(opt_key)->first;
+        std::string opt_short_key = m_opt_map.at(opt_id).first;
+        int opt_index = m_opt_map.at(opt_id).second;
+        value = get_config_value(config, opt_short_key, opt_index);
+        }
 
     // BBS: restore all pages in preset
     if (set_value(opt_key, value))

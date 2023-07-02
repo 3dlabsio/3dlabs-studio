@@ -1468,7 +1468,7 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
         if (is_support_filament(interface_filament_id) && !(m_config->opt_float("support_top_z_distance") == 0 && m_config->opt_float("support_interface_spacing") == 0 &&
                                                             m_config->opt_enum<SupportMaterialInterfacePattern>("support_interface_pattern") == SupportMaterialInterfacePattern::smipConcentric)) {
             wxString msg_text = _L("When using support material for the support interface, We recommend the following settings:\n"
-                                   "0 top z distance, 0 interface spacing, concentric pattern.");
+                                   "0 top z distance, 0 interface spacing, concentric pattern and disable independent support layer height");
             msg_text += "\n\n" + _L("Change these settings automatically? \n"
                                     "Yes - Change these settings automatically\n"
                                     "No  - Do not change these settings for me");
@@ -1478,6 +1478,7 @@ void Tab::on_value_change(const std::string& opt_key, const boost::any& value)
                 new_conf.set_key_value("support_top_z_distance", new ConfigOptionFloat(0));
                 new_conf.set_key_value("support_interface_spacing", new ConfigOptionFloat(0));
                 new_conf.set_key_value("support_interface_pattern", new ConfigOptionEnum<SupportMaterialInterfacePattern>(SupportMaterialInterfacePattern::smipConcentric));
+                new_conf.set_key_value("independent_support_layer_height", new ConfigOptionBool(false));
                 m_config_manipulation.apply(m_config, &new_conf);
             }
             wxGetApp().plater()->update();
@@ -1903,6 +1904,9 @@ void TabPrint::build()
         optgroup = page->new_optgroup(L("Infill"), L"param_infill");
         optgroup->append_single_option_line("sparse_infill_density");
         optgroup->append_single_option_line("sparse_infill_pattern", "fill-patterns#infill types and their properties of sparse");
+        optgroup->append_single_option_line("infill_anchor");
+        optgroup->append_single_option_line("infill_anchor_max");
+
         optgroup->append_single_option_line("filter_out_gap_fill");
 
         optgroup = page->new_optgroup(L("Advanced"), L"param_advanced");
@@ -1920,6 +1924,7 @@ void TabPrint::build()
         optgroup->append_single_option_line("initial_layer_speed");
         optgroup->append_single_option_line("initial_layer_infill_speed");
         optgroup->append_single_option_line("initial_layer_travel_speed");
+        optgroup->append_single_option_line("slow_down_layers");
         optgroup = page->new_optgroup(L("Other layers speed"), L"param_speed", 15);
         optgroup->append_single_option_line("outer_wall_speed");
         optgroup->append_single_option_line("inner_wall_speed");
@@ -2017,10 +2022,10 @@ void TabPrint::build()
         optgroup->append_single_option_line("support_expansion", "support#base-pattern");
         //optgroup->append_single_option_line("support_interface_loop_pattern");
 
-        optgroup->append_single_option_line("support_object_xy_distance", "support#supportobject-xy-distance");
+        optgroup->append_single_option_line("support_object_xy_distance", "support");
         optgroup->append_single_option_line("bridge_no_support", "support#base-pattern");
         optgroup->append_single_option_line("max_bridge_length", "support#base-pattern");
-        //optgroup->append_single_option_line("independent_support_layer_height");
+        optgroup->append_single_option_line("independent_support_layer_height", "support");
 
     page = add_options_page(L("Others"), "advanced");
         optgroup = page->new_optgroup(L("Bed adhesion"), L"param_adhesion");
@@ -2330,8 +2335,9 @@ void TabPrintModel::reset_model_config()
     wxGetApp().plater()->take_snapshot(std::string("Reset Options"));
     for (auto config : m_object_configs) {
         auto rmkeys = intersect(m_keys, config.second->keys());
-        for (auto & k : rmkeys)
+        for (auto& k : rmkeys) {
             config.second->erase(k);
+        }
         notify_changed(config.first);
     }
     update_model_config();
@@ -2450,6 +2456,44 @@ void TabPrintPart::notify_changed(ObjectBase * object)
 {
     auto vol = dynamic_cast<ModelVolume*>(object);
     wxGetApp().obj_list()->object_config_options_changed({vol->get_object(), vol});
+}
+
+static std::string layer_height = "layer_height";
+TabPrintLayer::TabPrintLayer(ParamsPanel* parent) :
+    TabPrintModel(parent, concat({ layer_height }, PrintRegionConfig().keys()))
+{
+    m_parent_tab = wxGetApp().get_model_tab();
+}
+
+void TabPrintLayer::notify_changed(ObjectBase * object)
+{
+    for (auto config : m_object_configs) {
+        if (!config.second->has(layer_height)) {
+            auto option = m_parent_tab->get_config()->option(layer_height);
+            config.second->set_key_value(layer_height, option->clone());
+        }
+        auto objects_list = wxGetApp().obj_list();
+        wxDataViewItemArray items;
+        objects_list->GetSelections(items);
+        for (auto item : items)
+            objects_list->add_settings_item(item, &config.second->get());
+    }
+}
+
+void TabPrintLayer::update_custom_dirty()
+{
+    for (auto k : m_null_keys) m_options_list[k] = 0;
+    for (auto k : m_all_keys) m_options_list[k] &= ~osSystemValue;
+
+    auto option = m_parent_tab->get_config()->option(layer_height);
+    for (auto config : m_object_configs) {
+        if (!config.second->has(layer_height)) {
+            config.second->set_key_value(layer_height, option->clone());
+            m_options_list[layer_height] = osInitValue | osSystemValue;
+        }
+        else if (config.second->opt_float(layer_height) == option->getFloat())
+            m_options_list[layer_height] = osInitValue | osSystemValue;
+    }
 }
 
 bool Tab::validate_custom_gcode(const wxString& title, const std::string& gcode)
@@ -2703,7 +2747,7 @@ void TabFilament::build()
         //optgroup->append_line(line);
         optgroup = page->new_optgroup(L("Cooling for specific layer"), L"param_cooling");
         optgroup->append_single_option_line("close_fan_the_first_x_layers", "auto-cooling");
-        //optgroup->append_single_option_line("full_fan_speed_layer");
+        optgroup->append_single_option_line("full_fan_speed_layer");
 
         optgroup = page->new_optgroup(L("Part cooling fan"), L"param_cooling_fan");
         line = { L("Min fan speed threshold"), L("Part cooling fan speed will start to run at min speed when the estimated layer time is no longer than the layer time in setting. When layer time is shorter than threshold, fan speed is interpolated between the minimum and maximum fan speed according to layer printing time") };
@@ -2723,6 +2767,7 @@ void TabFilament::build()
         optgroup->append_single_option_line("enable_overhang_bridge_fan", "auto-cooling");
         optgroup->append_single_option_line("overhang_fan_threshold", "auto-cooling");
         optgroup->append_single_option_line("overhang_fan_speed", "auto-cooling");
+        optgroup->append_single_option_line("support_material_interface_fan_speed");
 
         optgroup = page->new_optgroup(L("Auxiliary part cooling fan"), L"param_cooling_fan");
         optgroup->append_single_option_line("additional_cooling_fan_speed");
@@ -3075,6 +3120,13 @@ void TabPrinter::build_fff()
         // optgroup->append_single_option_line("spaghetti_detector");
         optgroup->append_single_option_line("machine_load_filament_time");
         optgroup->append_single_option_line("machine_unload_filament_time");
+
+        optgroup = page->new_optgroup(L("Cooling Fan"));
+        Line line = Line{ L("Fan speed-up time"), optgroup->get_option("fan_speedup_time").opt.tooltip };
+        line.append_option(optgroup->get_option("fan_speedup_time"));
+        line.append_option(optgroup->get_option("fan_speedup_overhangs"));
+        optgroup->append_line(line);
+        optgroup->append_single_option_line("fan_kickstart");
 
         optgroup = page->new_optgroup(L("Extruder Clearance"));
         optgroup->append_single_option_line("extruder_clearance_radius");
@@ -3596,7 +3648,8 @@ void TabPrinter::toggle_options()
        is_BBL_printer = m_preset_bundle->printers.get_edited_preset().is_bbl_vendor_preset(m_preset_bundle);
     }
 
-    bool have_multiple_extruders = m_extruders_count > 1;
+    bool have_multiple_extruders = true;
+    //m_extruders_count > 1;
     //if (m_active_page->title() == "Custom G-code") {
     //    toggle_option("change_filament_gcode", have_multiple_extruders);
     //}
@@ -4853,20 +4906,30 @@ wxSizer* TabPrinter::create_bed_shape_widget(wxWindow* parent)
     btn->Bind(wxEVT_BUTTON, ([this](wxCommandEvent e)
         {
             BedShapeDialog dlg(this);
-            dlg.build_dialog(*m_config->option<ConfigOptionPoints>("printable_area"), {}, {});
+            dlg.build_dialog(*m_config->option<ConfigOptionPoints>("printable_area"),
+                *m_config->option<ConfigOptionString>("bed_custom_texture"),
+                *m_config->option<ConfigOptionString>("bed_custom_model"));
             if (dlg.ShowModal() == wxID_OK) {
                 const std::vector<Vec2d>& shape = dlg.get_shape();
+                const std::string& custom_texture = dlg.get_custom_texture();
+                const std::string& custom_model = dlg.get_custom_model();
                 if (!shape.empty())
                 {
                     load_key_value("printable_area", shape);
+                    load_key_value("bed_custom_texture", custom_texture);
+                    load_key_value("bed_custom_model", custom_model);
                     update_changed_ui();
                 }
+            on_presets_changed();
+
             }
         }));
 
     {
         Search::OptionsSearcher& searcher = wxGetApp().sidebar().get_searcher();
         const Search::GroupAndCategory& gc = searcher.get_group_and_category("printable_area");
+        searcher.add_key("bed_custom_texture", m_type, gc.group, gc.category);
+        searcher.add_key("bed_custom_model", m_type, gc.group, gc.category);
     }
 
     return sizer;

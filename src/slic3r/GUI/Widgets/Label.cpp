@@ -15,13 +15,17 @@ wxFont Label::sysFont(int size, bool bold)
     wxFont font{size, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, bold ? wxFONTWEIGHT_BOLD : wxFONTWEIGHT_NORMAL, false, face};
     font.SetFaceName(face);
     if (!font.IsOk()) {
-        font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-        if (bold) font.MakeBold();
-        font.SetPointSize(size);
+      BOOST_LOG_TRIVIAL(warning) << boost::format("Cann't find HarmonyOS Sans SC font");
+      font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+      BOOST_LOG_TRIVIAL(warning) << boost::format("Use system font instead: %1%") % font.GetFaceName();
+      if (bold)
+        font.MakeBold();
+      font.SetPointSize(size);
     }
     return font;
 }
 wxFont Label::Head_48;
+wxFont Label::Head_32;
 wxFont Label::Head_24;
 wxFont Label::Head_20;
 wxFont Label::Head_18;
@@ -30,6 +34,7 @@ wxFont Label::Head_15;
 wxFont Label::Head_14;
 wxFont Label::Head_13;
 wxFont Label::Head_12;
+wxFont Label::Head_11;
 wxFont Label::Head_10;
 
 wxFont Label::Body_16;
@@ -43,7 +48,7 @@ wxFont Label::Body_9;
 
 void Label::initSysFont()
 {
-#ifdef __linux__
+#if defined(__linux__) || defined(_WIN32)
     const std::string& resource_path = Slic3r::resources_dir();
     wxString font_path = wxString::FromUTF8(resource_path+"/fonts/HarmonyOS_Sans_SC_Bold.ttf");
     bool result = wxFont::AddPrivateFont(font_path);
@@ -55,6 +60,8 @@ void Label::initSysFont()
     printf("add font of HarmonyOS_Sans_SC_Regular returns %d\n", result);
 #endif
 
+    Head_48 = Label::sysFont(48, true);
+    Head_32 = Label::sysFont(32, true);
     Head_24 = Label::sysFont(24, true);
     Head_20 = Label::sysFont(20, true);
     Head_18 = Label::sysFont(18, true);
@@ -63,9 +70,9 @@ void Label::initSysFont()
     Head_14 = Label::sysFont(14, true);
     Head_13 = Label::sysFont(13, true);
     Head_12 = Label::sysFont(12, true);
+    Head_11 = Label::sysFont(11, true);
     Head_10 = Label::sysFont(10, true);
 
-    Head_48 = Label::sysFont(48, true);
     Body_16 = Label::sysFont(16, false);
     Body_15 = Label::sysFont(15, false);
     Body_14 = Label::sysFont(14, false);

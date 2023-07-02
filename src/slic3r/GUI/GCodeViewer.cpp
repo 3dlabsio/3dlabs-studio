@@ -178,7 +178,9 @@ void GCodeViewer::InstanceVBuffer::Ranges::reset()
 void GCodeViewer::InstanceVBuffer::reset()
 {
     s_ids.clear();
+    s_ids.shrink_to_fit();
     buffer.clear();
+    buffer.shrink_to_fit();
     render_ranges.reset();
 }
 
@@ -255,9 +257,12 @@ GCodeViewer::Color GCodeViewer::Extrusions::Range::get_color_at(float value) con
 {
     // Input value scaled to the colors range
     const float step = step_size();
-    if(log_scale)
+    float _min = min;
+    if(log_scale) {
         value = std::log(value);
-    const float global_t = (step != 0.0f) ? std::max(0.0f, value - min) / step : 0.0f; // lower limit of 0.0f
+        _min = std::log(min);
+    }
+    const float global_t = (step != 0.0f) ? std::max(0.0f, value - _min) / step : 0.0f; // lower limit of 0.0f
 
     const size_t color_max_idx = Range_Colors.size() - 1;
 
@@ -510,14 +515,14 @@ void GCodeViewer::SequentialView::Marker::render(int canvas_width, int canvas_he
     imgui.pop_toolbar_style();
 }
 
-void GCodeViewer::SequentialView::GCodeWindow::load_gcode(const std::string& filename, std::vector<size_t> &&lines_ends)
+void GCodeViewer::SequentialView::GCodeWindow::load_gcode(const std::string& filename, const std::vector<size_t> &lines_ends)
 {
     assert(! m_file.is_open());
     if (m_file.is_open())
         return;
 
     m_filename   = filename;
-    m_lines_ends = std::move(lines_ends);
+    m_lines_ends = lines_ends;
 
     m_selected_line_id = 0;
     m_last_lines_size = 0;
@@ -627,7 +632,7 @@ void GCodeViewer::SequentialView::GCodeWindow::render(float top, float bottom, f
     imgui.set_next_window_pos(right, top, ImGuiCond_Always, 1.0f, 0.0f);
     imgui.set_next_window_size(0.0f, wnd_height, ImGuiCond_Always);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-    ImGui::SetNextWindowBgAlpha(0.6f);
+    ImGui::SetNextWindowBgAlpha(0.8f);
     imgui.begin(std::string("G-code"), ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
 
     // center the text in the window by pushing down the first line
@@ -758,32 +763,18 @@ const std::vector<GCodeViewer::Color> GCodeViewer::Travel_Colors {{
 // Normal ranges
 // blue to red
 const std::vector<GCodeViewer::Color> GCodeViewer::Range_Colors{{
-    decode_color_to_float_array("#FF00FF"),  // bluish
-    decode_color_to_float_array("#FF55A9"),
-    decode_color_to_float_array("#FE8778"),
-    decode_color_to_float_array("#FFB847"),
-    decode_color_to_float_array("#FFD925"),
-    decode_color_to_float_array("#FFFF00"),
-    decode_color_to_float_array("#D8FF00"),
-    decode_color_to_float_array("#ADFF04"),
-    decode_color_to_float_array("#76FF01"),
-    decode_color_to_float_array("#52c7b8")    // reddish
+    decode_color_to_float_array("#0b2c7a"),  // bluish
+    decode_color_to_float_array("#135985"),
+    decode_color_to_float_array("#1c8891"),
+    decode_color_to_float_array("#04d60f"),
+    decode_color_to_float_array("#aaf200"),
+    decode_color_to_float_array("#fcf903"),
+    decode_color_to_float_array("#f5ce0a"),
+    //decode_color_to_float_array("#e38820"),
+    decode_color_to_float_array("#d16830"),
+    decode_color_to_float_array("#c2523c"),
+    decode_color_to_float_array("#942616")    // reddish
 }};
-
-//const std::vector<GCodeViewer::Color> GCodeViewer::Range_Colors {{
-//    {0.043f, 0.173f, 0.478f, 1.0f}, // bluish
-//    {0.075f, 0.349f, 0.522f, 1.0f},
-//    {0.110f, 0.533f, 0.569f, 1.0f},
-//    {0.016f, 0.839f, 0.059f, 1.0f},
-//    {0.667f, 0.949f, 0.000f, 1.0f},
-//    {0.988f, 0.975f, 0.012f, 1.0f},
-//    {0.961f, 0.808f, 0.039f, 1.0f},
-//    //{0.890f, 0.533f, 0.125f, 1.0f},
-//    {0.820f, 0.408f, 0.188f, 1.0f},
-//    {0.761f, 0.322f, 0.235f, 1.0f},
-//    {0.581f, 0.149f, 0.087f, 1.0f} // reddish
-//}};
-
 
 const GCodeViewer::Color GCodeViewer::Wipe_Color = { 1.0f, 1.0f, 0.0f, 1.0f };
 const GCodeViewer::Color GCodeViewer::Neutral_Color = { 0.25f, 0.25f, 0.25f, 1.0f };
@@ -909,6 +900,7 @@ void GCodeViewer::init(ConfigOptionMode mode, PresetBundle* preset_bundle)
 void GCodeViewer::on_change_color_mode(bool is_dark) {
     m_is_dark = is_dark;
     m_sequential_view.marker.on_change_color_mode(m_is_dark);
+    m_sequential_view.gcode_window.on_change_color_mode(m_is_dark);
 }
 
 void GCodeViewer::set_scale(float scale)
@@ -1098,8 +1090,19 @@ void GCodeViewer::load(const GCodeProcessorResult& gcode_result, const Print& pr
     }
 
     m_fold = false;
+
+    bool only_gcode_3mf = false;
+    PartPlate* current_plate = wxGetApp().plater()->get_partplate_list().get_curr_plate();
+    bool current_has_print_instances = current_plate->has_printable_instances();
+    if (current_plate->is_slice_result_valid() && wxGetApp().model().objects.empty() && !current_has_print_instances)
+        only_gcode_3mf = true;
+    m_layers_slider->set_menu_enable(!(only_gcode || only_gcode_3mf));
     m_layers_slider->set_as_dirty();
     m_moves_slider->set_as_dirty();
+
+    //BBS
+    m_conflict_result = gcode_result.conflict_result;
+    if (m_conflict_result) { m_conflict_result.value().layer = m_layers.get_l_at(m_conflict_result.value()._height); }
 
     //BBS: add mutex for protection of gcode result
     gcode_result.unlock();
@@ -1230,6 +1233,7 @@ void GCodeViewer::reset()
 
     m_moves_count = 0;
     m_ssid_to_moveid_map.clear();
+    m_ssid_to_moveid_map.shrink_to_fit();
     for (TBuffer& buffer : m_buffers) {
         buffer.reset();
     }
@@ -1800,7 +1804,10 @@ void GCodeViewer::update_layers_slider_mode()
 void GCodeViewer::update_marker_curr_move() {
     if ((int)m_last_result_id != -1) {
         auto it = std::find_if(m_gcode_result->moves.begin(), m_gcode_result->moves.end(), [this](auto move) {
-            return move.gcode_id == static_cast<uint64_t>(m_sequential_view.gcode_ids[m_sequential_view.current.last]);
+                if (m_sequential_view.current.last < m_sequential_view.gcode_ids.size() && m_sequential_view.current.last >= 0) {
+                    return move.gcode_id == static_cast<uint64_t>(m_sequential_view.gcode_ids[m_sequential_view.current.last]);
+                }
+                return false;
             });
         if (it != m_gcode_result->moves.end())
             m_sequential_view.marker.update_curr_move(*it);
@@ -3183,19 +3190,8 @@ void GCodeViewer::load_shells(const Print& print, bool initialized, bool force_p
     }
 
     if (wxGetApp().preset_bundle->printers.get_edited_preset().printer_technology() == ptFFF) {
-        // BBS
-        // adds wipe tower's volume
-        std::vector<int> print_extruders;
-        for (auto print_obj : print.objects()) {
-            ModelObject* mo = print_obj->model_object();
-            for (ModelVolume* mv : mo->volumes) {
-                std::vector<int> volume_extruders = mv->get_extruders();
-                print_extruders.insert(print_extruders.end(), volume_extruders.begin(), volume_extruders.end());
-            }
-        }
-        std::sort(print_extruders.begin(), print_extruders.end());
-        auto it_end = std::unique(print_extruders.begin(), print_extruders.end());
-        print_extruders.resize(std::distance(print_extruders.begin(), it_end));
+        // BBS: adds wipe tower's volume
+        std::vector<unsigned int> print_extruders = print.extruders(true);
         int extruders_count = print_extruders.size();
 
         const double max_z = print.objects()[0]->model_object()->get_model()->bounding_box().max(2);
@@ -4363,7 +4359,7 @@ void GCodeViewer::render_legend(float &legend_height, int canvas_width, int canv
     ImGui::PushStyleColor(ImGuiCol_ScrollbarGrab, ImVec4(0.42f, 0.42f, 0.42f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_ScrollbarGrabHovered, ImVec4(0.93f, 0.93f, 0.93f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_ScrollbarGrabActive, ImVec4(0.93f, 0.93f, 0.93f, 1.00f));
-    ImGui::SetNextWindowBgAlpha(0.6f);
+    ImGui::SetNextWindowBgAlpha(0.8f);
     const float max_height = 0.75f * static_cast<float>(cnv_size.get_height());
     const float child_height = 0.3333f * max_height;
     ImGui::SetNextWindowSizeConstraints({ 0.0f, 0.0f }, { -1.0f, max_height });

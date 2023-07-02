@@ -56,7 +56,6 @@ void BedShape::append_option_line(ConfigOptionsGroupShp optgroup, Parameter para
         def.max = 1073.5;
         def.label = get_option_label(param);
         def.tooltip = L("Distance of the 0,0 G-code coordinate from the front left corner of the rectangle.");
-        def.readonly = true;
         key = "rect_origin";
         break;
     case Parameter::Diameter:
@@ -89,11 +88,11 @@ wxString BedShape::get_name(PageType type)
 BedShape::PageType BedShape::get_page_type()
 {
     switch (m_build_volume.type()) {
-    case BuildVolume::Type::Rectangle:
-    case BuildVolume::Type::Invalid:    return PageType::Rectangle;
-    case BuildVolume::Type::Circle:     return PageType::Circle;
-    case BuildVolume::Type::Convex:
-    case BuildVolume::Type::Custom:     return PageType::Custom;
+    case BuildVolume_Type::Rectangle:
+    case BuildVolume_Type::Invalid:    return PageType::Rectangle;
+    case BuildVolume_Type::Circle:     return PageType::Circle;
+    case BuildVolume_Type::Convex:
+    case BuildVolume_Type::Custom:     return PageType::Custom;
     }
     // make visual studio happy
     assert(false);
@@ -104,7 +103,7 @@ wxString BedShape::get_full_name_with_params()
 {
     wxString out = _L("Shape") + ": " + get_name(this->get_page_type());
     switch (m_build_volume.type()) {
-    case BuildVolume::Type::Circle:
+    case BuildVolume_Type::Circle:
         out += "\n" + _L(get_option_label(Parameter::Diameter)) + ": [" + double_to_string(2. * unscaled<double>(m_build_volume.circle().radius)) + "]";
         break;
     default:
@@ -119,7 +118,7 @@ wxString BedShape::get_full_name_with_params()
 void BedShape::apply_optgroup_values(ConfigOptionsGroupShp optgroup)
 {
     switch (m_build_volume.type()) {
-    case BuildVolume::Type::Circle:
+    case BuildVolume_Type::Circle:
         optgroup->set_value("diameter", double_to_string(2. * unscaled<double>(m_build_volume.circle().radius)));
         break;
     default:
@@ -170,12 +169,12 @@ void BedShapeDialog::on_dpi_changed(const wxRect &suggested_rect)
 const std::string BedShapePanel::NONE = "None";
 const std::string BedShapePanel::EMPTY_STRING = "";
 
-void BedShapePanel::build_panel(const ConfigOptionPoints& default_pt, const ConfigOptionString& custom_texture, const ConfigOptionString& custom_model)
+void BedShapePanel::build_panel(const ConfigOptionPoints& default_pt, const std::string& custom_texture, const std::string& custom_model)
 {
     wxGetApp().UpdateDarkUI(this);
     m_shape = default_pt.values;
-    m_custom_texture = custom_texture.value.empty() ? NONE : custom_texture.value;
-    m_custom_model = custom_model.value.empty() ? NONE : custom_model.value;
+    m_custom_texture = custom_texture.empty() ? NONE : custom_texture;
+    m_custom_model = custom_model.empty() ? NONE : custom_model;
 
     auto sbsizer = new wxStaticBoxSizer(wxVERTICAL, this, _L("Shape"));
     sbsizer->GetStaticBox()->SetFont(wxGetApp().bold_font());
@@ -192,9 +191,9 @@ void BedShapePanel::build_panel(const ConfigOptionPoints& default_pt, const Conf
     BedShape::append_option_line(optgroup, BedShape::Parameter::RectOrigin);
     activate_options_page(optgroup);
 
-    // optgroup = init_shape_options_page(BedShape::get_name(BedShape::PageType::Circle));
-    // BedShape::append_option_line(optgroup, BedShape::Parameter::Diameter);
-    // activate_options_page(optgroup);
+     optgroup = init_shape_options_page(BedShape::get_name(BedShape::PageType::Circle));
+     BedShape::append_option_line(optgroup, BedShape::Parameter::Diameter);
+     activate_options_page(optgroup);
 
     optgroup = init_shape_options_page(BedShape::get_name(BedShape::PageType::Custom));
 

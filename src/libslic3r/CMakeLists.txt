@@ -22,6 +22,8 @@ set(lisbslic3r_sources
     ArcFitter.hpp
     pchheader.cpp
     pchheader.hpp
+    AABBTreeIndirect.hpp
+    AABBTreeLines.hpp
     BoundingBox.cpp
     BoundingBox.hpp
     BridgeDetector.cpp
@@ -51,8 +53,6 @@ set(lisbslic3r_sources
     enum_bitmask.hpp
     ExPolygon.cpp
     ExPolygon.hpp
-    ExPolygonCollection.cpp
-    ExPolygonCollection.hpp
     Extruder.cpp
     Extruder.hpp
     ExtrusionEntity.cpp
@@ -119,12 +119,16 @@ set(lisbslic3r_sources
     GCode/ThumbnailData.hpp
     GCode/CoolingBuffer.cpp
     GCode/CoolingBuffer.hpp
+	GCode/FanMover.cpp
+    GCode/FanMover.hpp
     GCode/PostProcessor.cpp
     GCode/PostProcessor.hpp
 #    GCode/PressureEqualizer.cpp
 #    GCode/PressureEqualizer.hpp
     GCode/PrintExtents.cpp
     GCode/PrintExtents.hpp
+    GCode/RetractWhenCrossingPerimeters.cpp
+    GCode/RetractWhenCrossingPerimeters.hpp
     GCode/SpiralVase.cpp
     GCode/SpiralVase.hpp
     GCode/SeamPlacer.cpp
@@ -138,6 +142,8 @@ set(lisbslic3r_sources
     GCode/AvoidCrossingPerimeters.cpp
     GCode/AvoidCrossingPerimeters.hpp
     GCode/ExtrusionProcessor.hpp
+    GCode/ConflictChecker.cpp
+    GCode/ConflictChecker.hpp
     GCode.cpp
     GCode.hpp
     GCodeReader.cpp
@@ -217,6 +223,8 @@ set(lisbslic3r_sources
     PresetBundle.hpp
     ProjectTask.cpp
     ProjectTask.hpp
+    PrincipalComponents2D.hpp
+    PrincipalComponents2D.cpp
     AppConfig.cpp
     AppConfig.hpp
     Print.cpp
