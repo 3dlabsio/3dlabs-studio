@@ -1,8 +1,4 @@
-
-[![Build Win64](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_win.yml/badge.svg)](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_win.yml)
-[![Build Mac AppleSilicon](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_mac_arm64.yml/badge.svg)](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_mac_arm64.yml)
-[![Build Mac Intel](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_mac_x64.yml/badge.svg)](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_mac_x64.yml)
-[![Build Linux](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_linux.yml/badge.svg)](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_linux.yml)
+[![Build OrcaSlicer](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_orca.yml/badge.svg?branch=main)](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_orca.yml)  
 
 # 3D Labs Studio
 The official slicer for the 3D Labs line of high-temperature 3D printers. 3D Labs Studio is custom tailored for HT 3D printing on the 3D Labs HTX/X400/X500 3D printers. 3D Labs Studio is maintained by our team of developers and testers for the best possible out-of-box experience.
@@ -50,5 +46,7 @@ Slic3r is licensed under the GNU Affero General Public License, version 3. Slic3
 
 The GNU Affero General Public License, version 3 ensures that if you use any part of this software in any way (even behind a web server), your software must be released under the same license.
 
-The bambu networking plugin is based on non-free libraries. It is optional to the Orca Slicer and provides extended functionalities for users.
+Orca Slicer includes a pressure advance calibration pattern test adapted from Andrew Ellis' generator, which is licensed under GNU General Public License, version 3. Ellis' generator is itself adapted from a generator developed by Sineos for Marlin, which is licensed under GNU General Public License, version 3.
+
+The bambu networking plugin is based on non-free libraries from Bambulab. It is optional to the Orca Slicer and provides extended functionalities for Bambulab printer users.
 

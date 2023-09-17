@@ -402,7 +402,7 @@ static std::string generate_system_info_json()
     namespace pt = boost::property_tree;
 
     pt::ptree data_node;
-    data_node.put("BambuStudioVersion", SLIC3R_VERSION);
+    data_node.put("OrcaSlicerVersion", SLIC3R_VERSION);
     data_node.put("BuildID", SLIC3R_BUILD_ID);
     data_node.put("UniqueID", unique_id);
     data_node.put("Platform", platform_to_string(platform()));

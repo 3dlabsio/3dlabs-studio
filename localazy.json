@@ -12,7 +12,7 @@
 		]
 	},
 	"download": {
-		"folder": "bbl/i18n",
+		"folder": "localization/i18n",
 		"includeSourceLang" : "true",
 		"files": {
 			"output": "${lang}/3DLabsStudio_${lang}.po"
