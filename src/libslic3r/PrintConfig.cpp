@@ -75,7 +75,6 @@ CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(PrinterTechnology)
 static t_config_enum_values s_keys_map_PrintHostType {
     { "ion",            htION},
     { "prusalink",      htPrusaLink },
-    { "prusaconnect",   htPrusaConnect },
     { "octoprint",      htOctoPrint },
     { "duet",           htDuet },
     { "flashair",       htFlashAir },
@@ -3210,6 +3209,18 @@ def = this->add("filament_loading_speed", coFloats);
     def->tooltip = L("Use single nozzle to print multi filament");
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(false));
+
+    def = this->add("purge_in_prime_tower", coBool);
+    def->label = L("Purge in prime tower");
+    def->tooltip = L("Purge remaining filament into prime tower");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(true));
+
+    def = this->add("enable_filament_ramming", coBool);
+    def->label = L("Enable filament ramming");
+    def->tooltip = L("Enable filament ramming");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(true));
 
     def = this->add("wipe_tower_no_sparse_layers", coBool);
     def->label = L("No sparse layers (EXPERIMENTAL)");

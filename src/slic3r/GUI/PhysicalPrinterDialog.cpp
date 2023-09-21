@@ -476,8 +476,6 @@ void PhysicalPrinterDialog::update_host_type(bool printer_change)
     choice->set_value(index_in_choice);
     if ("prusalink" == ht->m_opt.enum_values.at(index_in_choice))
         m_config->set_key_value("host_type", new ConfigOptionEnum<PrintHostType>(htPrusaLink));
-    else if ("prusaconnect" == ht->m_opt.enum_values.at(index_in_choice))
-        m_config->set_key_value("host_type", new ConfigOptionEnum<PrintHostType>(htPrusaConnect));
     else {
         int host_type = std::clamp(index_in_choice + ((int)ht->m_opt.enum_values.size() - (int)types.size()), 0, (int)ht->m_opt.enum_values.size() - 1);
         PrintHostType type = static_cast<PrintHostType>(host_type);

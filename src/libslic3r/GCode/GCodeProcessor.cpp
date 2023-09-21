@@ -1396,7 +1396,7 @@ void GCodeProcessor::process_file(const std::string& filename, std::function<voi
 
         // if the gcode was produced by OrcaSlicer,
         // extract the config from it
-        if (m_producer == EProducer::OrcaSlicer || m_producer == EProducer::Slic3rPE || m_producer == EProducer::Slic3r) {
+        if (m_producer == EProducer::BambuStudio || m_producer == EProducer::Slic3rPE || m_producer == EProducer::Slic3r) {
             DynamicPrintConfig config;
             config.apply(FullPrintConfig::defaults());
             // Silently substitute unknown values by new ones for loading configurations from OrcaSlicer's own G-code.
@@ -2081,7 +2081,7 @@ void GCodeProcessor::process_tags(const std::string_view comment, bool producers
         return;
     }
 
-    if (!producers_enabled || m_producer == EProducer::OrcaSlicer) {
+    if (!producers_enabled || m_producer == EProducer::BambuStudio) {
         // height tag
         if (boost::starts_with(comment, reserved_tag(ETags::Height))) {
             if (!parse_number(comment.substr(reserved_tag(ETags::Height).size()), m_forced_height))
@@ -2221,7 +2221,7 @@ bool GCodeProcessor::process_producers_tags(const std::string_view comment)
     case EProducer::Slic3rPE:
     case EProducer::Slic3r: 
     case EProducer::SuperSlicer:
-    case EProducer::OrcaSlicer: { return process_bambuslicer_tags(comment); }
+    case EProducer::BambuStudio: { return process_bambuslicer_tags(comment); }
     case EProducer::Cura:        { return process_cura_tags(comment); }
     case EProducer::Simplify3D:  { return process_simplify3d_tags(comment); }
     case EProducer::CraftWare:   { return process_craftware_tags(comment); }

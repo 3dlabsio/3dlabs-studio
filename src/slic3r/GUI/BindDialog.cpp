@@ -59,7 +59,7 @@ wxString get_fail_reason(int code)
      SetDoubleBuffered(true);
 #endif //__WINDOWS__
 
-     std::string icon_path = (boost::format("%1%/images/3DLabsStudioTitle.ico") % resources_dir()).str();
+     std::string icon_path = (boost::format("%1%/images/3dlabs/3DLabsStudioTitle.ico") % resources_dir()).str();
      SetIcon(wxIcon(encode_path(icon_path.c_str()), wxBITMAP_TYPE_ICO));
 
      SetBackgroundColour(*wxWHITE);

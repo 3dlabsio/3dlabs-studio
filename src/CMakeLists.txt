@@ -104,13 +104,13 @@ endif()
 # Create a slic3r executable
 # Process mainfests for various platforms.
 set(MACOSX_BUNDLE_COPYRIGHT "Copyright(C) 2022-2023 Li Jiang All Rights Reserved")
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/OrcaSlicer.rc.in ${CMAKE_CURRENT_BINARY_DIR}/OrcaSlicer.rc @ONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/OrcaSlicer.manifest.in ${CMAKE_CURRENT_BINARY_DIR}/OrcaSlicer.manifest @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/3DLabsStudio.rc.in ${CMAKE_CURRENT_BINARY_DIR}/3DLabsStudio.rc @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/3DLabsStudio.manifest.in ${CMAKE_CURRENT_BINARY_DIR}/3DLabsStudio.manifest @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/osx/Info.plist.in ${CMAKE_CURRENT_BINARY_DIR}/Info.plist @ONLY)
 if (WIN32)
-    add_library(3DLabsStudio SHARED BambuStudio.cpp BambuStudio.hpp BaseException.cpp BaseException.h StackWalker.cpp StackWalker.h)
+    add_library(3DLabsStudio SHARED 3DLabsStudio.cpp 3DLabsStudio.hpp BaseException.cpp BaseException.h StackWalker.cpp StackWalker.h)
 else ()
-    add_executable(3DLabsStudio BambuStudio.cpp BambuStudio.hpp)
+    add_executable(3DLabsStudio 3DLabsStudio.cpp 3DLabsStudio.hpp)
 endif ()
 
 if (MINGW)
@@ -167,7 +167,7 @@ if (WIN32)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -municode")
     endif()
 
-    add_executable(3DLabsStudio_app_gui WIN32 BambuStudio_app_msvc.cpp ${CMAKE_CURRENT_BINARY_DIR}/BambuStudio.rc)
+    add_executable(3DLabsStudio_app_gui WIN32 3DLabsStudio_app_msvc.cpp ${CMAKE_CURRENT_BINARY_DIR}/3DLabsStudio.rc)
     # Generate debug symbols even in release mode.
     if(MSVC)
         target_link_options(3DLabsStudio_app_gui PUBLIC "$<$<CONFIG:RELEASE>:/DEBUG>")

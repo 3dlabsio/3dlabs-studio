@@ -578,7 +578,7 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
             toolchange_gcode_str += toolchange_command;
         else {
             // We have informed the m_writer about the current extruder_id, we can ignore the generated G-code.
-        }*/
+        }
 
         gcodegen.placeholder_parser().set("current_extruder", new_extruder_id);
 
