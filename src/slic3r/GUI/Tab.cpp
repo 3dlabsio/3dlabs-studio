@@ -3949,7 +3949,7 @@ void TabPrinter::build_unregular_pages(bool from_initial_build/* = false*/)
     size_t existed_page = 0;
     for (size_t i = n_before_extruders; i < m_pages.size(); ++i) // first make sure it's not there already
         if (m_pages[i]->title().find(L("Motion ability")) != std::string::npos) {
-            if (m_rebuild_kinematics_page)
+            if (!show_mach_limits || m_rebuild_kinematics_page)
                 m_pages.erase(m_pages.begin() + i);
             else
                 existed_page = i;
@@ -3968,47 +3968,14 @@ void TabPrinter::build_unregular_pages(bool from_initial_build/* = false*/)
         n_before_extruders++;
     size_t		n_after_single_extruder_MM = 2; //	Count of pages after single_extruder_multi_material page
 
-    //if (m_extruders_count_old == m_extruders_count ||
-    //    (m_has_single_extruder_MM_page && m_extruders_count == 1))
-    //{
-    //    // if we have a single extruder MM setup, add a page with configuration options:
-    //    for (size_t i = 0; i < m_pages.size(); ++i) // first make sure it's not there already
-    //        if (m_pages[i]->title().find(L("Single extruder MM setup")) != std::string::npos) {
-    //            m_pages.erase(m_pages.begin() + i);
-    //            break;
-    //        }
-    //    m_has_single_extruder_MM_page = false;
-    //}
-
-    //BBS: please add our single extruder multimaterial parameters here. Currently
-    //comment this part because we have no such config in this page.
-#if 0
-    //if (from_initial_build ||
-    //    (m_extruders_count > 1 && m_config->opt_bool("single_extruder_multi_material") && !m_has_single_extruder_MM_page)) {
-    //    // create a page, but pretend it's an extruder page, so we can add it to m_pages ourselves
-    //    auto page = add_options_page(L("Single extruder MM setup"), "printer", true);
-    //    auto optgroup = page->new_optgroup(L("Single extruder multimaterial parameters"));
-    //
-    //    if (from_initial_build)
-    //        page->clear();
-    //    else {
-    //        m_pages.insert(m_pages.end() - n_after_single_extruder_MM, page);
-    //        m_has_single_extruder_MM_page = true;
-    //    }
-    //}
-#endif
-
-    // BBS. Just create one extruder page because BBL machine has only on physical extruder.
-    // Build missed extruder pages
-    //for (auto extruder_idx = m_extruders_count_old; extruder_idx < m_extruders_count; ++extruder_idx)
-    auto extruder_idx = 0;
-    const wxString& page_name = (m_extruders_count > 1) ? wxString::Format("Extruder %d", int(extruder_idx + 1)) : wxString::Format("Extruder");
-    bool page_exist = false;
-    for (auto page_temp : m_pages) {
-        if (page_temp->title() == page_name) {
-            page_exist = true;
-            break;
-        }
+    if (m_extruders_count_old == m_extruders_count)
+    {
+        // if we have a single extruder MM setup, add a page with configuration options:
+        for (size_t i = 0; i < m_pages.size(); ++i) // first make sure it's not there already
+            if (m_pages[i]->title().find(L("Single extruder MM setup")) != std::string::npos) {
+                m_pages.erase(m_pages.begin() + i);
+                break;
+            }
     }
 
     // Build missed extruder pages
