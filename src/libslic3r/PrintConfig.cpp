@@ -2502,6 +2502,21 @@ void PrintConfigDef::init_fff_params()
     //def->mode = comDevelop;
     def->set_default_value(new ConfigOptionBool(true));
 
+    def = this->add("ooze_prevention_purge_buckets", coBool);
+    def->label = L("Scrub nozzle on tool change");
+    def->tooltip = L("If enabled, the purge buckets will be used to purge and scrub the nozzles on every toolchange. "
+                    "Warning: Do not enable if you dont have the purge buckets installed.");
+    def->mode = comSimple;
+    def->set_default_value(new ConfigOptionBool(false));
+
+    def = this->add("ooze_prevention_scrub_every_layer", coBool);
+    def->label = L("Scrub nozzle on layer change");
+    def->tooltip = L("If enabled, the nozzle(s) will be purged and scrubbed on every layer change "
+                     "This is very useful for printing with materials that like to form blobs on the nozzle, such as PEI and PETG. "
+                     "Warning: Do not enable if you dont have the purge buckets installed.");
+    def->mode = comSimple;
+    def->set_default_value(new ConfigOptionBool(false));
+
     def = this->add("filename_format", coString);
     def->label = L("Filename format");
     def->tooltip = L("User can self-define the project file name when export");

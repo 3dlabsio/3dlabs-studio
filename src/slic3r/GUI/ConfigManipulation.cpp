@@ -641,6 +641,8 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
 
     bool have_ooze_prevention = config->opt_bool("ooze_prevention");
     toggle_field("standby_temperature_delta", have_ooze_prevention);
+    toggle_field("ooze_prevention_purge_buckets", have_ooze_prevention);
+    toggle_field("ooze_prevention_scrub_every_layer", have_ooze_prevention); 
 
     bool have_prime_tower = config->opt_bool("enable_prime_tower");
     for (auto el : { "prime_tower_width", "prime_volume", "prime_tower_brim_width"})

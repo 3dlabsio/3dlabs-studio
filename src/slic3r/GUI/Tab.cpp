@@ -2086,6 +2086,8 @@ void TabPrint::build()
         optgroup = page->new_optgroup(L("Ooze control"), L"param_wall");
         optgroup->append_single_option_line("ooze_prevention");
         optgroup->append_single_option_line("standby_temperature_delta");
+        optgroup->append_single_option_line("ooze_prevention_purge_buckets");
+        optgroup->append_single_option_line("ooze_prevention_scrub_every_layer");
 
         optgroup = page->new_optgroup(L("Special mode"), L"param_special");
         optgroup->append_single_option_line("slicing_mode");
