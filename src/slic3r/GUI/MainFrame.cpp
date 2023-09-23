@@ -1060,6 +1060,9 @@ void MainFrame::init_tabpanel() {
     });
     m_printer_view->Hide();
     
+    // 3DL
+    // These are bambu specific and serve no purpose
+    /*
     m_project = new ProjectPanel(m_tabpanel, wxID_ANY, wxDefaultPosition, wxDefaultSize);
     m_project->SetBackgroundColour(*wxWHITE);
     m_tabpanel->AddPage(m_project, _L("Project"), std::string("tab_auxiliary_avtice"), std::string("tab_auxiliary_avtice"));
@@ -1067,6 +1070,7 @@ void MainFrame::init_tabpanel() {
     m_calibration = new CalibrationPanel(m_tabpanel, wxID_ANY, wxDefaultPosition, wxDefaultSize);
     m_calibration->SetBackgroundColour(*wxWHITE);
     m_tabpanel->AddPage(m_calibration, _L("Calibration"), std::string("tab_monitor_active"), std::string("tab_monitor_active"));
+    */
 
     if (m_plater) {
         // load initial config
@@ -1952,9 +1956,9 @@ void MainFrame::on_dpi_changed(const wxRect& suggested_rect)
     //BBS GUI refactor: remove unused layout new/dlg
     //if (m_layout != ESettingsLayout::Dlg) // Do not update tabs if the Settings are in the separated dialog
     m_param_panel->msw_rescale();
-    m_project->msw_rescale();
+    /* m_project->msw_rescale(); */
     m_monitor->msw_rescale();
-    m_calibration->msw_rescale();
+    /* m_calibration->msw_rescale(); */
 
     // BBS
 #if 0
