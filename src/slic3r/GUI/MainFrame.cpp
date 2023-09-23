@@ -2692,13 +2692,6 @@ void MainFrame::init_menubar_as_editor()
     // SoftFever calibrations
 
     // Flowrate
-    append_menu_item(m_topbar->GetCalibMenu(), wxID_ANY, _L("Temperature"), _L("Temperature Calibration"),
-        [this](wxCommandEvent&) {
-            if (!m_temp_calib_dlg)
-                m_temp_calib_dlg = new Temp_Calibration_Dlg((wxWindow*)this, wxID_ANY, m_plater);
-            m_temp_calib_dlg->ShowModal();
-        }, "", nullptr,
-        [this]() {return m_plater->is_view3D_shown();; }, this);
     auto flowrate_menu = new wxMenu();
     append_menu_item(
         flowrate_menu, wxID_ANY, _L("Pass 1"), _L("Flow rate test - Pass 1"),
