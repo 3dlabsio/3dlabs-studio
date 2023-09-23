@@ -992,7 +992,6 @@ void WipeTower::toolchange_Change(
                              +  " Y"  + Slic3r::float_to_string_decimal_point(current_pos.y())
                              + never_skip_tag() + "\n");
 #endif
-    writer.append("[deretraction_from_wipe_tower_generator]");
 
     // The toolchange Tn command will be inserted later, only in case that the user does
     // not provide a custom toolchange gcode.

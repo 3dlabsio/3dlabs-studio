@@ -1052,8 +1052,8 @@ StringObjectException Print::validate(StringObjectException *warning, Polygons* 
         if (! m_config.use_relative_e_distances)
             return { ("The Wipe Tower is currently only supported with the relative extruder addressing (use_relative_e_distances=1).") };
         
-        if (m_config.ooze_prevention)
-            return { ("Ooze prevention is currently not supported with the prime tower enabled.") };
+        //if (m_config.ooze_prevention)
+        //    return { ("Ooze prevention is currently not supported with the prime tower enabled.") };
 
         // BBS: remove following logic and _L()
 #if 0
