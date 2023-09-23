@@ -2723,12 +2723,6 @@ void MainFrame::init_menubar_as_editor()
         }, "", nullptr,
         [this]() {return m_plater->is_view3D_shown();; }, this);
         
-    append_menu_item(m_topbar->GetCalibMenu(), wxID_ANY, _L("Orca Tolerance Test"), _L("Orca Tolerance Test"),
-        [this](wxCommandEvent&) {
-            m_plater->new_project();
-        m_plater->add_model(false, Slic3r::resources_dir() + "/calib/tolerance_test/OrcaToleranceTest.stl");
-        }, "", nullptr,
-        [this]() {return m_plater->is_view3D_shown();; }, this);
     // Advance calibrations
     auto advance_menu = new wxMenu();
 
