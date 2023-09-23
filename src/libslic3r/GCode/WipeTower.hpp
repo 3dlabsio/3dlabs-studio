@@ -94,7 +94,6 @@ public:
 			}
 			return e_length;
 		}
-		bool force_travel = false;
 	};
 
     struct box_coordinates
@@ -167,9 +166,6 @@ public:
 		}
 	}
 
-	void set_wipe_volume(std::vector<std::vector<float>>& wiping_matrix) {
-		wipe_volumes = wiping_matrix;
-	}
 
 	// Switch to a next layer.
 	void set_layer(
@@ -343,8 +339,8 @@ private:
 	// A fill-in direction (positive Y, negative Y) alternates with each layer.
 	wipe_shape   	m_current_shape = SHAPE_NORMAL;
     size_t 	m_current_tool  = 0;
-	// Orca: support mmu wipe tower
-    std::vector<std::vector<float>> wipe_volumes;
+	// BBS
+    //const std::vector<std::vector<float>> wipe_volumes;
 	const float		m_wipe_volume;
 
 	float           m_depth_traversed = 0.f; // Current y position at the wipe tower.

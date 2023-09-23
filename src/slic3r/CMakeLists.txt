@@ -278,8 +278,7 @@ set(SLIC3R_GUI_SOURCES
     GUI/wxExtensions.cpp
     GUI/wxExtensions.hpp
     GUI/WipeTowerDialog.cpp
-    GUI/RammingChart.cpp
-    GUI/RammingChart.hpp
+    GUI/WipeTowerDialog.hpp
     GUI/RemovableDriveManager.cpp
     GUI/RemovableDriveManager.hpp
     GUI/SendSystemInfoDialog.cpp
