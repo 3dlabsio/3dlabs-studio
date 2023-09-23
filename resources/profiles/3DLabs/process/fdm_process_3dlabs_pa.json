@@ -90,6 +90,7 @@
     "top_surface_line_width": "0.4",
     "top_shell_layers": "5",
     "top_shell_thickness": "0.8",
+<<<<<<< HEAD:resources/profiles/3DLabs/process/fdm_process_3dlabs_pa.json
     "top_solid_infill_flow_ratio": "0.95",
     "initial_layer_speed": "20",
     "initial_layer_infill_speed": "45",
@@ -100,6 +101,8 @@
     "gap_infill_speed": "45",
     "sparse_infill_speed": "120",
     "travel_speed": "300",
+=======
+>>>>>>> parent of e62463296 (semm):resources/profiles/FLSun/process/fdm_process_common.json
     "enable_prime_tower": "1",
     "wipe_tower_no_sparse_layers": "0",
     "prime_tower_width": "35",
