@@ -3384,8 +3384,10 @@ void TabFilament::toggle_options()
           wxGetApp().preset_bundle->is_bbl_vendor();
     }
 
-    auto cfg = m_preset_bundle->printers.get_edited_preset().config;
-    if (m_active_page->title() == L("Cooling")) {
+    if (m_active_page->title() == "Cooling") {
+      bool cooling = m_config->opt_bool("slow_down_for_layer_cooling", 0);
+      toggle_option("slow_down_min_speed", cooling);
+
       bool has_enable_overhang_bridge_fan = m_config->opt_bool("enable_overhang_bridge_fan", 0);
       for (auto el : {"overhang_fan_speed", "overhang_fan_threshold"})
             toggle_option(el, has_enable_overhang_bridge_fan);

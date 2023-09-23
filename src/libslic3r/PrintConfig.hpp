@@ -1102,7 +1102,6 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionFloatOrPercent,      initial_layer_travel_speed))
     ((ConfigOptionBool,                bbl_calib_mark_logo))
     ((ConfigOptionBool,                disable_m73))
-
 )
 
 // This object is mapped to Perl as Slic3r::Config::Print.

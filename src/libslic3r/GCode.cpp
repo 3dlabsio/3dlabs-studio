@@ -484,7 +484,7 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
             gcode += gcodegen.writer().unretract();
         }
 
-
+        
         // Process the end filament gcode.
         std::string end_filament_gcode_str;
         if (gcodegen.writer().extruder() != nullptr) {
@@ -565,11 +565,9 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
                 config.set_key_value("travel_point_3_x", new ConfigOptionFloat(float(travel_point_3.x())));
                 config.set_key_value("travel_point_3_y", new ConfigOptionFloat(float(travel_point_3.y())));
 
-                config.set_key_value("flush_length", new ConfigOptionFloat(purge_length));
-
-                int   flush_count = std::min(g_max_flush_count, (int) std::round(purge_volume / g_purge_volume_one_time));
-                float flush_unit  = purge_length / flush_count;
-                int   flush_idx   = 0;
+                int flush_count = std::min(g_max_flush_count, (int)std::round(purge_volume / g_purge_volume_one_time));
+                float flush_unit = purge_length / flush_count;
+                int flush_idx = 0;
                 for (; flush_idx < flush_count; flush_idx++) {
                     char key_value[64] = { 0 };
                     snprintf(key_value, sizeof(key_value), "flush_length_%d", flush_idx + 1);
