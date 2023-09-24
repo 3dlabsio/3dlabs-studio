@@ -454,6 +454,7 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
 
         // Process the custom change_filament_gcode. If it is empty, provide a simple Tn command to change the filament.
         // Otherwise, leave control to the user completely.
+        /*
         std::string toolchange_gcode_str;
         const std::string& change_filament_gcode = gcodegen.config().change_filament_gcode.value;
 //        m_max_layer_z = std::max(m_max_layer_z, tcr.print_z);
@@ -566,25 +567,22 @@ static std::vector<Vec2d> get_path_of_change_filament(const Print& print)
             toolchange_gcode_str += toolchange_command;
         else {
             // We have informed the m_writer about the current extruder_id, we can ignore the generated G-code.
-        }
+        }*/
 
-        gcodegen.placeholder_parser().set("current_extruder", new_extruder_id);
-
-        // Process the start filament gcode.
-        std::string start_filament_gcode_str;
-        const std::string& filament_start_gcode = gcodegen.config().filament_start_gcode.get_at(new_extruder_id);
-        if (!filament_start_gcode.empty()) {
-            // Process the filament_start_gcode for the active filament only.
-            DynamicConfig config;
-            config.set_key_value("filament_extruder_id", new ConfigOptionInt(new_extruder_id));
-            start_filament_gcode_str = gcodegen.placeholder_parser_process("filament_start_gcode", filament_start_gcode, new_extruder_id, &config);
-            check_add_eol(start_filament_gcode_str);
+        std::string toolchange_gcode_str;
+        std::string deretraction_str;
+        if (tcr.priming || (new_extruder_id >= 0 && gcodegen.writer().need_toolchange(new_extruder_id))) {
+            if (gcodegen.config().single_extruder_multi_material)
+                gcodegen.m_wipe.reset_path(); // We don't want wiping on the ramming lines.
+            toolchange_gcode_str = gcodegen.set_extruder(new_extruder_id, tcr.print_z); // TODO: toolchange_z vs print_z
+            if (gcodegen.config().wipe_tower_no_sparse_layers)
+                deretraction_str = gcodegen.unretract();
         }
 
         // Insert the toolchange and deretraction gcode into the generated gcode.
         DynamicConfig config;
         config.set_key_value("change_filament_gcode", new ConfigOptionString(toolchange_gcode_str));
-        config.set_key_value("filament_start_gcode", new ConfigOptionString(start_filament_gcode_str));
+        config.set_key_value("deretraction_from_wipe_tower_generator", new ConfigOptionString(deretraction_str));
         std::string tcr_gcode, tcr_escaped_gcode = gcodegen.placeholder_parser_process("tcr_rotated_gcode", tcr_rotated_gcode, new_extruder_id, &config);
         unescape_string_cstyle(tcr_escaped_gcode, tcr_gcode);
         gcode += tcr_gcode;
