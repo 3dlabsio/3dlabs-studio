@@ -3,6 +3,7 @@
 
 set(SLIC3R_APP_NAME "3DLabsStudio")
 set(SLIC3R_APP_KEY "3DLabsStudio")
+set(SLIC3R_GENERATED_BY "Ion-3DLabsStudio")
 
 if(NOT DEFINED BBL_RELEASE_TO_PUBLIC)
 set(BBL_RELEASE_TO_PUBLIC "1")
@@ -13,3 +14,4 @@ set(BBL_INTERNAL_TESTING "0")
 endif()
 set(SLIC3R_VERSION "02.05.00.00")
 set(SoftFever_VERSION "2.5.0")
+
