@@ -129,7 +129,7 @@
   "z_lift_type": "NormalLift",
   "silent_mode": "0",
   "single_extruder_multi_material": "0",
-  "machine_pause_gcode": "PAUSE\n",
+  "machine_pause_gcode": "@pause\n",
   "wipe": [
     "0",
     "0"
