@@ -43,7 +43,7 @@
   ],
   "default_filament_profile": [
     "Polymaker ABS",
-    "Polymaker ABS"
+    "AquaSys 120 Support"
   ],
   "printable_height": "300",
   "extruder_offset": [
