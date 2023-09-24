@@ -1014,6 +1014,12 @@ StringObjectException Print::validate(StringObjectException *warning, Polygons* 
             return {L("The spiral vase mode does not work when an object contains more than one materials."), nullptr, "spiral_mode"};
     }
 
+    // 3DL
+    // Purge toolchange scrub is not compatible with the layer change scrub
+    if (m_config.ooze_prevention_purge_buckets && m_config.ooze_prevention_scrub_every_layer) {
+        return {("Toolchange scrub is not compatible with layer change scrub. Please select only one option.")};
+    }
+
     if (this->has_wipe_tower() && ! m_objects.empty()) {
         // Make sure all extruders use same diameter filament and have the same nozzle diameter
         // EPSILON comparison is used for nozzles and 10 % tolerance is used for filaments
