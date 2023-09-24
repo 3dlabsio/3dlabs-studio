@@ -115,7 +115,8 @@
     "0"
   ],
   "retract_restart_extra_toolchange": [
-    "0"
+    "1.75",
+    "1.75"
   ],
   "retraction_speed": [
     "40",
@@ -144,5 +145,6 @@
   "before_layer_change_gcode": "G92 E0\n",
   "scan_first_layer": "0",
   "nozzle_type": "undefine",
-  "auxiliary_fan": "0"
+  "auxiliary_fan": "0",
+  "version": "2.5.0"
 }

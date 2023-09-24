@@ -41,6 +41,10 @@
     "0.4",
     "0.4"
   ],
+  "retract_restart_extra_toolchange": [
+    "1.75",
+    "1.75"
+  ],
   "default_filament_profile": [
     "Polymaker ABS",
     "AquaSys 120 Support"
