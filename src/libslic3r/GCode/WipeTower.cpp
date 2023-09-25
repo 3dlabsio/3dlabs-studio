@@ -1568,7 +1568,7 @@ static WipeTower::ToolChangeResult merge_tcr(WipeTower::ToolChangeResult& first,
     if (first.end_pos != second.start_pos)
         out.gcode += "G1 X" + Slic3r::float_to_string_decimal_point(second.start_pos.x(), 3)
                      + " Y" + Slic3r::float_to_string_decimal_point(second.start_pos.y(), 3)
-                     + " F7200\n";
+                     + " F3600\n";
     out.gcode += second.gcode;
     out.extrusions.insert(out.extrusions.end(), second.extrusions.begin(), second.extrusions.end());
     out.end_pos = second.end_pos;
