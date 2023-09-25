@@ -2,7 +2,7 @@
   "type": "machine",
   "setting_id": "3DLAB001",
   "name": "3D Labs HTX 0.4 nozzle",
-  "change_filament_gcode": "{ if ooze_prevention && layer_num > -1}\n    { if ooze_prevention_purge_buckets}\n        { if current_extruder == 0 && is_extruder_used[1]}\n        CLEAN_PURGE T=1 S={nozzle_temperature[1]}\n        { elsif current_extruder == 1 && is_extruder_used[0]}\n        CLEAN_PURGE T=0 S={nozzle_temperature[0]}\n        { endif }\n    { else }\n    G1 X215 Y300 F15000\n    { endif } \n{ endif }\n",
+  "change_filament_gcode": "{ if ooze_prevention && layer_num > -1}\n    { if ooze_prevention_purge_buckets}\n        { if current_extruder == 0 && is_extruder_used[1]}\n        CLEAN_PURGE T=1 S={nozzle_temperature[1]}\n        { elsif current_extruder == 1 && is_extruder_used[0]}\n        CLEAN_PURGE T=0 S={nozzle_temperature[0]}\n        { endif }\n    { else }\n    G1 X215 Y300\n    { endif } \n{ endif }\n",
   "from": "system",
   "instantiation": "true",
   "inherits": "fdm_common",
