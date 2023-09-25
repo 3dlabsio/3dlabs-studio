@@ -1333,14 +1333,14 @@ void PrintConfigDef::init_fff_params()
     def->tooltip  = L("Default filament color");
     def->gui_type = ConfigOptionDef::GUIType::color;
     def->mode     = comAdvanced;
-    def->set_default_value(new ConfigOptionStrings{""});
+    def->set_default_value(new ConfigOptionStrings{"#e38c1f"});
 
     def = this->add("filament_colour", coStrings);
     def->label = L("Color");
     def->tooltip = L("Used as a visual aid in the UI");
     def->gui_type = ConfigOptionDef::GUIType::color;
     def->mode = comAdvanced;
-    def->set_default_value(new ConfigOptionStrings{ "#02A7F0" });
+    def->set_default_value(new ConfigOptionStrings{ "#e38c1f" });
 
     // PS
     def = this->add("filament_notes", coStrings);
