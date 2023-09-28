@@ -146,5 +146,5 @@
   "scan_first_layer": "0",
   "nozzle_type": "undefine",
   "auxiliary_fan": "0",
-  "version": "2.5.0"
+  "version": "2.5.1"
 }
