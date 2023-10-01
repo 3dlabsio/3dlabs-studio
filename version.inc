@@ -12,6 +12,6 @@ endif()
 if(NOT DEFINED BBL_INTERNAL_TESTING)
 set(BBL_INTERNAL_TESTING "0")
 endif()
-set(SLIC3R_VERSION "02.05.00.00")
-set(SoftFever_VERSION "2.5.0")
+set(SLIC3R_VERSION "02.06.00.00")
+set(SoftFever_VERSION "2.6.0")
 
