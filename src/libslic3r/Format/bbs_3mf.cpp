@@ -916,7 +916,7 @@ void PlateData::parse_filament_info(GCodeProcessorResult *result)
         bool m_load_restore = false;
         std::string m_backup_path;
         std::string m_origin_file;
-        // Semantic version of 3DLabs Studio, that generated this 3MF.
+        // Semantic version of 3D Labs Studio, that generated this 3MF.
         boost::optional<Semver> m_bambuslicer_generator_version;
         unsigned int m_fdm_supports_painting_version = 0;
         unsigned int m_seam_painting_version         = 0;
@@ -3537,13 +3537,13 @@ void PlateData::parse_filament_info(GCodeProcessorResult *result)
         } else if (m_curr_metadata_name == BBL_APPLICATION_TAG) {
             // Generator application of the 3MF.
             // SLIC3R_APP_KEY - SLIC3R_VERSION
-            if (boost::starts_with(m_curr_characters, "BambuStudio-") || boost::starts_with(m_curr_characters, "3DLabsStudio-")) {
+            if (boost::starts_with(m_curr_characters, "BambuStudio-")) { 
                 m_is_bbl_3mf = true;
-                m_bambuslicer_generator_version = Semver::parse(m_curr_characters.substr(13));
+                m_bambuslicer_generator_version = Semver::parse(m_curr_characters.substr(12));
             }
             else if (boost::starts_with(m_curr_characters, "3DLabsStudio-")) {
                 m_is_bbl_3mf = true;
-                m_bambuslicer_generator_version = Semver::parse(m_curr_characters.substr(11));
+                m_bambuslicer_generator_version = Semver::parse(m_curr_characters.substr(12));
             }
         //TODO: currently use version 0, no need to load&&save this string
         /*} else if (m_curr_metadata_name == BBS_FDM_SUPPORTS_PAINTING_VERSION) {
@@ -5989,13 +5989,36 @@ void PlateData::parse_filament_info(GCodeProcessorResult *result)
                            << "\" Id=\"rel-2\" Type=\"http://schemas.openxmlformats.org/package/2006/relationships/metadata/thumbnail\"/>\n";
                 }
 
-            if (!data._3mf_printer_thumbnail_middle.empty()) {
-                stream << " <Relationship Target=\"/" << data._3mf_printer_thumbnail_middle
-                       << "\" Id=\"rel-4\" Type=\"http://schemas.3dlabs.io/package/2021/cover-thumbnail-middle\"/>\n";
+                if (data._3mf_printer_thumbnail_middle.empty()) {
+                    stream << " <Relationship Target=\"/Metadata/plate_1.png"
+                           << "\" Id=\"rel-4\" Type=\"http://schemas.bambulab.com/package/2021/cover-thumbnail-middle\"/>\n";
+                } else {
+                    stream << " <Relationship Target=\"/" << xml_escape(data._3mf_printer_thumbnail_middle)
+                           << "\" Id=\"rel-4\" Type=\"http://schemas.bambulab.com/package/2021/cover-thumbnail-middle\"/>\n";
+                }
+
+                if (data._3mf_printer_thumbnail_small.empty()) {
+                    stream << "<Relationship Target=\"/Metadata/plate_1_small.png"
+                           << "\" Id=\"rel-5\" Type=\"http://schemas.bambulab.com/package/2021/cover-thumbnail-small\"/>\n";
+                } else {
+                    stream << " <Relationship Target=\"/" << xml_escape(data._3mf_printer_thumbnail_small)
+                           << "\" Id=\"rel-5\" Type=\"http://schemas.bambulab.com/package/2021/cover-thumbnail-small\"/>\n";
+                }
             }
-            if (!data._3mf_printer_thumbnail_small.empty())
-                stream << " <Relationship Target=\"/" << data._3mf_printer_thumbnail_small
-                       << "\" Id=\"rel-5\" Type=\"http://schemas.3dlabs.io/package/2021/cover-thumbnail-small\"/>\n";
+            else {
+                //always use plate thumbnails
+                std::string thumbnail_file_str = (boost::format("Metadata/plate_%1%.png") % (export_plate_idx + 1)).str();
+                stream << " <Relationship Target=\"/" << xml_escape(thumbnail_file_str)
+                    << "\" Id=\"rel-2\" Type=\"http://schemas.openxmlformats.org/package/2006/relationships/metadata/thumbnail\"/>\n";
+
+                thumbnail_file_str = (boost::format("Metadata/plate_%1%.png") % (export_plate_idx + 1)).str();
+                stream << " <Relationship Target=\"/" << xml_escape(thumbnail_file_str)
+                   << "\" Id=\"rel-4\" Type=\"http://schemas.bambulab.com/package/2021/cover-thumbnail-middle\"/>\n";
+
+                thumbnail_file_str = (boost::format("Metadata/plate_%1%_small.png") % (export_plate_idx + 1)).str();
+                stream << " <Relationship Target=\"/" << xml_escape(thumbnail_file_str)
+                   << "\" Id=\"rel-5\" Type=\"http://schemas.bambulab.com/package/2021/cover-thumbnail-small\"/>\n";
+            }
         }
         else if (targets.empty()) {
             return false;
@@ -7193,7 +7216,7 @@ void PlateData::parse_filament_info(GCodeProcessorResult *result)
 
         // write model rels
         if (save_gcode)
-            _add_relationships_file_to_archive(archive, BBS_MODEL_CONFIG_RELS_FILE, gcode_paths, {"http://schemas.3dlabs.io/package/2021/gcode"}, Slic3r::PackingTemporaryData(), export_plate_idx);
+            _add_relationships_file_to_archive(archive, BBS_MODEL_CONFIG_RELS_FILE, gcode_paths, {"http://schemas.bambulab.com/package/2021/gcode"}, Slic3r::PackingTemporaryData(), export_plate_idx);
 
         if (!m_skip_model) {
         //BBS: store assemble related info

@@ -397,7 +397,7 @@ void PrintConfigDef::init_common_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(0.));
 
-    def           = this->add("elefant_foot_compensation_layers", coInt);
+    def           = this->add("elephant_foot_compensation_layers", coInt);
     def->label    = L("Elephant foot compensation layers");
     def->category = L("Quality");
     def->tooltip  = L("The number of layers on which the elephant foot compensation will be active. "
