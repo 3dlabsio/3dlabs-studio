@@ -2742,7 +2742,7 @@ void TabFilament::build()
         line.append_option(optgroup->get_option("eng_plate_temp"));
         optgroup->append_line(line);
 
-        line = {L("Smooth PEI Plate / High Temp Plate"), L("Bed temperature when Smooth PEI Plate/High temperature plate is installed. Value 0 means the filament does not support to print on the Smooth PEI Plate/High Temp Plate") };
+        line = {L("Carbon Fiber / Textured PEI Plate"), L("Bed temperature when Carbon Fiber / Textured PEI Plate is installed. Value 0 means the filament does not support to print on the Carbon Fiber / Textured PEI Plate") };
         line.append_option(optgroup->get_option("hot_plate_temp_initial_layer"));
         line.append_option(optgroup->get_option("hot_plate_temp"));
         optgroup->append_line(line);
