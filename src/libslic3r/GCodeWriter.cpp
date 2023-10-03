@@ -792,8 +792,7 @@ std::string GCodeWriter::set_additional_fan(unsigned int speed)
 {
     std::ostringstream gcode;
 
-    // 3DL our aux fan is P1
-    gcode << "M106 " << "P1 " << "S" << (int)(255.0 * speed / 100.0);
+    gcode << "M106 " << "P2 " << "S" << (int)(255.0 * speed / 100.0);
     //gcode << "M106 " << "P2 " << "S" << (int)(255.0 * speed / 100.0);
     if (GCodeWriter::full_gcode_comment) {
         if (speed == 0)
@@ -808,7 +807,8 @@ std::string GCodeWriter::set_additional_fan(unsigned int speed)
 std::string GCodeWriter::set_exhaust_fan( int speed,bool add_eol)
 {
     std::ostringstream gcode;
-    gcode << "M106" << " P3" << " S" << (int)(speed / 100.0 * 255);
+    // 3DL our exhaust fan is P1
+    gcode << "M106" << " P1" << " S" << (int)(speed / 100.0 * 255);
 
     if(add_eol)
         gcode << "\n";
