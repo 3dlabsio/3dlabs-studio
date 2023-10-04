@@ -3,11 +3,6 @@
     "name": "fdm_filament_tpu",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints": [
-	    "TPU 0.15mm Fine @3D Labs",
-        "TPU 0.20mm Standard @3D Labs",
-        "TPU 0.30mm Draft @3D Labs"
-    ],
     "idle_temperature": [
         "195"
     ],

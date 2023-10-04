@@ -3,9 +3,6 @@
     "name": "fdm_filament_bvoh",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints": [ 
-	    ""
-    ],
     "idle_temperature": [
         "165"
     ],

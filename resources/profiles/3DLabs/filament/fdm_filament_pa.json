@@ -3,9 +3,6 @@
     "name": "fdm_filament_pa",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints": [
-	    ""
-    ],
     "idle_temperature": [
         "200"
     ],

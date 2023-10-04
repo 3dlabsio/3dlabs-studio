@@ -3,11 +3,6 @@
     "name": "fdm_filament_abs",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints": [
-	    "ABS 0.15mm Fine @3D Labs",
-        "ABS 0.20mm Standard @3D Labs",
-        "ABS 0.30mm Draft @3D Labs"
-    ],
     "idle_temperature": [
         "195"
     ],
