@@ -3,9 +3,7 @@
     "name": "fdm_filament_pp",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints": [
-	    ""
-    ],
+    "compatible_prints_condition": "notes=~/.*compatible_filaments:.*pp.*/",
     "idle_temperature": [
         "195"
     ],
@@ -131,10 +129,10 @@
         "1"
     ],
     "slow_down_layer_time": [
-        "3"
+        "25"
     ],
     "slow_down_min_speed": [
-        "20"
+        "5"
     ],
     "textured_plate_temp": [
         "90"

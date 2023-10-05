@@ -5,15 +5,12 @@
     "name": "Essentium PA-CF-HTN",
     "from": "system",
     "instantiation": "true",
-    "inherits": "fdm_filament_pa",
+    "inherits": "fdm_filament_pa_cf",
     "filament_vendor": [
         "Essentium"
     ],
     "default_filament_colour": [
         "#FF8040"
-    ],
-    "compatible_prints": [
-        "PA-CF 0.25mm Standard @3D Labs"
     ],
     "chamber_temperature": "70",
     "close_fan_the_first_x_layers": [
@@ -96,7 +93,7 @@
         "0"
     ],
     "slow_down_layer_time": [
-        "5"
+        "25"
     ],
     "slow_down_min_speed": [
         "20"
@@ -104,5 +101,5 @@
     "temperature_vitrification": [
         "140"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

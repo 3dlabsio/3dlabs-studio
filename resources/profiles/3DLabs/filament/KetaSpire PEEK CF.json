@@ -1,7 +1,4 @@
 {
-    "compatible_prints": [
-        "PEEK-CF 0.25mm Standard @3D Labs"
-    ],
     "filament_id": "GFB111",
     "filament_vendor": [
         "Solvay"
@@ -10,7 +7,7 @@
         "#FFFF00"
     ],
     "from": "system",
-    "inherits": "fdm_filament_peek",
+    "inherits": "fdm_filament_peek_cf",
     "instantiation": "true",
     "name": "KetaSpire PEEK CF",
     "setting_id": "GFSB111-00",
@@ -107,5 +104,5 @@
     "temperature_vitrification": [
         "260"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

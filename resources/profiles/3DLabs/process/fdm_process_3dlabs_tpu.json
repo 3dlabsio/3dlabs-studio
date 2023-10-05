@@ -4,6 +4,7 @@
     "from": "system",
     "instantiation": "false",
     "inherits": "fdm_process_common",
+    "notes": "compatible_filaments:flex,tpu,hips,bvoh",
     "adaptive_layer_height": "0",
     "reduce_crossing_wall": "1",
     "max_travel_detour_distance": "2",

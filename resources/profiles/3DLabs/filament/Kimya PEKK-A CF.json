@@ -1,7 +1,4 @@
 {
-    "compatible_prints": [
-        "PEKK-A CF 0.25mm Standard @3D Labs"
-    ],
     "filament_id": "GFB113",
     "filament_vendor": [
         "Kimya"
@@ -10,7 +7,7 @@
         "#FF8040"
     ],
     "from": "system",
-    "inherits": "fdm_filament_pekk",
+    "inherits": "fdm_filament_pekk_cf",
     "instantiation": "true",
     "name": "Kimya PEKK-A CF",
     "setting_id": "GFSB113-00",
@@ -110,5 +107,5 @@
     "temperature_vitrification": [
         "230"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

@@ -1,7 +1,4 @@
 {
-    "compatible_prints": [
-        "PEKK-A 0.25mm Standard @3D Labs"
-    ],
     "filament_id": "GFB114",
     "filament_vendor": [
         "Kimya"
@@ -107,5 +104,5 @@
     "temperature_vitrification": [
         "230"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

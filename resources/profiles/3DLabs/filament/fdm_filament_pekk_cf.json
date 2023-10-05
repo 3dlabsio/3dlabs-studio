@@ -1,9 +1,9 @@
 {
     "type": "filament",
-    "name": "fdm_filament_pekk",
+    "name": "fdm_filament_pekk_cf",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints_condition": "notes=~/.*compatible_filaments:.*pekk,.*/",
+    "compatible_prints_condition": "notes=~/.*compatible_filaments:.*pekk-cf.*/",
     "idle_temperature": [
         "225"
     ],

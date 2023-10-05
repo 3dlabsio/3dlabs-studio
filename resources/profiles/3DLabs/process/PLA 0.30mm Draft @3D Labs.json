@@ -13,5 +13,8 @@
     "print_settings_id": "PLA 0.30mm Draft @3D Labs",
     "top_shell_layers": "8",
     "top_shell_thickness": "1.0",
-    "version": "2.2.0"
+    "inner_wall_speed": "150",
+    "outer_wall_speed": "150",
+    "sparse_infill_speed": "150",
+    "version": "2.6.0"
 }

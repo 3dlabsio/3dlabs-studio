@@ -1,7 +1,4 @@
 {
-    "compatible_prints": [
-        "PSU 0.25mm Standard @3D Labs"
-    ],
     "filament_id": "GFB115",
     "filament_vendor": [
         "3DXTech"
@@ -107,5 +104,5 @@
     "temperature_vitrification": [
         "200"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

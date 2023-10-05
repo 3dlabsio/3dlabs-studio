@@ -1,7 +1,4 @@
 {
-    "compatible_prints": [
-        "PEEK-CF 0.25mm Standard @3D Labs"
-    ],
     "filament_id": "GFB106",
     "filament_vendor": [
         "FormFutura"
@@ -10,7 +7,7 @@
         "#FF8040"
     ],
     "from": "system",
-    "inherits": "fdm_filament_peek",
+    "inherits": "fdm_filament_peek_cf",
     "instantiation": "true",
     "name": "FormFutura 9676 BK CF",
     "setting_id": "GFSB106-00",
@@ -99,7 +96,7 @@
         "0"
     ],
     "slow_down_layer_time": [
-        "12"
+        "25"
     ],
     "slow_down_min_speed": [
         "5"
@@ -107,5 +104,5 @@
     "temperature_vitrification": [
         "260"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

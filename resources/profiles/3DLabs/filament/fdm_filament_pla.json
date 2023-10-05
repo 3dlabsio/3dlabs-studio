@@ -3,9 +3,7 @@
     "name": "fdm_filament_pla",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints": [
-	    ""
-    ],
+    "compatible_prints_condition": "notes=~/.*compatible_filaments:.*pla.*/",
     "idle_temperature": [
         "150"
     ],
@@ -101,6 +99,6 @@
         "20"
     ],
     "slow_down_layer_time": [
-        "3"
+        "25"
     ]
 }

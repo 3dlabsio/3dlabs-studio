@@ -15,7 +15,7 @@
     "filament_max_volumetric_speed": [
         "12"
     ],
-    "chamber_temperature": "65",
+    "chamber_temperature": "55",
     "enable_pressure_advance": [
         "1"
     ],
@@ -65,10 +65,10 @@
         "0.0715"
     ],
     "slow_down_layer_time": [
-        "15"
+        "25"
     ],
     "slow_down_min_speed": [
         "5"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

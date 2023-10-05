@@ -1,11 +1,11 @@
 {
     "type": "filament",
-    "name": "fdm_filament_pekk",
+    "name": "fdm_filament_peek_cf",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints_condition": "notes=~/.*compatible_filaments:.*pekk,.*/",
+    "compatible_prints_condition": "notes=~/.*compatible_filaments:.*peek-cf.*/",
     "idle_temperature": [
-        "225"
+        "350"
     ],
     "compatible_printers": [
         "3D Labs HTX 0.4 nozzle",
@@ -18,7 +18,7 @@
         "0"
     ],
     "filament_type": [
-        "PEKK"
+        "PEEK"
     ],
     "filament_vendor": [
         "Generic"
