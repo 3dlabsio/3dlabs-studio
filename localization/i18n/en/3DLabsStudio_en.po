@@ -1,12 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Orca Slicer\n"
+"Project-Id-Version: 3D Labs Studio\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-"POT-Creation-Date: 2023-04-01 13:19+0800\n"
-========
-"POT-Creation-Date: 2023-09-12 20:34+0800\n"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
+"POT-Creation-Date: 2023-09-30 10:27+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -252,11 +248,6 @@ msgstr "%"
 msgid "uniform scale"
 msgstr "Uniform scale"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Cut"
-msgstr "Cut"
-
-========
 msgid "Left click"
 msgstr "Left click"
 
@@ -290,7 +281,6 @@ msgstr "Cut"
 msgid "Connector"
 msgstr "Connector"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Movement:"
 msgstr "Movement:"
 
@@ -300,13 +290,6 @@ msgstr "Movement"
 msgid "Height"
 msgstr "Height"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Keep upper part"
-msgstr "Keep upper part"
-
-msgid "Keep lower part"
-msgstr "Keep lower part"
-========
 msgid "Edit connectors"
 msgstr "Edit connectors"
 
@@ -330,7 +313,6 @@ msgstr "Flip"
 
 msgid "After cut"
 msgstr "After cut"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid "Cut to parts"
 msgstr "Cut to parts"
@@ -344,8 +326,6 @@ msgstr "Perform cut"
 msgid "Reset"
 msgstr "Reset"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Connectors"
 msgstr "Connectors"
 
@@ -419,7 +399,6 @@ msgstr "Dowel"
 msgid "Tolerance"
 msgstr "Tolerance"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Mesh name"
 msgstr "Mesh name"
 
@@ -478,9 +457,6 @@ msgstr "%1%"
 
 msgid "Can't apply when proccess preview."
 msgstr "Unable to apply when processing preview"
-
-msgid "Cancel"
-msgstr "Cancel"
 
 msgid "Operation already cancelling. Please wait few seconds."
 msgstr "Operation already cancelling. Please wait few seconds."
@@ -547,17 +523,11 @@ msgstr "Surface"
 msgid "Horizontal text"
 msgstr "Horizontal text"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Ctrl+"
 msgstr "Ctrl+"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Notice"
 msgstr "Notice"
-
-msgid "Warning"
-msgstr "Warning"
 
 msgid "Undefined"
 msgstr "Undefined"
@@ -628,7 +598,7 @@ msgid "Connect %s failed! [SN:%s, code=%s]"
 msgstr "Connect %s failed! [SN:%s, code=%s]"
 
 msgid ""
-"Orca Slicer requires the Microsoft WebView2 Runtime to operate certain "
+"3D Labs Studio requires the Microsoft WebView2 Runtime to operate certain "
 "features.\n"
 "Click Yes to install it now."
 msgstr ""
@@ -659,8 +629,8 @@ msgstr "Loading configuration"
 msgid "Click to download new version in default browser: %s"
 msgstr "Click to download new version in default browser: %s"
 
-msgid "The Orca Slicer needs an upgrade"
-msgstr "Orca Slicer needs an update"
+msgid "The 3D Labs Studio needs an upgrade"
+msgstr "3D Labs Studio needs an update"
 
 msgid "This is the newest version."
 msgstr "This is the newest version."
@@ -679,6 +649,9 @@ msgstr "Loading a mode view"
 
 msgid "Choose one file (3mf):"
 msgstr "Choose one file (3mf):"
+
+msgid "Choose one or more files (3mf/step/stl/svg/obj/amf/usd*/abc/ply):"
+msgstr ""
 
 msgid "Choose one or more files (3mf/step/stl/svg/obj/amf):"
 msgstr "Choose one or more files (3mf/step/stl/svg/obj/amf):"
@@ -706,10 +679,10 @@ msgid "Open Project"
 msgstr "Open Project"
 
 msgid ""
-"The version of Orca Slicer is too low and needs to be updated to the latest "
+"The version of 3D Labs Studio is too low and needs to be updated to the latest "
 "version before it can be used normally"
 msgstr ""
-"The version of Orca Slicer is too low and needs to be updated to the latest "
+"The version of 3D Labs Studio is too low and needs to be updated to the latest "
 "version before it can be used normally"
 
 msgid "Privacy Policy Update"
@@ -763,8 +736,8 @@ msgstr "Open"
 msgid "Rename"
 msgstr "Rename"
 
-msgid "Orca Slicer GUI initialization failed"
-msgstr "Orca Slicer GUI initialization failed"
+msgid "3D Labs Studio GUI initialization failed"
+msgstr "3D Labs Studio GUI initialization failed"
 
 #, boost-format
 msgid "Fatal error, exception catched: %1%"
@@ -848,12 +821,9 @@ msgstr "Hide"
 msgid "Show"
 msgstr "Show"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Del"
 msgstr "Del"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Delete the selected object"
 msgstr "Delete the selected object"
 
@@ -862,6 +832,18 @@ msgstr "Edit Text"
 
 msgid "Load..."
 msgstr "Load..."
+
+msgid "Orca Cube"
+msgstr ""
+
+msgid "3DBenchy"
+msgstr ""
+
+msgid "Autodesk FDM Test"
+msgstr ""
+
+msgid "Voron Cube"
+msgstr ""
 
 msgid "Cube"
 msgstr "Cube"
@@ -872,12 +854,9 @@ msgstr "Cylinder"
 msgid "Cone"
 msgstr "Cone"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Height range Modifier"
 msgstr "Height Range Modifier"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Add settings"
 msgstr "Add Settings"
 
@@ -1005,12 +984,9 @@ msgstr "Mirror"
 msgid "Mirror object"
 msgstr "Mirror object"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Invalidate cut info"
 msgstr "Invalidate cut info"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Add Primitive"
 msgstr "Add Primitive"
 
@@ -1071,12 +1047,9 @@ msgstr "Auto Rotate"
 msgid "auto rotate current plate"
 msgstr "Auto rotate current plate"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Delete Plate"
 msgstr "Delete Plate"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Remove the selected plate"
 msgstr "Remove the selected plate"
 
@@ -1161,12 +1134,9 @@ msgstr "Click the icon to edit support painting of the object"
 msgid "Click the icon to edit color painting of the object"
 msgstr "Click the icon to edit color painting for the object"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Click the icon to shift this object to the bed"
 msgstr "Click the icon to shift this object to the bed"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Loading file"
 msgstr "Loading file"
 
@@ -1192,8 +1162,6 @@ msgstr ""
 "Switch to per-object setting mode to edit process settings of selected "
 "objects."
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Delete connector from object which is a part of cut"
 msgstr "Delete connector from object which is a part of cut"
 
@@ -1226,7 +1194,6 @@ msgstr ""
 msgid "Delete all connectors"
 msgstr "Delete all connectors"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Deleting the last solid part is not allowed."
 msgstr "Deleting the last solid part is not allowed."
 
@@ -1236,8 +1203,6 @@ msgstr "The target object contains only one part and cannot be split."
 msgid "Assembly"
 msgstr "Assembly"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Cut Connectors information"
 msgstr "Cut Connectors information"
 
@@ -1268,7 +1233,6 @@ msgstr "Height ranges"
 msgid "Settings for height range"
 msgstr "Settings for height range"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Object"
 msgstr "Object"
 
@@ -1343,8 +1307,6 @@ msgstr "Additional process preset"
 msgid "Remove parameter"
 msgstr "Remove parameter"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "to"
 msgstr "to"
 
@@ -1357,7 +1319,6 @@ msgstr "Add height range"
 msgid "Invalid numeric."
 msgstr "Invalid numeric."
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "one cell can only be copied to one or multiple cells in the same column"
 msgstr "One cell can only be copied to one or more cells in the same column."
 
@@ -1433,8 +1394,6 @@ msgstr "Open next tip"
 msgid "Open Documentation in web browser."
 msgstr "Open documentation in web browser"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Pause:"
 msgstr "Pause:"
 
@@ -1444,7 +1403,6 @@ msgstr "Custom Template:"
 msgid "Custom G-code:"
 msgstr "Custom G-code:"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Custom G-code"
 msgstr "Custom G-code"
 
@@ -1454,12 +1412,9 @@ msgstr "Enter Custom G-code used on current layer:"
 msgid "OK"
 msgstr "OK"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Jump to Layer"
 msgstr "Jump to layer"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Jump to layer"
 msgstr "Jump to layer"
 
@@ -1469,42 +1424,24 @@ msgstr "Please enter the layer number."
 msgid "Add Pause"
 msgstr "Add Pause"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Insert a pause command at the beginning of this layer."
 msgstr "Insert a pause command at the beginning of this layer."
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Add Custom G-code"
 msgstr "Add Custom G-code"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Insert custom G-code at the beginning of this layer."
 msgstr "Insert custom G-code at the beginning of this layer."
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Add Custom Template"
 msgstr "Add Custom Template"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Jump to Layer"
-msgstr ""
-========
 msgid "Insert template custom G-code at the beginning of this layer."
 msgstr "Insert template custom G-code at the beginning of this layer."
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid "Filament "
 msgstr "Filament "
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Start"
-msgstr ""
-
-msgid "G-code"
-msgstr ""
-========
 msgid "Change filament at the beginning of this layer."
 msgstr "Change filament at the beginning of this layer."
 
@@ -1522,7 +1459,6 @@ msgstr "Delete Custom G-code"
 
 msgid "Delete Filament Change"
 msgstr "Delete Filament Change"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid "No printer"
 msgstr "No printer"
@@ -1560,26 +1496,20 @@ msgstr "Connecting..."
 msgid "?"
 msgstr "?"
 
+msgid "/"
+msgstr ""
+
 msgid "Empty"
 msgstr "Empty"
 
 msgid "AMS"
 msgstr "AMS"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Auto Refill"
 msgstr ""
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "AMS not connected"
 msgstr "AMS not connected"
-
-msgid "Cali"
-msgstr "Cali"
-
-msgid "Calibration of extrusion"
-msgstr "Calibration of extrusion"
 
 msgid "Load Filament"
 msgstr "Load"
@@ -1611,6 +1541,9 @@ msgstr "Calibrate again"
 msgid "Cancel calibration"
 msgstr "Cancel calibration"
 
+msgid "Idling..."
+msgstr ""
+
 msgid "Heat the nozzle"
 msgstr "Heat the nozzle"
 
@@ -1626,8 +1559,14 @@ msgstr "Push new filament into extruder"
 msgid "Purge old filament"
 msgstr "Purge old filament"
 
-msgid "Push new filament into the extruder"
-msgstr "Push new filament into the extruder"
+msgid "Feed Filament"
+msgstr ""
+
+msgid "Confirm extruded"
+msgstr ""
+
+msgid "Check filament location"
+msgstr ""
 
 msgid "Grab new filament"
 msgstr "Grab new filament"
@@ -1826,9 +1765,6 @@ msgstr "Successfully sent. Close current page in %s s"
 msgid "An SD card needs to be inserted before sending to printer."
 msgstr "A MicroSD card needs to be inserted before sending to printer."
 
-msgid "Failed uploading print file. Please enter ip address again."
-msgstr ""
-
 msgid "Choose SLA archive:"
 msgstr "Choose SLA archive:"
 
@@ -1912,14 +1848,14 @@ msgstr "Copyright"
 msgid "License"
 msgstr "License"
 
-msgid "Orca Slicer is licensed under "
-msgstr "Orca Slicer is licensed under "
+msgid "3D Labs Studio is licensed under "
+msgstr "3D Labs Studio is licensed under "
 
 msgid "GNU Affero General Public License, version 3"
 msgstr "GNU Affero General Public License, version 3"
 
 msgid ""
-"Orca Slicer is based on BambuStudio by Bambulab, which is from PrusaSlicer "
+"3D Labs Studio is based on BambuStudio by Bambulab, which is from PrusaSlicer "
 "by Prusa Research.  PrusaSlicer is from Slic3r by Alessandro Ranellucci and "
 "the RepRap community"
 msgstr ""
@@ -1938,7 +1874,7 @@ msgstr ""
 msgid "About %s"
 msgstr "About %s"
 
-msgid "Orca Slicer "
+msgid "3D Labs Studio "
 msgstr ""
 
 msgid "3DLabsStudio is based on BambuStudio, PrusaSlicer, and SuperSlicer."
@@ -2010,14 +1946,6 @@ msgstr "Factor N"
 msgid "Setting Virtual slot information while printing is not supported"
 msgstr "Setting Virtual slot information while printing is not supported"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Please input a valid value (K in 0~0.5)"
-msgstr ""
-
-msgid "Please input a valid value (K in 0~0.5, N in 0.6~2.0)"
-msgstr ""
-
-========
 msgid "Are you sure you want to clear the filament information?"
 msgstr "Are you sure you want to clear the filament information?"
 
@@ -2036,7 +1964,6 @@ msgstr "Other Color"
 msgid "Custom Color"
 msgstr "Custom Color"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Dynamic flow calibration"
 msgstr "Dynamic flow calibration"
 
@@ -2191,8 +2118,6 @@ msgstr "Print with filament in AMS"
 msgid "Print with filaments mounted on the back of the chassis"
 msgstr "Print with filament on external spool"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid ""
 "When the current material run out, the printer will continue to print in the "
 "following order."
@@ -2208,7 +2133,6 @@ msgid ""
 "material type, and color)"
 msgstr ""
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "AMS Settings"
 msgstr "AMS Settings"
 
@@ -2269,13 +2193,8 @@ msgstr ""
 "info is updated. During printing, remaining capacity will be updated "
 "automatically."
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "AMS auto switch filament"
-msgstr ""
-========
 msgid "AMS filament backup"
 msgstr "AMS filament backup"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid ""
 "AMS will continue to another spool with the same properties of filament "
@@ -2416,9 +2335,6 @@ msgstr "Circular"
 msgid "Custom"
 msgstr "Custom"
 
-msgid "Shape"
-msgstr "Shape"
-
 msgid "Load shape from STL..."
 msgstr "Load shape from STL..."
 
@@ -2481,33 +2397,19 @@ msgstr ""
 "The recommended nozzle temperature for this filament type is [%d, %d] "
 "degrees centigrade"
 
-#, c-format, boost-format
-msgid ""
-"Bed temperature of other layer is lower than bed temperature of initial "
-"layer for more than %d degree centigrade.\n"
-"This may cause model broken free from build plate during printing"
-msgstr ""
-"The bed temperature of other layers is lower than the bed temperature of the "
-"first layer by more than %d degrees centigrade.\n"
-"This may cause models to break free from the build plate during printing."
-
-msgid ""
-"Bed temperature is higher than vitrification temperature of this filament.\n"
-"This may cause nozzle blocked and printing failure\n"
-"Please keep the printer open during the printing process to ensure air "
-"circulation or reduce the temperature of the hot bed"
-msgstr ""
-"Bed temperature is higher than vitrification temperature of this filament.\n"
-"This may cause nozzle blockage and print failure.\n"
-"Please keep the printer open during the printing process to ensure air "
-"circulation or reduce the temperature of the hot bed."
-
 msgid ""
 "Too small max volumetric speed.\n"
 "Reset to 0.5"
 msgstr ""
 "Too small max volumetric speed.\n"
 "Value was reset to 0.5"
+
+#, c-format, boost-format
+msgid ""
+"Current chamber temperature is higher than the material's safe temperature,"
+"it may result in material softening and clogging.The maximum safe "
+"temperature for the material is %d"
+msgstr ""
 
 msgid ""
 "Too small layer height.\n"
@@ -2561,10 +2463,13 @@ msgstr ""
 
 msgid ""
 "Spiral mode only works when wall loops is 1, support is disabled, top shell "
-"layers is 0, sparse infill density is 0 and timelapse type is traditional"
+"layers is 0, sparse infill density is 0 and timelapse type is traditional."
 msgstr ""
 "Spiral mode only works when wall loops is 1, support is disabled, top shell "
 "layers is 0, sparse infill density is 0 and timelapse type is traditional."
+
+msgid " But machines with I3 structure will not generate timelapse videos."
+msgstr ""
 
 msgid ""
 "Change these settings automatically? \n"
@@ -2574,15 +2479,6 @@ msgstr ""
 "Change these settings automatically? \n"
 "Yes - Change these settings and enable spiral/vase mode automatically\n"
 "No  - Cancel enabling spiral mode"
-
-msgid "Arachne engine doesn't work with classic overhang speed mode.\n"
-msgstr ""
-
-msgid ""
-"Turn off classic mode automatically? \n"
-"Yes - Enable arachne with classic mode off\n"
-"No  - Give up using arachne this time"
-msgstr ""
 
 msgid ""
 "Prime tower does not work when Adaptive Layer Height or Independent Support "
@@ -2702,6 +2598,36 @@ msgstr "Paused due to nozzle temperature malfunction"
 msgid "Paused due to heat bed temperature malfunction"
 msgstr "Paused due to heat bed temperature malfunction"
 
+msgid "Filament unloading"
+msgstr ""
+
+msgid "Skip step pause"
+msgstr ""
+
+msgid "Filament loading"
+msgstr ""
+
+msgid "Motor noise calibration"
+msgstr ""
+
+msgid "Paused due to AMS lost"
+msgstr ""
+
+msgid "Paused due to low speed of the heat break fan"
+msgstr ""
+
+msgid "Paused due to chamber temperature control error"
+msgstr ""
+
+msgid "Cooling chamber"
+msgstr ""
+
+msgid "Paused by the Gcode inserted by user"
+msgstr ""
+
+msgid "Motor noise showoff"
+msgstr ""
+
 msgid "MC"
 msgstr "MC"
 
@@ -2738,6 +2664,24 @@ msgstr "Verification failed."
 msgid "Update failed."
 msgstr "Update failed."
 
+msgid ""
+"The current chamber temperature or the target chamber temperature exceeds "
+"45℃.In order to avoid extruder clogging,low temperature filament(PLA/PETG/"
+"TPU) is not allowed to be loaded."
+msgstr ""
+
+msgid ""
+"Low temperature filament(PLA/PETG/TPU) is loaded in the extruder.In order to "
+"avoid extruder clogging,it is not allowed to set the chamber temperature "
+"above 45℃."
+msgstr ""
+
+msgid ""
+"When you set the chamber temperature below 40℃, the chamber temperature "
+"control will not be activated. And the target chamber temperature will "
+"automatically be set to 0℃."
+msgstr ""
+
 msgid "Failed to start printing job"
 msgstr "Failed to start print job"
 
@@ -2771,9 +2715,6 @@ msgstr "parameter name"
 
 msgid "N/A"
 msgstr "N/A"
-
-msgid "Invalid numeric."
-msgstr "Invalid numeric."
 
 #, c-format, boost-format
 msgid "%s can't be percentage"
@@ -2869,11 +2810,14 @@ msgstr "Flushed"
 msgid "Total"
 msgstr "Total"
 
-msgid "Total Time Estimation"
-msgstr "Total Time Estimation"
+msgid "Total Estimation"
+msgstr "Total estimation"
 
 msgid "Total time"
 msgstr "Total time"
+
+msgid "Total cost"
+msgstr ""
 
 msgid "up to"
 msgstr "up to"
@@ -2883,9 +2827,6 @@ msgstr "above"
 
 msgid "from"
 msgstr "from"
-
-msgid "to"
-msgstr "to"
 
 msgid "Color Scheme"
 msgstr "Color scheme"
@@ -2965,9 +2906,6 @@ msgstr "Printer"
 msgid "Print settings"
 msgstr "Print settings"
 
-msgid "Total Estimation"
-msgstr "Total estimation"
-
 msgid "Time Estimation"
 msgstr "Time Estimation"
 
@@ -3043,12 +2981,9 @@ msgstr "Mirror object"
 msgid "Tool Move"
 msgstr "Tool move"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Tool Rotate"
 msgstr "Tool Rotate"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Move Object"
 msgstr "Move object"
 
@@ -3078,6 +3013,9 @@ msgstr "Allow multiple materials on same plate"
 
 msgid "Avoid extrusion calibration region"
 msgstr "Avoid extrusion calibration region"
+
+msgid "Align to Y axis"
+msgstr ""
 
 msgid "Add"
 msgstr "Add"
@@ -3115,10 +3053,6 @@ msgstr "return"
 msgid "Paint Toolbar"
 msgstr "Paint Toolbar"
 
-#, boost-format
-msgid "Shortcut key %1%"
-msgstr ""
-
 msgid "Explosion Ratio"
 msgstr "Explosion Ratio"
 
@@ -3140,6 +3074,12 @@ msgstr "Volume:"
 msgid "Size:"
 msgstr "Size:"
 
+#, c-format, boost-format
+msgid ""
+"Conflicts of gcode paths have been found at layer %d, z = %.2lf mm. Please "
+"separate the conflicted objects farther (%s <-> %s)."
+msgstr ""
+
 msgid "An object is layed over the boundary of plate."
 msgstr "An object is laid over the boundary of the plate."
 
@@ -3157,13 +3097,10 @@ msgid ""
 "Please solve the problem by moving it totally on or off the plate, and "
 "confirming that the height is within the build volume."
 msgstr ""
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 "An object is laid over the boundary of the plate or exceeds the height "
 "limit.\n"
 "Please solve the problem by moving it totally on or off the plate, and "
 "confirming that the height is within the build volume."
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid "Calibration step selection"
 msgstr "Calibration step selection"
@@ -3174,8 +3111,11 @@ msgstr "Micro lidar calibration"
 msgid "Bed leveling"
 msgstr "Bed leveling"
 
-msgid "Resonance frequency identification"
-msgstr "Resonance frequency identification"
+msgid "Vibration compensation"
+msgstr ""
+
+msgid "Motor noise cancellation"
+msgstr ""
 
 msgid "Calibration program"
 msgstr "Calibration program"
@@ -3194,6 +3134,9 @@ msgstr "Calibration Flow"
 
 msgid "Start Calibration"
 msgstr "Start Calibration"
+
+msgid "No step selected"
+msgstr ""
 
 msgid "Completed"
 msgstr "Completed"
@@ -3270,9 +3213,6 @@ msgstr "No"
 
 msgid "will be closed before creating a new model. Do you want to continue?"
 msgstr "will be closed before creating a new model. Do you want to continue?"
-
-msgid "Upload"
-msgstr ""
 
 msgid "Slice plate"
 msgstr "Slice plate"
@@ -3397,12 +3337,9 @@ msgstr "Save current project to file"
 msgid "Save Project as"
 msgstr "Save Project as"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Shift+"
 msgstr "Shift+"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Save current project as"
 msgstr "Save current project as"
 
@@ -3551,6 +3488,12 @@ msgid "Flow rate"
 msgstr ""
 
 msgid "Pressure advance"
+msgstr ""
+
+msgid "Retraction test"
+msgstr ""
+
+msgid "Orca Tolerance Test"
 msgstr ""
 
 msgid "Max flowrate"
@@ -3818,8 +3761,6 @@ msgid "No files [%d]"
 msgstr "No files [%d]"
 
 #, c-format, boost-format
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Load failed [%d]"
 msgstr "Load failed [%d]"
 
@@ -3855,7 +3796,6 @@ msgid ""
 msgstr ""
 
 #, c-format, boost-format
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "File '%s' was lost! Please download it again."
 msgstr "File '%s' was lost! Please download it again."
 
@@ -3932,19 +3872,22 @@ msgstr "Stop"
 msgid "0"
 msgstr "0"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Layers: N/A"
-msgstr ""
-========
 msgid "Layer: N/A"
 msgstr "Layer: N/A"
 
-msgid "Immediately score"
-msgstr "Immediately score"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
-
 msgid "Clear"
 msgstr "Clear"
+
+msgid "How do you like this printing file?"
+msgstr ""
+
+msgid ""
+"(The model has already been rated. Your rating will overwrite the previous "
+"rating.)"
+msgstr ""
+
+msgid "Rate"
+msgstr ""
 
 msgid "Camera"
 msgstr "Camera"
@@ -4004,14 +3947,6 @@ msgid "Cloud Slicing..."
 msgstr "Cloud Slicing..."
 
 #, c-format, boost-format
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Layers: %s"
-msgstr ""
-
-#, c-format, boost-format
-msgid "Layers: %d/%d"
-msgstr ""
-========
 msgid "In Cloud Slicing Queue, there are %s tasks ahead."
 msgstr "In Cloud Slicing Queue, there are %s tasks ahead of you."
 
@@ -4019,16 +3954,9 @@ msgstr "In Cloud Slicing Queue, there are %s tasks ahead of you."
 msgid "Layer: %s"
 msgstr "Layer: %s"
 
-msgid "Please give a score for your favorite Bambu Market model."
-msgstr "Please give a score for your favorite Bambu Market model."
-
-msgid "Score"
-msgstr "Score"
-
 #, c-format, boost-format
 msgid "Layer: %d/%d"
 msgstr "Layer: %d/%d"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid "Please heat the nozzle to above 170 degree before loading filament."
 msgstr "Please heat the nozzle to above 170 degrees before loading filament."
@@ -4038,9 +3966,6 @@ msgstr "Still unload"
 
 msgid "Still load"
 msgstr "Still load"
-
-msgid "AMS settings are not supported for external spool"
-msgstr ""
 
 msgid "Please select an AMS slot before calibration"
 msgstr "Please select an AMS slot before calibration."
@@ -4069,6 +3994,97 @@ msgstr "Ludicrous"
 
 msgid "Can't start this without SD card."
 msgstr "Can't start without MicroSD card."
+
+msgid "Rate the Print Profile"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
+msgid "Rate this print"
+msgstr ""
+
+msgid "Add Photo"
+msgstr ""
+
+msgid "Delete Photo"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Please click on the star first."
+msgstr ""
+
+msgid "InFo"
+msgstr ""
+
+msgid "Get oss config failed."
+msgstr ""
+
+msgid "Upload Pictrues"
+msgstr ""
+
+msgid "Number of images successfully uploaded"
+msgstr ""
+
+msgid " upload failed"
+msgstr ""
+
+msgid " upload config prase failed\n"
+msgstr ""
+
+msgid " No corresponding storage bucket\n"
+msgstr ""
+
+msgid " can not be opened\n"
+msgstr ""
+
+msgid ""
+"The following issues occurred during the process of uploading images. Do you "
+"want to ignore them?\n"
+"\n"
+msgstr ""
+
+msgid "info"
+msgstr "info"
+
+msgid "Synchronizing the printing results. Please retry a few seconds later."
+msgstr ""
+
+msgid "Upload failed\n"
+msgstr ""
+
+msgid "obtaining instance_id failed\n"
+msgstr ""
+
+msgid ""
+"Your comment result cannot be uploaded due to some reasons. As follows:\n"
+"\n"
+"  error code: "
+msgstr ""
+
+msgid "error message: "
+msgstr ""
+
+msgid ""
+"\n"
+"\n"
+"Would you like to redirect to the webpage for rating?"
+msgstr ""
+
+msgid ""
+"Some of your images failed to upload. Would you like to redirect to the "
+"webpage for rating?"
+msgstr ""
+
+msgid "You can select up to 16 images."
+msgstr ""
+
+msgid ""
+"At least one successful print record of this print profile is required \n"
+"to give a positive rating(4 or 5stars)."
+msgstr ""
 
 msgid "Status"
 msgstr "Status"
@@ -4163,6 +4179,12 @@ msgid_plural "%1$d Objects have color painting."
 msgstr[0] "%1$d Object has color painting."
 msgstr[1] "%1$d Objects have color painting."
 
+#, c-format, boost-format
+msgid "%1$d object was loaded as a part of cut object."
+msgid_plural "%1$d objects were loaded as parts of cut object"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ERROR"
 msgstr "ERROR"
 
@@ -4190,6 +4212,9 @@ msgstr "Warning:"
 msgid "Export successfully."
 msgstr "Exported successfully"
 
+msgid "Model file downloaded."
+msgstr ""
+
 msgid "Serious warning:"
 msgstr ""
 
@@ -4214,12 +4239,9 @@ msgstr "Support Painting"
 msgid "Color painting"
 msgstr "Color Painting"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Cut connectors"
 msgstr "Cut connectors"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Layers"
 msgstr "Layers"
 
@@ -4279,6 +4301,9 @@ msgstr "First Layer Inspection"
 
 msgid "Auto-recovery from step loss"
 msgstr "Auto-recover from step loss"
+
+msgid "Allow Prompt Sound"
+msgstr ""
 
 msgid "Global"
 msgstr "Global"
@@ -4389,7 +4414,7 @@ msgstr "There are no compatible filaments, and sync is not performed."
 
 msgid ""
 "There are some unknown filaments mapped to generic preset. Please update "
-"Orca Slicer or restart Orca Slicer to check if there is an update to system "
+"3D Labs Studio or restart 3D Labs Studio to check if there is an update to system "
 "presets."
 msgstr ""
 
@@ -4432,12 +4457,17 @@ msgstr ""
 "nozzle hardness of the printer. Please replace the hardened nozzle or "
 "filament, otherwise, the nozzle will be worn down or damaged."
 
+msgid ""
+"Enabling traditional timelapse photography may cause surface imperfections. "
+"It is recommended to change to smooth mode."
+msgstr ""
+
 #, c-format, boost-format
 msgid "Loading file: %s"
 msgstr "Loading file: %s"
 
-msgid "The 3mf is not supported by OrcaSlicer, load geometry data only."
-msgstr "The 3mf is not supported by OrcaSlicer, loading geometry data only."
+msgid "The 3mf is not supported by 3DLabsStudio, load geometry data only."
+msgstr "The 3mf is not supported by 3DLabsStudio, loading geometry data only."
 
 msgid "Load 3mf"
 msgstr "Load 3mf"
@@ -4445,7 +4475,7 @@ msgstr "Load 3mf"
 msgid "The Config can not be loaded."
 msgstr "The Config cannot be loaded."
 
-msgid "The 3mf is generated by old Orca Slicer, load geometry data only."
+msgid "The 3mf is generated by old 3D Labs Studio, load geometry data only."
 msgstr ""
 
 #, c-format, boost-format
@@ -4546,8 +4576,6 @@ msgstr "Export STL file:"
 msgid "Save file as:"
 msgstr "Save file as"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Delete object which is a part of cut object"
 msgstr "Delete object which is a part of cut object"
 
@@ -4560,7 +4588,6 @@ msgstr ""
 "This action will break a cut correspondence.\n"
 "After that, model consistency can't be guaranteed."
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "The selected object couldn't be split."
 msgstr "The selected object couldn't be split."
 
@@ -4647,6 +4674,11 @@ msgstr "downloading project ..."
 msgid "Project downloaded %d%%"
 msgstr "Project downloaded %d%%"
 
+msgid ""
+"Importing to Bambu Studio failed. Please download the file and manually "
+"import it."
+msgstr ""
+
 msgid "The selected file"
 msgstr "The selected file"
 
@@ -4691,12 +4723,9 @@ msgstr ""
 "The current project has unsaved changes. Would you like to save before "
 "continuing?"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Remember my choice."
 msgstr "Remember my choice."
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Number of copies:"
 msgstr "Number of copies:"
 
@@ -4793,7 +4822,7 @@ msgstr "Tips:"
 
 msgid ""
 "\"Fix Model\" feature is currently only on Windows. Please repair the model "
-"on Orca Slicer(windows) or CAD softwares."
+"on 3D Labs Studio(windows) or CAD softwares."
 msgstr ""
 
 #, c-format, boost-format
@@ -4869,8 +4898,6 @@ msgstr "Imperial"
 msgid "Units"
 msgstr "Units"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Zoom to mouse position"
 msgstr "Zoom to mouse position"
 
@@ -4881,7 +4908,6 @@ msgstr ""
 "Zoom in towards the mouse pointer's position in the 3D view, rather than the "
 "2D window center."
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Show \"Tip of the day\" notification after start"
 msgstr "Show \"Tip of the day\" notification after start"
 
@@ -4894,13 +4920,8 @@ msgstr ""
 msgid "If enabled, g-code window will be displayed."
 msgstr ""
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "User sync"
-msgstr "User sync"
-========
 msgid "Presets"
 msgstr "Presets"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid "Auto sync user presets(Printer/Filament/Process)"
 msgstr "Auto sync user presets (Printer/Filament/Process)"
@@ -4908,9 +4929,6 @@ msgstr "Auto sync user presets (Printer/Filament/Process)"
 msgid "User Sync"
 msgstr "User Sync"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Associate files to 3DLabsStudio"
-========
 msgid "Update built-in Presets automatically."
 msgstr "Update built-in presets automatically."
 
@@ -4920,38 +4938,33 @@ msgstr "System Sync"
 msgid "Clear my choice on the unsaved presets."
 msgstr "Clear my choice on the unsaved presets."
 
-msgid "Associate files to OrcaSlicer"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
-msgstr "Associate files to Orca Slicer"
+msgid "Associate files to 3DLabsStudio"
+msgstr "Associate files to 3D Labs Studio"
 
 msgid "Associate .3mf files to 3DLabsStudio"
-msgstr "Associate .3mf files to Orca Slicer"
+msgstr "Associate .3mf files to 3D Labs Studio"
 
 msgid "If enabled, sets 3DLabsStudio as default application to open .3mf files"
 msgstr ""
-"If enabled, this sets Orca Slicer as the default application to open .3mf "
+"If enabled, this sets 3D Labs Studio as the default application to open .3mf "
 "files."
 
 msgid "Associate .stl files to 3DLabsStudio"
-msgstr "Associate .stl files to Orca Slicer"
+msgstr "Associate .stl files to 3D Labs Studio"
 
 msgid "If enabled, sets 3DLabsStudio as default application to open .stl files"
 msgstr ""
-"If enabled, this sets Orca Slicer as the default application to open .stl "
+"If enabled, this sets 3D Labs Studio as the default application to open .stl "
 "files."
 
 msgid "Associate .step/.stp files to 3DLabsStudio"
-msgstr "Associate .step/.stp files to Orca Slicer"
+msgstr "Associate .step/.stp files to 3D Labs Studio"
 
 msgid "If enabled, sets 3DLabsStudio as default application to open .step files"
 msgstr ""
-"If enabled, this sets Orca Slicer as the default application to open .step "
+"If enabled, this sets 3D Labs Studio as the default application to open .step "
 "files."
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Backup"
-msgstr "Backup"
-========
 msgid "Online Models"
 msgstr "Online Models"
 
@@ -4966,15 +4979,10 @@ msgstr "Maximum count of recent projects"
 
 msgid "Clear my choice on the unsaved projects."
 msgstr "Clear my choice on the unsaved projects."
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid "Auto-Backup"
 msgstr "Auto-Backup"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Backup interval"
-msgstr "Backup interval"
-========
 msgid ""
 "Backup your project periodically for restoring from the occasional crash."
 msgstr ""
@@ -4986,7 +4994,6 @@ msgstr "every"
 
 msgid "The peroid of backup in seconds."
 msgstr "The period of backup in seconds."
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid "Downloads"
 msgstr "Downloads"
@@ -5011,6 +5018,9 @@ msgstr "Show home page on startup"
 
 msgid "Sync settings"
 msgstr "Sync settings"
+
+msgid "User sync"
+msgstr "User sync"
 
 msgid "Preset sync"
 msgstr "Preset sync"
@@ -5056,9 +5066,6 @@ msgstr "error"
 
 msgid "warning"
 msgstr "warning"
-
-msgid "info"
-msgstr "info"
 
 msgid "debug"
 msgstr "debug"
@@ -5108,12 +5115,9 @@ msgstr "AMS filament"
 msgid "Click to pick filament color"
 msgstr "Click to select filament color"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Please choose the filament colour"
 msgstr "Please choose the filament color"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Add/Remove presets"
 msgstr "Add/Remove presets"
 
@@ -5313,11 +5317,17 @@ msgstr "Bambu Cool Plate"
 msgid "PLA Plate"
 msgstr "PLA Plate"
 
-msgid "Bamabu Engineering Plate"
-msgstr "Bambu Engineering Plate"
+msgid "Bambu Engineering Plate"
+msgstr ""
 
-msgid "Bamabu High Temperature Plate"
-msgstr "Bambu High Temperature Plate"
+msgid "Bambu Smooth PEI Plate"
+msgstr ""
+
+msgid "High temperature Plate"
+msgstr ""
+
+msgid "Bambu Textured PEI Plate"
+msgstr ""
 
 msgid "Send print job to"
 msgstr "Send print job to"
@@ -5331,8 +5341,8 @@ msgstr "Bed leveling"
 msgid "Flow Dynamics Calibration"
 msgstr ""
 
-msgid "Can't connect to the printer"
-msgstr "Can't connect to the printer"
+msgid "Click here if you can't connect to the printer"
+msgstr ""
 
 msgid "send completed"
 msgstr "Send complete"
@@ -5440,36 +5450,34 @@ msgstr "Cannot send a print job for an empty plate."
 msgid "This printer does not support printing all plates"
 msgstr "This printer does not support printing all plates"
 
+msgid ""
+"When enable spiral vase mode, machines with I3 structure will not generate "
+"timelapse videos."
+msgstr ""
+
+msgid ""
+"When print by object, machines with I3 structure will not generate timelapse "
+"videos."
+msgstr ""
+
 msgid "Errors"
 msgstr "Errors"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid ""
-"Please check the following infomation and click Confirm to continue sending "
-"print:"
-msgstr ""
-========
 msgid "Please check the following:"
 msgstr "Please check the following:"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid ""
-"The printer type used to generate G-code is not the same type as the "
-"currently selected physical printer. It is recommend to re-slice by "
-"selecting the same printer type."
+"The printer type selected when generating G-Code is not consistent with the "
+"currently selected printer. It is recommended that you use the same printer "
+"type for slicing."
 msgstr ""
 "The printer type selected when generating G-Code is not consistent with the "
 "currently selected printer. It is recommended that you use the same printer "
 "type for slicing."
 
 #, c-format, boost-format
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "The %s filament is too soft to be used with the AMS"
-msgstr ""
-========
 msgid "%s is not supported by AMS."
 msgstr "%s is not supported by the AMS."
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid ""
 "There are some unknown filaments in the AMS mappings. Please check whether "
@@ -5480,8 +5488,6 @@ msgstr ""
 "they are the required filaments. If they are okay, click \"Confirm\" to "
 "start printing."
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid ""
 "Please click the confirm button if you still want to proceed with printing."
 msgstr ""
@@ -5491,7 +5497,6 @@ msgid ""
 "Connecting to the printer. Unable to cancel during the connection process."
 msgstr ""
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Preparing print job"
 msgstr "Preparing print job"
 
@@ -5701,7 +5706,8 @@ msgstr ""
 msgid ""
 "When using support material for the support interface, We recommend the "
 "following settings:\n"
-"0 top z distance, 0 interface spacing, concentric pattern."
+"0 top z distance, 0 interface spacing, concentric pattern and disable "
+"independent support layer height"
 msgstr ""
 "When using support material for the support interface, we recommend the "
 "following settings:\n"
@@ -5714,6 +5720,10 @@ msgid ""
 "by right-click the empty position of build plate and choose \"Add Primitive"
 "\"->\"Timelapse Wipe Tower\"."
 msgstr ""
+"When recording timelapse without toolhead, it is recommended to add a "
+"\"Timelapse Wipe Tower\" \n"
+"by right-click the empty position of build plate and choose \"Add Primitive"
+"\"->\"Timelapse Wipe Tower\"."
 
 msgid "Line width"
 msgstr "Line width"
@@ -5772,6 +5782,9 @@ msgstr "Raft"
 msgid "Support filament"
 msgstr "Filament for Supports"
 
+msgid "Tree supports"
+msgstr ""
+
 msgid "Prime tower"
 msgstr "Prime tower"
 
@@ -5826,9 +5839,6 @@ msgstr "Recommended nozzle temperature"
 msgid "Recommended nozzle temperature range of this filament. 0 means no set"
 msgstr "Recommended nozzle temperature range of this filament. 0 means not set"
 
-msgid "Recommended temperature range"
-msgstr "Recommended temperature range"
-
 msgid "Print temperature"
 msgstr "Print temperature"
 
@@ -5858,16 +5868,14 @@ msgstr ""
 "This is the bed temperature when the engineering plate is installed. A value "
 "of 0 means the filament does not support printing on the Engineering Plate."
 
-msgid "High Temp Plate"
-msgstr "High Temp Plate"
+msgid "Smooth PEI Plate / High Temp Plate"
+msgstr ""
 
 msgid ""
-"Bed temperature when high temperature plate is installed. Value 0 means the "
-"filament does not support to print on the High Temp Plate"
+"Bed temperature when Smooth PEI Plate/High temperature plate is installed. "
+"Value 0 means the filament does not support to print on the Smooth PEI Plate/"
+"High Temp Plate"
 msgstr ""
-"This is the bed temperature when the high temperature plate is installed. A "
-"value of 0 means the filament does not support printing on the High Temp "
-"Plate."
 
 msgid "Textured PEI Plate"
 msgstr "Textured PEI Plate"
@@ -5918,6 +5926,15 @@ msgstr ""
 msgid "Auxiliary part cooling fan"
 msgstr "Auxiliary part cooling fan"
 
+msgid "Exhaust fan"
+msgstr ""
+
+msgid "During print"
+msgstr ""
+
+msgid "Complete print"
+msgstr ""
+
 msgid "Filament start G-code"
 msgstr "Filament start G-code"
 
@@ -5942,6 +5959,12 @@ msgstr ""
 msgid "Printable space"
 msgstr "Printable space"
 
+msgid "Cooling Fan"
+msgstr ""
+
+msgid "Fan speed-up time"
+msgstr ""
+
 msgid "Extruder Clearance"
 msgstr "Extruder Clearance"
 
@@ -5962,6 +5985,9 @@ msgstr "Before layer change G-code"
 
 msgid "Layer change G-code"
 msgstr "Layer change G-code"
+
+msgid "Time lapse G-code"
+msgstr ""
 
 msgid "Change filament G-code"
 msgstr "Change filament G-code"
@@ -6152,11 +6178,6 @@ msgstr "General"
 msgid "Capabilities"
 msgstr "Capabilities"
 
-msgid ""
-"The P1P printer does not support smooth timelapse, use traditional timelapse "
-"instead."
-msgstr ""
-
 msgid "Select presets to compare"
 msgstr "Select presets to compare"
 
@@ -6326,15 +6347,12 @@ msgstr "Objects list"
 msgid "Import geometry data from STL/STEP/3MF/OBJ/AMF files"
 msgstr "Import geometry data from STL/STEP/3MF/OBJ/AMF files"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "⌘+Shift+G"
 msgstr "⌘+Shift+G"
 
 msgid "Ctrl+Shift+G"
 msgstr "Ctrl+Shift+G"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Copy to clipboard"
 msgstr "Copy to clipboard"
 
@@ -6362,15 +6380,12 @@ msgstr "Mouse wheel"
 msgid "Zoom View"
 msgstr "Zoom View"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Shift+A"
 msgstr "Shift+A"
 
 msgid "Shift+R"
 msgstr "Shift+R"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid ""
 "Auto orientates selected objects or all objects.If there are selected "
 "objects, it just orientates the selected ones.Otherwise, it will orientates "
@@ -6380,12 +6395,9 @@ msgstr ""
 "objects, it just orients the selected ones. Otherwise, it will orient all "
 "objects in the current plate."
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Shift+Tab"
 msgstr "Shift+Tab"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Collapse/Expand the sidebar"
 msgstr "Collapse/Expand the sidebar"
 
@@ -6452,12 +6464,9 @@ msgstr "Shift+Any arrow"
 msgid "Movement step set to 1 mm"
 msgstr "Movement step set to 1mm"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Esc"
 msgstr "Esc"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "keyboard 1-9: set filament for object/part"
 msgstr "Keyboard 1-9: set filament for object/part"
 
@@ -6835,6 +6844,11 @@ msgstr "Multiple"
 msgid "Failed to calculate line width of %1%. Can not get value of \"%2%\" "
 msgstr "Failed to calculate line width of %1%. Cannot get value of “%2%” "
 
+msgid ""
+"Invalid spacing supplied to Flow::with_spacing(), check your layer height "
+"and extrusion width"
+msgstr ""
+
 msgid "undefined error"
 msgstr "undefined error"
 
@@ -6990,6 +7004,24 @@ msgid ""
 msgstr ""
 "Spiral (vase) mode does not work when an object contains more than one "
 "material."
+
+#, boost-format
+msgid "The object %1% exceeds the maximum build volume height."
+msgstr ""
+
+#, boost-format
+msgid ""
+"While the object %1% itself fits the build volume, its last layer exceeds "
+"the maximum build volume height."
+msgstr ""
+
+msgid ""
+"You might want to reduce the size of your model or change current print "
+"settings and retry."
+msgstr ""
+
+msgid "Variable layer height is not supported with Organic supports."
+msgstr ""
 
 msgid "The prime tower is not supported in \"By object\" print."
 msgstr "A prime tower is not supported in “By object” print."
@@ -7395,7 +7427,7 @@ msgstr ""
 "how much width of the line without support from lower layer. 0% means "
 "forcing cooling for all outer wall no matter the overhang degree."
 
-msgid "Bridge direction"
+msgid "Bridge infill direction"
 msgstr ""
 
 msgid ""
@@ -7500,6 +7532,14 @@ msgstr ""
 "Enable this option to slow down when printing overhangs. The speeds for "
 "different overhang percentages are set below."
 
+msgid "Slow down for curled perimeters"
+msgstr ""
+
+msgid ""
+"Enable this option to slow printing down in areas where potential curled "
+"perimeters may exist"
+msgstr ""
+
 msgid "mm/s or %"
 msgstr ""
 
@@ -7530,8 +7570,8 @@ msgid "Brim type"
 msgstr "Brim type"
 
 msgid ""
-"This controls the generation of the brim at outer side of models. Auto means "
-"the brim width is analysed and calculated automatically."
+"This controls the generation of the brim at outer and/or inner side of "
+"models. Auto means the brim width is analysed and calculated automatically."
 msgstr ""
 "This controls the generation of the brim at outer and/or inner side of "
 "models. Auto means the brim width is analyzed and calculated automatically."
@@ -7635,6 +7675,23 @@ msgstr "Default process profile"
 msgid "Default process profile when switch to this machine profile"
 msgstr "Default process profile when switching to this machine profile"
 
+msgid "Activate air filtration"
+msgstr ""
+
+msgid "Activate for better air filtration"
+msgstr ""
+
+msgid "Fan speed"
+msgstr "Fan speed"
+
+msgid ""
+"Speed of exhuast fan during printing.This speed will overwrite the speed in "
+"filament custom gcode"
+msgstr ""
+
+msgid "Speed of exhuast fan after printing completes"
+msgstr ""
+
 msgid "No cooling for the first"
 msgstr "No cooling for the first"
 
@@ -7701,17 +7758,6 @@ msgid ""
 msgstr ""
 "Add solid infill near sloping surfaces to guarantee the vertical shell "
 "thickness (top+bottom solid layers)."
-
-msgid "Internal bridge support thickness"
-msgstr "Internal bridge support thickness"
-
-msgid ""
-"If enabled, support loops will be generated under the contours of internal "
-"bridges.These support loops could prevent internal bridges from extruding "
-"over the air and improve the top surface quality, especially when the sparse "
-"infill density is low.This value determines the thickness of the support "
-"loops. 0 means disable this feature"
-msgstr ""
 
 msgid "Top surface pattern"
 msgstr "Top surface pattern"
@@ -7835,14 +7881,6 @@ msgid ""
 msgstr ""
 "Clearance radius around extruder: used for collision avoidance in by-object "
 "printing."
-
-msgid "Max Radius"
-msgstr ""
-
-msgid ""
-"Max clearance radius around extruder. Used for collision avoidance in by-"
-"object printing."
-msgstr ""
 
 msgid "Extruder Color"
 msgstr "Extruder Color"
@@ -8098,9 +8136,6 @@ msgstr "Filament density, for statistical purposes only."
 msgid "g/cm³"
 msgstr "g/cm³"
 
-msgid "Type"
-msgstr "Type"
-
 msgid "The material type of filament"
 msgstr "Filament material type"
 
@@ -8158,14 +8193,6 @@ msgstr ""
 "This is the angle for sparse infill pattern, which controls the start or "
 "main direction of lines."
 
-msgid "Bridge infill direction"
-msgstr ""
-
-msgid ""
-"Angle for bridge infill pattern, which controls the start or main direction "
-"of line"
-msgstr ""
-
 msgid "Sparse infill density"
 msgstr "Sparse infill density"
 
@@ -8211,8 +8238,6 @@ msgstr "Support Cubic"
 msgid "Lightning"
 msgstr "Lightning"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Sparse infill anchor length"
 msgstr ""
 
@@ -8252,7 +8277,6 @@ msgstr ""
 msgid "0 (Simple connect)"
 msgstr ""
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Acceleration of outer walls"
 msgstr ""
 
@@ -8308,7 +8332,12 @@ msgid "accel_to_decel"
 msgstr ""
 
 #, c-format, boost-format
-msgid "Klipper's max_accel_to_decel will be adjusted to this % of acceleration"
+msgid ""
+"Klipper's max_accel_to_decel will be adjusted to this %% of acceleration"
+msgstr ""
+
+#, c-format, boost-format
+msgid "%%"
 msgstr ""
 
 msgid "Jerk of outer walls"
@@ -8360,6 +8389,15 @@ msgstr ""
 msgid "Travel speed of initial layer"
 msgstr ""
 
+#, fuzzy
+msgid "Number of slow layers"
+msgstr "This is the number of top interface layers."
+
+msgid ""
+"The first few layers are printed slower than normal. The speed is gradually "
+"increased in a linear fashion over the specified number of layers."
+msgstr ""
+
 msgid "Initial layer nozzle temperature"
 msgstr "First layer nozzle temperature"
 
@@ -8368,6 +8406,24 @@ msgstr "Nozzle temperature for printing the first layer with this filament"
 
 msgid "Full fan speed at layer"
 msgstr "Full fan speed at layer"
+
+msgid ""
+"Fan speed will be ramped up linearly from zero at layer "
+"\"close_fan_the_first_x_layers\" to maximum at layer \"full_fan_speed_layer"
+"\". \"full_fan_speed_layer\" will be ignored if lower than "
+"\"close_fan_the_first_x_layers\", in which case the fan will be running at "
+"maximum allowed speed at layer \"close_fan_the_first_x_layers\" + 1."
+msgstr ""
+
+msgid "Support interface fan speed"
+msgstr ""
+
+msgid ""
+"This fan speed is enforced during all support interfaces, to be able to "
+"weaken their bonding with a high fan speed.\n"
+"Set to -1 to disable this override.\n"
+"Can only be overriden by disable_fan_first_layers."
+msgstr ""
 
 msgid ""
 "Randomly jitter while printing the wall, so that the surface has a rough "
@@ -8380,15 +8436,12 @@ msgstr ""
 msgid "None"
 msgstr "None"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Contour"
 msgstr "Contour"
 
 msgid "Contour and hole"
 msgstr "Contour and hole"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "All walls"
 msgstr "All walls"
 
@@ -8492,8 +8545,83 @@ msgstr ""
 msgid "HRC"
 msgstr "HRC"
 
+msgid "Printer structure"
+msgstr ""
+
+msgid "The physical arrangement and components of a printing device"
+msgstr ""
+
+msgid "CoreXY"
+msgstr ""
+
+msgid "I3"
+msgstr ""
+
+msgid "Hbot"
+msgstr ""
+
+msgid "Delta"
+msgstr ""
+
+msgid "Best object position"
+msgstr ""
+
+msgid "Best auto arranging position in range [0,1] w.r.t. bed shape."
+msgstr ""
+
 msgid "Enable this option if machine has auxiliary part cooling fan"
 msgstr "Enable this option if the machine has an auxiliary part cooling fan"
+
+msgid ""
+"Start the fan this number of seconds earlier than its target start time (you "
+"can use fractional seconds). It assumes infinite acceleration for this time "
+"estimation, and will only take into account G1 and G0 moves (arc fitting is "
+"unsupported).\n"
+"It won't move fan comands from custom gcodes (they act as a sort of "
+"'barrier').\n"
+"It won't move fan comands into the start gcode if the 'only custom start "
+"gcode' is activated.\n"
+"Use 0 to deactivate."
+msgstr ""
+
+msgid "Only overhangs"
+msgstr ""
+
+msgid "Will only take into account the delay for the cooling of overhangs."
+msgstr ""
+
+msgid "Fan kick-start time"
+msgstr ""
+
+msgid ""
+"Emit a max fan speed command for this amount of seconds before reducing to "
+"target speed to kick-start the cooling fan.\n"
+"This is useful for fans where a low PWM/power may be insufficient to get the "
+"fan started spinning from a stop, or to get the fan up to speed faster.\n"
+"Set to 0 to deactivate."
+msgstr ""
+
+msgid "Time cost"
+msgstr ""
+
+msgid "The printer cost per hour"
+msgstr ""
+
+msgid "money/h"
+msgstr ""
+
+msgid "Support control chamber temperature"
+msgstr ""
+
+msgid ""
+"This option is enabled if machine support controlling chamber temperature"
+msgstr ""
+
+msgid "Support air filtration"
+msgstr ""
+
+msgid "Enable this if printer support air filtration"
+msgstr ""
 
 msgid "G-code flavor"
 msgstr "G-code flavor"
@@ -8746,9 +8874,6 @@ msgstr "Maximum acceleration for travel"
 msgid "Maximum acceleration for travel (M204 T), it only applies to Marlin 2"
 msgstr ""
 
-msgid "Fan speed"
-msgstr "Fan speed"
-
 msgid ""
 "Part cooling fan speed may be increased when auto cooling is enabled. This "
 "is the maximum speed limitation of part cooling fan"
@@ -8765,6 +8890,55 @@ msgid ""
 msgstr ""
 "The highest printable layer height for the extruder: this is used to limit "
 "the maximum layer height when adaptive layer height is enabled."
+
+msgid "Extrusion rate smoothing"
+msgstr ""
+
+msgid ""
+"This parameter smooths out sudden extrusion rate changes that happen when "
+"the printer transitions from printing a high flow (high speed/larger width) "
+"extrusion to a lower flow (lower speed/smaller width) extrusion and vice "
+"versa.\n"
+"\n"
+"It defines the maximum rate by which the extruded volumetric flow in mm3/sec "
+"can change over time. Higher values mean higher extrusion rate changes are "
+"allowed, resulting in faster speed transitions.\n"
+"\n"
+"A value of 0 disables the feature. \n"
+"\n"
+"For a high speed, high flow direct drive printer (like the Bambu lab or "
+"Voron) this value is usually not needed. However it can provide some "
+"marginal benefit in certain cases where feature speeds vary greatly. For "
+"example, when there are aggressive slowdowns due to overhangs. In these "
+"cases a high value of around 300-350mm3/s2 is recommended as this allows for "
+"just enough smoothing to assist pressure advance achieve a smoother flow "
+"transition.\n"
+"\n"
+"For slower printers without pressure advance, the value should be set much "
+"lower. A value of 10-15mm3/s2 is a good starting point for direct drive "
+"extruders and 5-10mm3/s2 for Bowden style. \n"
+"\n"
+"This feature is known as Pressure Equalizer in Prusa slicer.\n"
+"\n"
+"Note: this parameter disables arc fitting."
+msgstr ""
+
+msgid "mm³/s²"
+msgstr ""
+
+msgid "Smoothing segment length"
+msgstr ""
+
+msgid ""
+"A lower value results in smoother extrusion rate transitions. However, this "
+"results in a significantly larger gcode file and more instructions for the "
+"printer to process. \n"
+"\n"
+"Default value of 3 works well for most cases. If your printer is stuttering, "
+"increase this value to reduce the number of adjustments made\n"
+"\n"
+"Allowed values: 1-5"
+msgstr ""
 
 msgid "Minimum speed for part cooling fan"
 msgstr "Minimum speed for part cooling fan"
@@ -9049,6 +9223,22 @@ msgstr ""
 "hitting the print when traveling more. Using spiral lines to lift z can "
 "prevent stringing."
 
+msgid "Z hop lower boundary"
+msgstr ""
+
+msgid ""
+"Z hop will only come into effect when Z is above this value and is below the "
+"parameter: \"Z hop upper boundary\""
+msgstr ""
+
+msgid "Z hop upper boundary"
+msgstr ""
+
+msgid ""
+"If this value is positive, Z hop will only come into effect when Z is above "
+"the parameter: \"Z hop lower boundary\" and is below this value"
+msgstr ""
+
 msgid "Z hop type"
 msgstr ""
 
@@ -9131,6 +9321,9 @@ msgid ""
 "handle the retraction. This is only supported in recent Marlin."
 msgstr ""
 
+msgid "Show auto-calibration marks"
+msgstr ""
+
 msgid "Seam position"
 msgstr "Seam position"
 
@@ -9163,13 +9356,8 @@ msgstr ""
 msgid ""
 "In order to reduce the visibility of the seam in a closed loop extrusion, "
 "the loop is interrupted and shortened by a specified amount.\n"
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-"his amount can be specified in millimeters or as a percentage of the current "
-"extruder diameter. The default value for this parameter is 15%."
-========
 "This amount can be specified in millimeters or as a percentage of the "
 "current extruder diameter. The default value for this parameter is 10%."
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgstr ""
 
 msgid "Role base wipe speed"
@@ -9436,13 +9624,8 @@ msgstr "Bottom Z distance"
 msgid "The z gap between the bottom support interface and object"
 msgstr "The z gap between the bottom support interface and object"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-msgid "Support base"
-msgstr ""
-========
 msgid "Support/raft base"
 msgstr "Support/raft base"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid ""
 "Filament to print support base and raft. \"Default\" means no specific "
@@ -9465,12 +9648,9 @@ msgstr ""
 "This covers the top contact layer of the supports with loops. It is disabled "
 "by default."
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Support/raft interface"
 msgstr "Support/raft interface"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid ""
 "Filament to print support interface. \"Default\" means no specific filament "
 "for support interface and current filament is used"
@@ -9527,12 +9707,9 @@ msgstr ""
 "soluble support interfaces is Rectilinear while the default pattern for "
 "soluble support interfaces is Concentric."
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Rectilinear Interlaced"
 msgstr "Rectilinear Interlaced"
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Base pattern spacing"
 msgstr "Base pattern spacing"
 
@@ -9548,23 +9725,15 @@ msgstr "Expand (+) or shrink (-) the horizontal span of normal support"
 msgid "Speed of support"
 msgstr "This is the speed for support."
 
-msgid "Style"
-msgstr "Style"
-
 msgid ""
 "Style and shape of the support. For normal support, projecting the supports "
 "into a regular grid will create more stable supports (default), while snug "
 "support towers will save material and reduce object scarring.\n"
-"For tree support, slim style will merge branches more aggressively and save "
-"a lot of material (default), while hybrid style will create similar "
-"structure to normal support under large flat overhangs."
+"For tree support, slim and organic style will merge branches more "
+"aggressively and save a lot of material (default organic), while hybrid "
+"style will create similar structure to normal support under large flat "
+"overhangs."
 msgstr ""
-"Style and shape of the support. For normal support, projecting the supports "
-"into a regular grid will create more stable supports (default), while snug "
-"support towers will save material and reduce object scarring.\n"
-"For tree support, slim style will merge branches more aggressively and save "
-"a lot of material (default), while hybrid style will create similar "
-"structure to normal support under large flat overhangs."
 
 msgid "Snug"
 msgstr "Snug"
@@ -9586,7 +9755,8 @@ msgstr "Independent support layer height"
 
 msgid ""
 "Support layer uses layer height independent with object layer. This is to "
-"support customizing z-gap and save print time."
+"support customizing z-gap and save print time.This option will be invalid "
+"when the prime tower is enabled."
 msgstr ""
 "Support layer uses layer height independent with object layer. This is to "
 "support customizing z-gap and save print time.This option will be invalid "
@@ -9720,23 +9890,18 @@ msgstr ""
 msgid "Chamber temperature"
 msgstr ""
 
-msgid "Target chamber temperature"
+msgid ""
+"Higher chamber temperature can help suppress or reduce warping and "
+"potentially lead to higher interlayer bonding strength for high temperature "
+"materials like ABS, ASA, PC, PA and so on.At the same time, the air "
+"filtration of ABS and ASA will get worse.While for PLA, PETG, TPU, PVA and "
+"other low temperature materials,the actual chamber temperature should not be "
+"high to avoid cloggings, so 0 which stands for turning off is highly "
+"recommended"
 msgstr ""
 
 msgid "Nozzle temperature for layers after the initial one"
 msgstr "Nozzle temperature after the first layer"
-
-msgid "Bed temperature difference"
-msgstr "Bed temperature difference"
-
-msgid ""
-"Do not recommend bed temperature of other layer to be lower than initial "
-"layer for more than this threshold. Too low bed temperature of other layer "
-"may cause the model broken free from build plate"
-msgstr ""
-"It is not recommend for bed temperature of other layers to be lower than the "
-"first layer by more than this threshold. Too low bed temperature of other "
-"layer may cause the model to break free from the build plate."
 
 msgid "Detect thin wall"
 msgstr "Detect thin walls"
@@ -9818,16 +9983,13 @@ msgstr ""
 "retracting."
 
 msgid ""
-"Print a tower to prime material in nozzle after switching to a new material."
+"The wiping tower can be used to clean up the residue on the nozzle and "
+"stabilize the chamber pressure inside the nozzle, in order to avoid "
+"appearance defects when printing objects."
 msgstr ""
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-"This option enables printing a tower to prime material in the nozzle after "
-"switching to a new material."
-========
 "The wiping tower can be used to clean up residue on the nozzle and stabilize "
 "the chamber pressure inside the nozzle in order to avoid appearance defects "
 "when printing objects."
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 msgid "Purging volumes"
 msgstr "Purging volumes"
@@ -10155,8 +10317,12 @@ msgstr ""
 msgid "Load first filament as default for those not loaded"
 msgstr ""
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
+msgid "Minimum save"
+msgstr ""
+
+msgid "export 3mf with minimum size."
+msgstr ""
+
 msgid "mtcpp"
 msgstr "mtcpp"
 
@@ -10181,7 +10347,6 @@ msgstr "Normative check"
 msgid "Check the normative items."
 msgstr "Check the normative items."
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Output Model Info"
 msgstr "Output Model Info"
 
@@ -10212,14 +10377,39 @@ msgstr ""
 msgid "Repetions count of the whole model"
 msgstr ""
 
+msgid "Ensure on bed"
+msgstr ""
+
+msgid ""
+"Lift the object above the bed when it is partially below. Disabled by default"
+msgstr ""
+
 msgid "Convert Unit"
 msgstr "Convert Unit"
 
 msgid "Convert the units of model"
 msgstr "Convert the units of model"
 
-msgid "Orient the model"
-msgstr "Orient the model"
+msgid "Orient Options"
+msgstr ""
+
+msgid "Orient options: 0-disable, 1-enable, others-auto"
+msgstr ""
+
+msgid "Rotation angle around the Z axis in degrees."
+msgstr ""
+
+msgid "Rotate around X"
+msgstr ""
+
+msgid "Rotation angle around the X axis in degrees."
+msgstr ""
+
+msgid "Rotate around Y"
+msgstr ""
+
+msgid "Rotation angle around the Y axis in degrees."
+msgstr ""
 
 msgid "Scale the model by a float factor"
 msgstr "Scale the model by a float factor"
@@ -10236,8 +10426,6 @@ msgstr "Load Filament Settings"
 msgid "Load filament settings from the specified file list"
 msgstr "Load filament settings from the specified file list"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-========
 msgid "Skip Objects"
 msgstr "Skip Objects"
 
@@ -10252,7 +10440,6 @@ msgid ""
 "uptodate"
 msgstr ""
 
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 msgid "Data directory"
 msgstr ""
 
@@ -10278,6 +10465,12 @@ msgstr ""
 "Sets debug logging level. 0:fatal, 1:error, 2:warning, 3:info, 4:debug, 5:"
 "trace\n"
 
+msgid "Load custom gcode"
+msgstr ""
+
+msgid "Load custom gcode from json"
+msgstr ""
+
 msgid "Error in zip archive"
 msgstr "Error in zip archive"
 
@@ -10299,13 +10492,6 @@ msgstr "Generating support"
 msgid "Checking support necessity"
 msgstr "Checking support necessity"
 
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
-#, c-format, boost-format
-msgid ""
-"It seems object %s has completely floating regions. Please re-orient the "
-"object or enable support generation."
-msgstr ""
-========
 msgid "floating regions"
 msgstr "floating regions"
 
@@ -10314,11 +10500,11 @@ msgstr "floating cantilever"
 
 msgid "large overhangs"
 msgstr "large overhangs"
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
 
 #, c-format, boost-format
 msgid ""
-"It seems object %s has large overhangs. Please enable support generation."
+"It seems object %s has %s. Please re-orient the object or enable support "
+"generation."
 msgstr ""
 "It seems object %s has %s. Please re-orient the object or enable support "
 "generation."
@@ -10481,6 +10667,15 @@ msgstr ""
 msgid "The name cannot exceed 40 characters."
 msgstr ""
 
+#, c-format, boost-format
+msgid ""
+"Please input valid values:\n"
+"Start value: >= %.1f\n"
+"End value: <= %.1f\n"
+"End value: > Start value\n"
+"Value step: >= %.3f)"
+msgstr ""
+
 msgid "The name cannot be empty."
 msgstr ""
 
@@ -10510,6 +10705,9 @@ msgstr ""
 msgid "Please select filament to calibrate."
 msgstr ""
 
+msgid "The input value size must be 3."
+msgstr ""
+
 msgid "Connecting to printer..."
 msgstr ""
 
@@ -10526,9 +10724,6 @@ msgid "Please select at least one filament for calibration"
 msgstr ""
 
 msgid "Flow rate calibration result has been saved to preset"
-msgstr ""
-
-msgid "The input value size must be 3."
 msgstr ""
 
 msgid "Max volumetric speed calibration result has been saved to preset"
@@ -10666,6 +10861,9 @@ msgstr ""
 msgid "Please find the best line on your plate"
 msgstr ""
 
+msgid "Please find the cornor with perfect degree of extrusion"
+msgstr ""
+
 msgid "Input Value"
 msgstr ""
 
@@ -10768,6 +10966,12 @@ msgstr ""
 msgid "Extra info"
 msgstr ""
 
+msgid "Pattern"
+msgstr ""
+
+msgid "Method"
+msgstr ""
+
 #, c-format, boost-format
 msgid "%s is not compatible with %s"
 msgstr ""
@@ -10776,6 +10980,21 @@ msgid "TPU is not supported for Flow Dynamics Auto-Calibration."
 msgstr ""
 
 msgid "Connecting to printer"
+msgstr ""
+
+msgid "From k Value"
+msgstr ""
+
+msgid "To k Value"
+msgstr ""
+
+msgid "Step value"
+msgstr ""
+
+msgid "0.5"
+msgstr ""
+
+msgid "0.005"
 msgstr ""
 
 msgid "The nozzle diameter has been synchronized from the printer Settings"
@@ -10890,6 +11109,9 @@ msgstr ""
 msgid "Upload filename doesn't end with \"%s\". Do you wish to continue?"
 msgstr ""
 
+msgid "Upload"
+msgstr ""
+
 msgid "Print host upload queue"
 msgstr ""
 
@@ -10949,9 +11171,6 @@ msgid "PA Line"
 msgstr ""
 
 msgid "PA Pattern"
-msgstr ""
-
-msgid "Method"
 msgstr ""
 
 msgid "Start PA: "
@@ -11027,7 +11246,8 @@ msgstr ""
 
 msgid ""
 "Please input valid values:\n"
-"start > 0 step >= 0\n"
+"start > 0 \n"
+"step >= 0\n"
 "end > start + step)"
 msgstr ""
 
@@ -11042,8 +11262,73 @@ msgstr ""
 
 msgid ""
 "Please input valid values:\n"
-"start > 10 step >= 0\n"
+"start > 10 \n"
+"step >= 0\n"
 "end > start + step)"
+msgstr ""
+
+msgid "Start retraction length: "
+msgstr ""
+
+msgid "End retraction length: "
+msgstr ""
+
+msgid "mm/mm"
+msgstr ""
+
+#, fuzzy
+msgid "Physical Printer"
+msgstr "Printer"
+
+msgid "Print Host upload"
+msgstr ""
+
+msgid "Test"
+msgstr ""
+
+msgid "Could not get a valid Printer Host reference"
+msgstr ""
+
+msgid "Success!"
+msgstr ""
+
+msgid "Refresh Printers"
+msgstr ""
+
+msgid ""
+"HTTPS CA file is optional. It is only needed if you use HTTPS with a self-"
+"signed certificate."
+msgstr ""
+
+msgid "Certificate files (*.crt, *.pem)|*.crt;*.pem|All files|*.*"
+msgstr ""
+
+msgid "Open CA certificate file"
+msgstr ""
+
+#, c-format, boost-format
+msgid ""
+"On this system, %s uses HTTPS certificates from the system Certificate Store "
+"or Keychain."
+msgstr ""
+
+msgid ""
+"To use a custom CA file, please import your CA file into Certificate Store / "
+"Keychain."
+msgstr ""
+
+msgid "Connection to printers connected via the print host failed."
+msgstr ""
+
+msgid "The start, end or step is not valid value."
+msgstr ""
+
+msgid ""
+"Unable to calibrate: maybe because the set calibration value range is too "
+"large, or the step is too small"
+msgstr ""
+
+msgid "Need select printer"
 msgstr ""
 
 #: resources/data/hints.ini: [hint:3D Scene Operations]
@@ -11128,7 +11413,7 @@ msgid ""
 "Subtract a Part\n"
 "Did you know that you can subtract one mesh from another using the Negative "
 "part modifier? That way you can, for example, create easily resizable holes "
-"directly in Orca Slicer. Read more in the documentation."
+"directly in 3D Labs Studio. Read more in the documentation."
 msgstr ""
 
 #: resources/data/hints.ini: [hint:STEP]
@@ -11136,7 +11421,7 @@ msgid ""
 "STEP\n"
 "Did you know that you can improve your print quality by slicing a STEP file "
 "instead of an STL?\n"
-"Orca Slicer supports slicing STEP files, providing smoother results than a "
+"3D Labs Studio supports slicing STEP files, providing smoother results than a "
 "lower resolution STL. Give it a try!"
 msgstr ""
 
@@ -11229,697 +11514,106 @@ msgid ""
 "Did you know that you can use more wall loops and higher sparse infill "
 "density to improve the strength of the model?"
 msgstr ""
-<<<<<<<< HEAD:localization/i18n/en/3DLabsStudio_en.po
 
+#~ msgid "Cali"
+#~ msgstr "Cali"
+
+#~ msgid "Calibration of extrusion"
+#~ msgstr "Calibration of extrusion"
+
+#~ msgid "Push new filament into the extruder"
+#~ msgstr "Push new filament into the extruder"
+
+#, c-format, boost-format
 #~ msgid ""
-#~ "The configuration may be generated by a newer version of BambuStudio."
+#~ "Bed temperature of other layer is lower than bed temperature of initial "
+#~ "layer for more than %d degree centigrade.\n"
+#~ "This may cause model broken free from build plate during printing"
 #~ msgstr ""
-#~ "The configuration may have been generated by a newer version of Orca "
-#~ "Slicer."
-
-#~ msgid ""
-#~ "BambuStudio will terminate because of running out of memory.It may be a "
-#~ "bug. It will be appreciated if you report the issue to our team."
-#~ msgstr ""
-#~ "Orca Slicer has run out of memory and will close. This may be a bug. "
-#~ "Please report this error to Technical Support."
-
-#~ msgid ""
-#~ "BambuStudio will terminate because of a localization error. It will be "
-#~ "appreciated if you report the specific scenario this issue happened."
-#~ msgstr "A localization error has occurred, and Orca Slicer will close. "
-
-#, boost-format
-#~ msgid "BambuStudio got an unhandled exception: %1%"
-#~ msgstr "BambuStudio got an unhandled exception: %1%"
-
-#~ msgid ""
-#~ "BambuStudio configuration file may be corrupted and is not abled to be "
-#~ "parsed.Please delete the file and try again."
-#~ msgstr ""
-#~ "Orca Slicer configuration file is not able to be parsed and may be "
-#~ "corrupted. Please delete the file and try again."
-
-#~ msgid "Loading user presets..."
-#~ msgstr "Loading user presets..."
-
-#~ msgid ""
-#~ "Orca Slicer is based on PrusaSlicer by Prusa Research, which is from "
-#~ "Slic3r by Alessandro Ranellucci and the RepRap community"
-#~ msgstr ""
-#~ "Orca Slicer is based on PrusaSlicer by Prusa Research, which is based on "
-#~ "Slic3r by Alessandro Ranellucci and the RepRap community"
-
-#~ msgid "Export G-Code."
-#~ msgstr "Export to G-code"
-
-#~ msgid "Export."
-#~ msgstr "Export"
-
-#~ msgid "Import geometry data from STL/STEP/3MF/OBJ/AMF files."
-#~ msgstr "Import geometry data from STL/STEP/3MF/OBJ/AMF files."
-
-#, boost-format
-#~ msgid "Copying directory %1% to %2% failed: %3%"
-#~ msgstr "Copying directory %1% to %2% failed: %3%"
-
-#~ msgid ""
-#~ "This controls brim position including outer side of models, inner side of "
-#~ "holes or both. Auto means both the brim position and brim width is "
-#~ "analysed and calculated automatically"
-#~ msgstr ""
-#~ "This controls brim position including outer side of models, inner side of "
-#~ "holes, or both. Auto means both the brim position and brim width are "
-#~ "analyzed and calculated automatically."
-
-#~ msgid "Choose one file (gcode/.gco/.g/.ngc/ngc):"
-#~ msgstr "Choose one file (.gcode/.gco/.g/.ngc/ngc):"
-
-#~ msgid ""
-#~ "Too large layer height.\n"
-#~ "Reset to 0.2"
-#~ msgstr ""
-#~ "Layer height too large\n"
-#~ "It has been reset to 0.2"
-
-#~ msgid ""
-#~ "\n"
-#~ "%1% is too close to exclusion area, there will be collisions when "
-#~ "printing."
-#~ msgstr ""
-#~ "\n"
-#~ "%1% is too close to an exclusion area; there will be collisions when "
-#~ "printing."
-
-#~ msgid ""
-#~ "%1% is too close to exclusion area, there will be collisions when "
-#~ "printing."
-#~ msgstr ""
-#~ "%1% is too close to an exclusion area; there will be collisions when "
-#~ "printing."
-
-#~ msgid "0%"
-#~ msgstr "0%"
-
-#~ msgid ""
-#~ "An object is layed over the boundary of plate.\n"
-#~ "Please solve the problem by moving it totally inside or outside plate."
-#~ msgstr ""
-#~ "An object is laid over the edge of the plate or exceeds the height "
-#~ "limit.\n"
-#~ "Please solve the problem by moving it totally on or off the plate, and "
-#~ "confirming that the height is within the build volume."
-
-#~ msgid ""
-#~ "Arachne engine only works when overhang slowing down is disabled.\n"
-#~ "This may cause decline in the quality of overhang surface when print "
-#~ "fastly\n"
-#~ msgstr "\n"
-
-#~ msgid "Auto arrange"
-#~ msgstr "Auto Arrange"
-
-#~ msgid ""
-#~ "Auto orientates selected objects or all objects.If there are selected "
-#~ "objects, it just orientates the selected ones.Otherwise, it will "
-#~ "orientates all objects in the project."
-#~ msgstr ""
-#~ "This anuto orients selected objects or all objects.\n"
-#~ "If there are selected objects, it just orients the selected ones. "
-#~ "Otherwise, it will orient all objects in the project."
-
-#~ msgid "Aux Cooling"
-#~ msgstr "Aux Cooling"
-
-#~ msgid "Avoid crossing wall when travel"
-#~ msgstr "Avoid walls when traveling"
+#~ "The bed temperature of other layers is lower than the bed temperature of "
+#~ "the first layer by more than %d degrees centigrade.\n"
+#~ "This may cause models to break free from the build plate during printing."
 
 #~ msgid ""
 #~ "Bed temperature is higher than vitrification temperature of this "
 #~ "filament.\n"
-#~ "This may cause nozzle blocked and printing failure"
+#~ "This may cause nozzle blocked and printing failure\n"
+#~ "Please keep the printer open during the printing process to ensure air "
+#~ "circulation or reduce the temperature of the hot bed"
 #~ msgstr ""
-#~ "The bed temperature is higher than the vitrification temperature of this "
+#~ "Bed temperature is higher than vitrification temperature of this "
 #~ "filament.\n"
-#~ "This may cause a nozzle blockage or print failure"
+#~ "This may cause nozzle blockage and print failure.\n"
+#~ "Please keep the printer open during the printing process to ensure air "
+#~ "circulation or reduce the temperature of the hot bed."
 
-#~ msgid "Choose one or more files (3mf/step/stl/obj/amf):"
-#~ msgstr "Choose one or more files (3mf/step/stl/obj/amf):"
+#~ msgid "Total Time Estimation"
+#~ msgstr "Total Time Estimation"
 
-#~ msgid "Clear all"
-#~ msgstr "Clear all"
+#~ msgid "Resonance frequency identification"
+#~ msgstr "Resonance frequency identification"
+
+#~ msgid "Immediately score"
+#~ msgstr "Immediately score"
+
+#~ msgid "Please give a score for your favorite Bambu Market model."
+#~ msgstr "Please give a score for your favorite Bambu Market model."
+
+#~ msgid "Score"
+#~ msgstr "Score"
+
+#~ msgid "Bamabu Engineering Plate"
+#~ msgstr "Bambu Engineering Plate"
+
+#~ msgid "Bamabu High Temperature Plate"
+#~ msgstr "Bambu High Temperature Plate"
+
+#~ msgid "Can't connect to the printer"
+#~ msgstr "Can't connect to the printer"
+
+#~ msgid "Recommended temperature range"
+#~ msgstr "Recommended temperature range"
+
+#~ msgid "High Temp Plate"
+#~ msgstr "High Temp Plate"
 
 #~ msgid ""
-#~ "Clearance radius around extruder. Used as input of auto-arrange to avoid "
-#~ "collision when print object by object"
+#~ "Bed temperature when high temperature plate is installed. Value 0 means "
+#~ "the filament does not support to print on the High Temp Plate"
 #~ msgstr ""
-#~ "Clearance radius around extruder: used as input for auto-arranging to "
-#~ "avoid collisions when printing object by object"
+#~ "This is the bed temperature when the high temperature plate is installed. "
+#~ "A value of 0 means the filament does not support printing on the High "
+#~ "Temp Plate."
 
-#~ msgid "Click the pencil icon to edit the filament."
-#~ msgstr "Click the pencil icon to edit the filament."
-
-#~ msgid "Color Print"
-#~ msgstr "Color print"
-
-#~ msgid "Comsumption"
-#~ msgstr "Consumption"
-
-#~ msgid "Creating"
-#~ msgstr "Creating"
-
-#~ msgid "Ctrl + Any arrow"
-#~ msgstr "Ctrl + Any arrow"
-
-#~ msgid "Ctrl + Left mouse button"
-#~ msgstr "Ctrl + Left mouse button"
-
-#~ msgid "Debug"
-#~ msgstr "Debug"
-
-#~ msgid "Designer"
-#~ msgstr "Designer"
-
-#~ msgid "Device:"
-#~ msgstr "Device:"
-
-#~ msgid "Display printable box"
-#~ msgstr "Display printable box"
-
-#~ msgid "Display shadow of objects"
-#~ msgstr "Display shadow of objects"
-
-#~ msgid "Display triangles of models"
-#~ msgstr "Display triangles of models"
+#~ msgid "Internal bridge support thickness"
+#~ msgstr "Internal bridge support thickness"
 
 #~ msgid ""
-#~ "Do not recommand bed temperature of other layer to be lower than initial "
+#~ "Style and shape of the support. For normal support, projecting the "
+#~ "supports into a regular grid will create more stable supports (default), "
+#~ "while snug support towers will save material and reduce object scarring.\n"
+#~ "For tree support, slim style will merge branches more aggressively and "
+#~ "save a lot of material (default), while hybrid style will create similar "
+#~ "structure to normal support under large flat overhangs."
+#~ msgstr ""
+#~ "Style and shape of the support. For normal support, projecting the "
+#~ "supports into a regular grid will create more stable supports (default), "
+#~ "while snug support towers will save material and reduce object scarring.\n"
+#~ "For tree support, slim style will merge branches more aggressively and "
+#~ "save a lot of material (default), while hybrid style will create similar "
+#~ "structure to normal support under large flat overhangs."
+
+#~ msgid "Bed temperature difference"
+#~ msgstr "Bed temperature difference"
+
+#~ msgid ""
+#~ "Do not recommend bed temperature of other layer to be lower than initial "
 #~ "layer for more than this threshold. Too low bed temperature of other "
 #~ "layer may cause the model broken free from build plate"
 #~ msgstr ""
-#~ "It is not recommended to have the bed temperature of other layers to be "
-#~ "lower than the first layer by more than this threshold. Bed temperatures "
-#~ "that are too low may cause models to break free from the build plate."
-
-#~ msgid ""
-#~ "Do you want to synchronize your personal data from Bambu Cloud? \n"
-#~ "Contains the following information:\n"
-#~ "1. The Process presets\n"
-#~ "2. The Filament presets\n"
-#~ "3. The Printer presets\n"
-#~ msgstr ""
-#~ "Do you want to synchronize your personal data from Bambu Cloud? \n"
-#~ "This includes the following information:\n"
-#~ "1. Process presets\n"
-#~ "2. Filament presets\n"
-#~ "3. Printer presets\n"
-
-#~ msgid ""
-#~ "Do you want to synchronize your personal data from Bambu Cloud? \n"
-#~ "It contains the following information:\n"
-#~ "1. The Process presets\n"
-#~ "2. The Filament presets\n"
-#~ "3. The Printer presets\n"
-#~ msgstr "\n"
-
-#~ msgid ""
-#~ "Don't retract when the travel is in infill area absolutely. That means "
-#~ "the oozing can't been seen"
-#~ msgstr ""
-#~ "This disables retraction when travel is entirely within an infill area "
-#~ "and oozing can’t be seen."
-
-#~ msgid ""
-#~ "Enabling this option means the height of every layer except the first "
-#~ "will be automatically calculated during slicing according to the slope of "
-#~ "the model’s surface.\n"
-#~ "Note that this option only takes effect if no prime tower is generated in "
-#~ "current plate."
-#~ msgstr ""
-#~ "Enabling this option means that the height of each layer after the first "
-#~ "will be automatically calculated according to the slope of the model’s "
-#~ "surface.\n"
-#~ "Please note that this option only takes effect if there is no prime tower "
-#~ "generated on the current plate."
-
-#~ msgid "Enter a search term"
-#~ msgstr "Enter a search term"
-
-#~ msgid "Erase painting"
-#~ msgstr "Erase painting"
-
-#~ msgid "Error at line %1%:\n"
-#~ msgstr "Error at line %1%:\n"
-
-#~ msgid "Export Sliced File"
-#~ msgstr "Export Sliced File"
-
-#~ msgid "Export current Sliced file"
-#~ msgstr "Export Sliced File"
-
-#~ msgid "Export ok."
-#~ msgstr "Export ok."
-
-#~ msgid "Export sliced file"
-#~ msgstr "Export Sliced File"
-
-#~ msgid "Extruder position"
-#~ msgstr "Extruder position"
-
-#~ msgid "Failed"
-#~ msgstr "Failed"
-
-#~ msgid "Filament 1"
-#~ msgstr "Filament 1"
-
-#~ msgid "Filament N XX"
-#~ msgstr "Filament N XX"
-
-#~ msgid ""
-#~ "Filament to print support and skirt. 0 means no specific filament for "
-#~ "support and current filament is used"
-#~ msgstr ""
-#~ "This is the filament used to print supports and skirts. 0 means no "
-#~ "specific filament for support and the current filament is used."
-
-#~ msgid ""
-#~ "Filament to print support interface. 0 means no specific filament for "
-#~ "support interface and current filament is used"
-#~ msgstr ""
-#~ "This is the filament to print support interfaces. 0 means no specific "
-#~ "filament for support interfaces and the current filament is used"
-
-#~ msgid "Filaments Selection"
-#~ msgstr "Filaments selection"
-
-#~ msgid "Finish"
-#~ msgstr "Finish"
-
-#~ msgid "Finished"
-#~ msgstr "Finished"
-
-#~ msgid "Fix model locally"
-#~ msgstr "Fix model locally"
-
-#~ msgid "Fix model through cloud"
-#~ msgstr "Fix model through cloud"
-
-#~ msgid "Flushed filament"
-#~ msgstr "Flushed filament"
-
-#~ msgid ""
-#~ "Force cooling fan to be specific speed when overhang degree of printed "
-#~ "part exceeds this value. Expressed as percentage which indicides how much "
-#~ "width of the line without support from lower layer"
-#~ msgstr ""
-#~ "This forces the cooling fan to use a specific speed when overhang degrees "
-#~ "of parts exceed the set value. It is expressed as percentage which "
-#~ "indicates how much line is acceptable without support from lower layers."
-
-#~ msgid "Fragment Filter"
-#~ msgstr "Fragment Filter"
-
-#~ msgid "Fragment area"
-#~ msgstr "Fragment area"
-
-#~ msgid "Fragment filter"
-#~ msgstr "Fragment filter"
-
-#~ msgid ""
-#~ "Heat the nozzle to target \n"
-#~ "temperature"
-#~ msgstr ""
-#~ "Heat the nozzle to the target \n"
-#~ "temperature"
-
-#~ msgid "Height:"
-#~ msgstr "Height:"
-
-#~ msgid ""
-#~ "Height of the clearance cylinder around extruder. Used as input of auto-"
-#~ "arrange to avoid collision when print object by object"
-#~ msgstr ""
-#~ "Height of the clearance cylinder around extruder: used as input for auto-"
-#~ "arranging to avoid collisions when printing object by object"
-
-#~ msgid "Import 3MF/STL/STEP/OBJ/AMF"
-#~ msgstr "Import 3MF/STL/STEP/OBJ/AMF"
-
-#~ msgid "In the calibration of extrusion flow"
-#~ msgstr "In the calibration of extrusion flow"
-
-#~ msgid "In the calibration of laser scanner"
-#~ msgstr "In the calibration of laser scanner"
-
-#~ msgid "Initialize failed [%d]!"
-#~ msgstr "Initalization failed [%d]!"
-
-#~ msgid "Inner wall speed"
-#~ msgstr "Inner wall speed"
-
-#~ msgid ""
-#~ "It seems object %s needs support to print. Please enable support "
-#~ "generation."
-#~ msgstr ""
-#~ "It seems object %s needs support to print. Please enable support "
-#~ "generation."
-
-#~ msgid "Line type"
-#~ msgstr "Line type"
-
-#~ msgid "Management"
-#~ msgstr "Management"
-
-#~ msgid "Max travel detour distance"
-#~ msgstr "Max travel detour distance"
-
-#~ msgid ""
-#~ "Maximum detour distance for avoiding crossing wall. Don't detour if the "
-#~ "detour distance is large than this value"
-#~ msgstr ""
-#~ "Maximum detour distance for avoiding travel across walls. If the distance "
-#~ "is larger than this value, there will be no detour."
-
-#~ msgid "Module"
-#~ msgstr "Module"
-
-#~ msgid "Monitoring"
-#~ msgstr "Monitoring"
-
-#~ msgid "Monitoring Recording"
-#~ msgstr "Monitoring Recording"
-
-#~ msgid "Open &PrusaSlicer"
-#~ msgstr "Open &PrusaSlicer"
-
-#~ msgid "Open PrusaSlicer"
-#~ msgstr "Open PrusaSlicer"
-
-#~ msgid "Output file"
-#~ msgstr "Output file"
-
-#~ msgid "Part Cooling"
-#~ msgstr "Part Cooling"
-
-#~ msgid "Pause(heated bed temperature error)"
-#~ msgstr "Pause(heated bed temperature error)"
-
-#~ msgid "Pause(hotend temperature error)"
-#~ msgstr "Pause(hotend temperature error)"
-
-#~ msgid "Pause(toolhead shell off)"
-#~ msgstr "Pause(toolhead shell off)"
-
-#~ msgid "Per object edit"
-#~ msgstr "Per Object Edit"
-
-#~ msgid "Plate %d: %s does not support filament %s\n"
-#~ msgstr "\n"
-
-#~ msgid "Plate %d: %s does not support filament %s.\n"
-#~ msgstr "Plate %d: %s does not support filament %s.\n"
-
-#~ msgid "Plate %d: %s does not support filament %s (%s).\n"
-#~ msgstr "\n"
-
-#~ msgid ""
-#~ "Please check the following infomation and click Confirm to continue "
-#~ "sending print:\n"
-#~ msgstr "\n"
-
-#~ msgid "Please fill report first."
-#~ msgstr "Please fill report first."
-
-#~ msgid "Please upgrade your printer first"
-#~ msgstr "Please update your printer first"
-
-#~ msgid "Position:"
-#~ msgstr "Position:"
-
-#~ msgid ""
-#~ "Preview only mode:\n"
-#~ "The loaded file contains gcode only."
-#~ msgstr ""
-#~ "Preview only mode:\n"
-#~ "The loaded file contains G-code only."
-
-#~ msgid "Preview only mode for gcode file."
-#~ msgstr "Preview only mode for G-code file."
-
-#~ msgid "Printer Selection"
-#~ msgstr "Printer Selection"
-
-#~ msgid ""
-#~ "Purging after filament change will be done inside objects' infills. This "
-#~ "may lower the amount of waste and decrease the print time. If the walls "
-#~ "are printed with transparent filament, the mixed color infill will be "
-#~ "seen outside"
-#~ msgstr ""
-#~ "Purging after filament change will be done inside objects' infill. This "
-#~ "may lower the amount of waste and decrease the print time. If the walls "
-#~ "are printed with transparent filament, the mixed color infill will be "
-#~ "visible."
-
-#~ msgid ""
-#~ "Purging after filament change will be done inside objects' support. This "
-#~ "may lower the amount of waste and decrease the print time"
-#~ msgstr ""
-#~ "Purging after filament change will be done inside objects' support. This "
-#~ "may lower the amount of waste and decrease the print time."
-
-#~ msgid ""
-#~ "Push new filament \n"
-#~ "into extruder"
-#~ msgstr ""
-#~ "Push new filament \n"
-#~ "into extruder"
-
-#~ msgid ""
-#~ "Record timelapse video of printing without showing toolhead. In this mode "
-#~ "the toolhead docks near the excess chute at each layer change, and then a "
-#~ "snapshot is taken with the chamber camera. When printing finishes a "
-#~ "timelapse video is composed of all the snapshots."
-#~ msgstr ""
-#~ "Record timelapse video of printing without showing the toolhead. In this "
-#~ "mode the toolhead docks near the excess chute at each layer change, and "
-#~ "then a snapshot is taken with the chamber camera. When printing finishes, "
-#~ "a timelapse video is created from all the snapshots."
-
-#~ msgid "Reduce Triangles"
-#~ msgstr "Reduce Triangles"
-
-#~ msgid "Reload item"
-#~ msgstr "Reload item"
-
-#~ msgid "Reload items"
-#~ msgstr "Reload items"
-
-#~ msgid "Repair"
-#~ msgstr "Repair"
-
-#~ msgid "Repair the model's meshes if it is non-manifold mesh"
-#~ msgstr "Repair the model’s meshes if they are non-manifold."
-
-#~ msgid "Report"
-#~ msgstr "Report"
-
-#~ msgid "Rotation:"
-#~ msgstr "Rotation:"
-
-#~ msgid "Save configuration as:"
-#~ msgstr "Save configuration as:"
-
-#~ msgid "Sending"
-#~ msgstr "Sending"
-
-#~ msgid "Set pen size"
-#~ msgstr "Set pen size"
-
-#~ msgid "Shift + Any arrow"
-#~ msgstr "Shift + Any arrow"
-
-#~ msgid "Shift + Mouse wheel"
-#~ msgstr "Shift + Mouse wheel"
-
-#~ msgid "Show Model Mesh(TODO)"
-#~ msgstr "Show Model Mesh(TODO)"
-
-#~ msgid "Show Model Shadow(TODO)"
-#~ msgstr "Show Model Shadow(TODO)"
-
-#~ msgid "Show Printable Box(TODO)"
-#~ msgstr "Show Printable Box(TODO)"
-
-#~ msgid "Spiral mode"
-#~ msgstr "Spiral/Vase mode"
-
-#~ msgid ""
-#~ "Spiral mode only works when wall loops is 1, \n"
-#~ "support is disabled, top shell layers is 0 and sparse infill density is "
-#~ "0\n"
-#~ msgstr ""
-#~ "Spiral (vase) mode only works when wall loops is set to 1, \n"
-#~ "support is disabled, top shell layers is 0, and sparse infill density is "
-#~ "0\n"
-
-#~ msgid "Successfully sent.Will automatically jump to the device page in %s s"
-#~ msgstr ""
-#~ "Successfully sent. Will automatically jump to the device page in %s s"
-
-#~ msgid ""
-#~ "Support layer uses layer height independent with object layer. This is to "
-#~ "support custom support gap,but may cause extra filament switches if "
-#~ "support is specified as different extruder with object"
-#~ msgstr ""
-#~ "The support layer uses layer height independent of object layers. This is "
-#~ "to support custom support gaps, but may cause extra filament switches if "
-#~ "support is specified as a different filament from the object."
-
-#~ msgid ""
-#~ "Switch to rectilinear pattern?\n"
-#~ "Yes - switch to rectilinear pattern automaticlly\n"
-#~ "No  - reset density to default non 100% value automaticlly\n"
-#~ msgstr "\n"
-
-#~ msgid ""
-#~ "Switch to zig-zag pattern?\n"
-#~ "Yes - switch to zig-zag pattern automaticlly\n"
-#~ "No  - reset density to default non 100% value automaticlly\n"
-#~ msgstr ""
-#~ "Switch to zig-zag pattern?\n"
-#~ "Yes - Switch to zig-zag pattern automatically\n"
-#~ "No  - Reset density to default non-100% value automatically\n"
-
-#~ msgid "Swith cloud environment, Please login again!"
-#~ msgstr "Cloud environment has switched; please login again!"
-
-#~ msgid ""
-#~ "The 3mf's version %s is newer than %s's version %s, Found following keys "
-#~ "unrecognized:\n"
-#~ msgstr ""
-#~ "The 3mf file's version %s is newer than %s's version %s, Found the "
-#~ "following unrecognized keys:\n"
-
-#~ msgid ""
-#~ "The 3mf's version %s is newer than %s's version %s, Suggest to upgrade "
-#~ "your software.\n"
-#~ msgstr "\n"
-
-#~ msgid "The Config is not compatible and can not be loaded."
-#~ msgstr "The configuration is not compatible and cannot be loaded!"
-
-#~ msgid ""
-#~ "The firmware versions of printer and AMS are too low.Please update to the "
-#~ "latest version before sending the print job"
-#~ msgstr ""
-#~ "The firmware versions of the printer and AMS are too low. Please update "
-#~ "them to the latest version before sending any print jobs."
-
-#~ msgid ""
-#~ "The model has overlapping or self-intersecting facets. I tried to repair "
-#~ "it, however you might want to check the results or repair the input file "
-#~ "and retry."
-#~ msgstr ""
-#~ "The model has overlapping or self-intersecting facets. Repair was "
-#~ "attempted, however we recommend checking the results or repairing the "
-#~ "input file and retrying."
-
-#~ msgid ""
-#~ "The printer type used to generate G-code is not the same type as the "
-#~ "currently selected physical printer. It is recommend to re-slice by "
-#~ "selecting the same printer type.\n"
-#~ msgstr "\n"
-
-#~ msgid ""
-#~ "This object will be used to purge the nozzle after a filament change to "
-#~ "save filament and decrease the print time. Colours of the objects will be "
-#~ "mixed as a result"
-#~ msgstr ""
-#~ "This object will be used to purge the nozzle after a filament change to "
-#~ "save filament and decrease the print time. Colors of the objects will be "
-#~ "mixed as a result."
-
-#~ msgid ""
-#~ "This setting stands for how much volume of filament can be melted and "
-#~ "extruded per second. Printing speed is limited by max volumetric speed, "
-#~ "in case of too high and unreasonable speed setting. Zero means no limit"
-#~ msgstr ""
-#~ "Use this to set the maximum volume of filament that can be melted and "
-#~ "extruded per second. Printing speed is limited by maximum volumetric "
-#~ "speed if settings are unreasonably high. 0 means there is no limit."
-
-#~ msgid "Timelapse Wipe Tower"
-#~ msgstr "Timelapse Wipe Tower"
-
-#~ msgid "Translation"
-#~ msgstr "Translation"
-
-#~ msgid "Unable to create zip file"
-#~ msgstr "Unable to create zip file"
-
-#~ msgid "Uploading"
-#~ msgstr "Uploading"
-
-#~ msgid "User pause"
-#~ msgstr "User pause"
-
-#~ msgid "Waiting"
-#~ msgstr "Waiting"
-
-#~ msgid ""
-#~ "When recording timelapse without toolhead, it is recommended to add a "
-#~ "\"Timelapse Wipe Tower\" \n"
-#~ "by right-click the empty position of build plate and choose \"Add "
-#~ "Primitive\"->\"Timelapse Wipe Tower\".\n"
-#~ msgstr "\n"
-
-#~ msgid ""
-#~ "You have changed some preset settings. \n"
-#~ "Would you like to keep these changed settings after switching preset?"
-#~ msgstr ""
-#~ "You have changed some preset settings. \n"
-#~ "Would you like to keep these changed settings after switching presets?"
-
-#~ msgid "Zig zag"
-#~ msgstr "Zig zag"
-
-#~ msgid " Object:"
-#~ msgstr " Object:"
-
-#~ msgid ""
-#~ " is too close to exclusion area, there may be collisions when printing.\n"
-#~ msgstr "\n"
-
-#~ msgid ""
-#~ " is too close to exclusion area, there will be collisions when printing.\n"
-#~ msgstr ""
-#~ " is too close to an exclusion area, there will be collisions when "
-#~ "printing.\n"
-
-#~ msgid " is too close to others, there may be collisions when printing.\n"
-#~ msgstr "\n"
-
-#~ msgid " is too close to others, there will be collisions when printing.\n"
-#~ msgstr " is too close to others, there will be collisions when printing.\n"
-
-#~ msgid "hybrid(auto)"
-#~ msgstr "hybrid(auto)"
-
-#~ msgid "normal"
-#~ msgstr "normal"
-
-#~ msgid ""
-#~ "normal(auto) and tree(auto) is used to generate support automatically. If "
-#~ "normal or tree is selected, only support enforcers are generated"
-#~ msgstr ""
-#~ "normal(auto), hybrid(auto) and tree(auto) are used to generate support "
-#~ "automatically. If normal or tree is selected, only support enforcers are "
-#~ "generated."
-
-#~ msgid "the 3mf is not compatible, load geometry data only!"
-#~ msgstr "The 3mf is not compatible, loading geometry data only!"
-
-#~ msgid "tree"
-#~ msgstr "tree"
-========
->>>>>>>> v1.7.0:localization/i18n/en/OrcaSlicer_en.po
+#~ "It is not recommend for bed temperature of other layers to be lower than "
+#~ "the first layer by more than this threshold. Too low bed temperature of "
+#~ "other layer may cause the model to break free from the build plate."
+
+#~ msgid "Orient the model"
+#~ msgstr "Orient the model"

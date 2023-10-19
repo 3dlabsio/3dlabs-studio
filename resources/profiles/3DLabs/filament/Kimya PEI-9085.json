@@ -1,7 +1,4 @@
 {
-    "compatible_prints": [
-        "PEI-9085 0.25mm Standard @3D Labs"
-    ],
     "filament_id": "GFB112",
     "filament_vendor": [
         "Kimya"
@@ -107,5 +104,5 @@
     "temperature_vitrification": [
         "200"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

@@ -1,7 +1,4 @@
 {
-    "compatible_prints": [
-        "PP 0.20mm Standard @3D Labs"
-    ],
     "filament_id": "GFB108",
     "filament_vendor": [
         "FormFutura"
@@ -101,5 +98,5 @@
     "temperature_vitrification": [
         "120"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

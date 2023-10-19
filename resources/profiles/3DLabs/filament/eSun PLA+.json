@@ -12,11 +12,6 @@
     "default_filament_colour": [
         "#FF8040"
     ],
-    "compatible_prints": [
-        "PLA 0.15mm Fine @3D Labs",
-        "PLA 0.20mm Standard @3D Labs",
-        "PLA 0.30mm Draft @3D Labs"
-    ],
     "chamber_temperature": "0",
     "close_fan_the_first_x_layers": [
         "2"
@@ -95,7 +90,7 @@
         "0.051"
     ],
     "slow_down_layer_time": [
-        "10"
+        "25"
     ],
     "slow_down_min_speed": [
         "5"
@@ -103,5 +98,5 @@
     "temperature_vitrification": [
         "60"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

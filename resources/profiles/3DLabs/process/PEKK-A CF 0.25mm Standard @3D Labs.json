@@ -31,6 +31,7 @@
     "top_shell_layers": "5",
     "top_shell_thickness": "1.0",
     "top_solid_infill_flow_ratio": "0.98",
-    "version": "2.2.0",
-    "wall_infill_order": "inner-outer-inner wall/infill"
+    "version": "2.6.0",
+    "wall_infill_order": "inner-outer-inner wall/infill",
+    "notes": "compatible_filaments:pekk-cf,ht-breakaway,ht-soluble"
 }

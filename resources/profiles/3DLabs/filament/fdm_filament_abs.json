@@ -3,11 +3,7 @@
     "name": "fdm_filament_abs",
     "from": "system",
     "instantiation": "false",
-    "compatible_prints": [
-	    "ABS 0.15mm Fine @3D Labs",
-        "ABS 0.20mm Standard @3D Labs",
-        "ABS 0.30mm Draft @3D Labs"
-    ],
+    "compatible_prints_condition": "notes=~/.*compatible_filaments:.*abs.*/",
     "idle_temperature": [
         "195"
     ],
@@ -103,6 +99,15 @@
         "20"
     ],
     "slow_down_layer_time": [
-        "3"
+        "25"
+    ],
+    "activate_air_filtration": [
+        "1"
+    ],
+    "complete_print_exhaust_fan_speed": [
+        "0"
+    ],
+    "during_print_exhaust_fan_speed": [
+        "35"
     ]
 }

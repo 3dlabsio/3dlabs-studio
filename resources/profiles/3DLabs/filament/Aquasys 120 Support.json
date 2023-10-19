@@ -12,19 +12,6 @@
     "default_filament_colour": [
         "#00FF00"
     ],
-    "compatible_prints": [
-        "ABS 0.15mm Fine @3D Labs",
-        "ABS 0.20mm Standard @3D Labs",
-        "ABS 0.30mm Draft @3D Labs",
-        "PA-CF 0.25mm Standard @3D Labs",
-        "PLA 0.15mm Fine @3D Labs",
-        "PLA 0.20mm Standard @3D Labs",
-        "PLA 0.30mm Draft @3D Labs",
-        "PP 0.20mm Standard @3D Labs",
-        "TPU 0.15mm Fine @3D Labs",
-        "TPU 0.20mm Standard @3D Labs",
-        "TPU 0.30mm Draft @3D Labs"
-    ],
     "chamber_temperature": "55",
     "enable_pressure_advance": [
         "0"
@@ -102,5 +89,5 @@
     "slow_down_min_speed": [
         "5"
     ],
-    "version": "2.2.0"
+    "version": "2.6.0"
 }

@@ -157,6 +157,25 @@ std::string GCodeWriter::set_bed_temperature(int temperature, bool wait)
     return gcode.str();
 }
 
+std::string GCodeWriter::set_chamber_temperature(int temperature, bool wait)
+{
+    std::string code, comment;
+    std::ostringstream gcode;
+
+    if (wait)
+    {
+        gcode<<"M106 P2 S255 \n";
+        gcode<<"M191 S"<<std::to_string(temperature)<<" ;"<<"set chamber_temperature and wait for it to be reached\n";
+        gcode<<"M106 P2 S0 \n";
+    }
+    else {
+        code = "M141";
+        comment = "set chamber_temperature";
+        gcode << code << " S" << temperature << ";" << comment << "\n";
+    }
+    return gcode.str();
+}
+
 // copied from PrusaSlicer
 std::string GCodeWriter::set_acceleration_internal(Acceleration type, unsigned int acceleration)
 {
@@ -773,8 +792,7 @@ std::string GCodeWriter::set_additional_fan(unsigned int speed)
 {
     std::ostringstream gcode;
 
-    // 3DL our aux fan is P1
-    gcode << "M106 " << "P1 " << "S" << (int)(255.0 * speed / 100.0);
+    gcode << "M106 " << "P2 " << "S" << (int)(255.0 * speed / 100.0);
     //gcode << "M106 " << "P2 " << "S" << (int)(255.0 * speed / 100.0);
     if (GCodeWriter::full_gcode_comment) {
         if (speed == 0)
@@ -783,6 +801,17 @@ std::string GCodeWriter::set_additional_fan(unsigned int speed)
             gcode << " ; enable additional fan ";
     }
     gcode << "\n";
+    return gcode.str();
+}
+
+std::string GCodeWriter::set_exhaust_fan( int speed,bool add_eol)
+{
+    std::ostringstream gcode;
+    // 3DL our exhaust fan is P1
+    gcode << "M106" << " P1" << " S" << (int)(speed / 100.0 * 255);
+
+    if(add_eol)
+        gcode << "\n";
     return gcode.str();
 }
 

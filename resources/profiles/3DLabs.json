@@ -149,9 +149,17 @@
             "sub_path": "filament/fdm_filament_pa.json"
         },
         {
+            "name": "fdm_filament_pa_cf",
+            "sub_path": "filament/fdm_filament_pa_cf.json"
+        },
+        {
             "name": "fdm_filament_peek",
             "sub_path": "filament/fdm_filament_peek.json"
         },
+        {
+            "name": "fdm_filament_peek_cf",
+            "sub_path": "filament/fdm_filament_peek_cf.json"
+        },      
         {
             "name": "fdm_filament_pei",
             "sub_path": "filament/fdm_filament_pei.json"
@@ -163,6 +171,10 @@
         {
             "name": "fdm_filament_pekk",
             "sub_path": "filament/fdm_filament_pekk.json"
+        },
+        {
+            "name": "fdm_filament_pekk_cf",
+            "sub_path": "filament/fdm_filament_pekk_cf.json"
         },
         {
             "name": "fdm_filament_pla",
