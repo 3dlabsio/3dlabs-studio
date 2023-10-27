@@ -3066,6 +3066,13 @@ void PrintConfigDef::init_fff_params()
     def->mode = comSimple;
     def->set_default_value(new ConfigOptionEnum<DraftShield>(dsDisabled));
 
+    //3DL
+    def = this->add("print_area_leveling", coBool);
+    def->label = L("Adaptive mesh bed leveling");
+    def->tooltip = L("This option will run the auto bed leveling for the area occupied by the print, rather than the entire bed.\nThis can be more accurate vs the full bed mesh and is much faster.");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(false));
+
     def = this->add("skirt_loops", coInt);
     def->label = L("Skirt loops");
     def->full_label = L("Skirt loops");

@@ -113,6 +113,9 @@ public:
     const bool is_bbl_printers() const {return m_is_bbl_printers;}
     void set_is_first_layer(bool bval) { m_is_first_layer = bval; }
 
+    //3DL
+    static std::string set_print_area_leveling(float first_layer_print_min_x, float first_layer_print_min_y, float first_layer_print_max_x, float first_layer_print_max_y);
+
   private:
 	// Extruders are sorted by their ID, so that binary search is possible.
     std::vector<Extruder> m_extruders;
