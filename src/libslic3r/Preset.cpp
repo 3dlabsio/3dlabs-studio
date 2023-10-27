@@ -739,7 +739,7 @@ static std::vector<std::string> s_Preset_print_options {
     "support_top_z_distance", "support_on_build_plate_only","support_critical_regions_only", "bridge_no_support", "thick_bridges", "max_bridge_length", "print_sequence", "support_remove_small_overhang",
     "filename_format", "wall_filament", "support_bottom_z_distance",
     "sparse_infill_filament", "solid_infill_filament", "support_filament", "support_interface_filament",
-    "ooze_prevention","ooze_prevention_purge_buckets","ooze_prevention_scrub_every_layer","standby_temperature_delta", "interface_shells", "line_width", "initial_layer_line_width",
+    "ooze_prevention","ooze_prevention_purge_buckets","ooze_prevention_scrub_every_layer","standby_temperature_delta", "print_area_leveling", "interface_shells", "line_width", "initial_layer_line_width",
     "inner_wall_line_width", "outer_wall_line_width", "sparse_infill_line_width", "internal_solid_infill_line_width",
     "top_surface_line_width", "support_line_width", "infill_wall_overlap", "bridge_flow",
     "elephant_foot_compensation", "elephant_foot_compensation_layers", "xy_contour_compensation", "xy_hole_compensation", "resolution", "enable_prime_tower",

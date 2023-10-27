@@ -815,6 +815,17 @@ std::string GCodeWriter::set_exhaust_fan( int speed,bool add_eol)
     return gcode.str();
 }
 
+// 3DL
+//TODO: implement this instead of if statements in start_gcode box
+std::string GCodeWriter::set_print_area_leveling(float first_layer_print_min_x, float first_layer_print_min_y, float first_layer_print_max_x, float first_layer_print_max_y)
+{
+    std::ostringstream gcode;
+    gcode << "G2\nBED_MESH_CALIBRATE AREA_START=" << first_layer_print_min_x << "," << first_layer_print_min_y << " AREA_END=" << first_layer_print_max_x << "," << first_layer_print_max_y;
+    gcode << "\n";
+
+    return gcode.str();
+}
+
 void GCodeWriter::add_object_start_labels(std::string& gcode)
 {
     if (!m_gcode_label_objects_start.empty()) {

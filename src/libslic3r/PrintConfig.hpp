@@ -1020,8 +1020,12 @@ PRINT_CONFIG_CLASS_DERIVED_DEFINE(
     ((ConfigOptionFloats,             nozzle_diameter))
     ((ConfigOptionBool,               reduce_infill_retraction))
     ((ConfigOptionBool,               ooze_prevention))
+
+    //3DL
     ((ConfigOptionBool,               ooze_prevention_purge_buckets))
     ((ConfigOptionBool,               ooze_prevention_scrub_every_layer))
+    ((ConfigOptionBool,               print_area_leveling))
+
     ((ConfigOptionString,             filename_format))
     ((ConfigOptionStrings,            post_process))
     ((ConfigOptionString,             printer_model))
