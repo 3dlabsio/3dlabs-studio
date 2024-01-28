@@ -1902,6 +1902,27 @@ void TabPrint::build()
         optgroup->append_single_option_line("only_one_wall_top");
         optgroup->append_single_option_line("min_width_top_surface");
         optgroup->append_single_option_line("only_one_wall_first_layer");
+        optgroup->append_single_option_line("reduce_crossing_wall");
+        optgroup->append_single_option_line("max_travel_detour_distance");
+
+        optgroup = page->new_optgroup(L("Small Area Infill Flow Compensation (experimental)"), L"param_advanced");
+        optgroup->append_single_option_line("small_area_infill_flow_compensation");
+        Option option = optgroup->get_option("small_area_infill_flow_compensation_model");
+        option.opt.full_width = true;
+        option.opt.is_code = true;
+        option.opt.height = 15;
+        optgroup->append_single_option_line(option);
+        
+        optgroup = page->new_optgroup(L("Bridging"), L"param_advanced");
+        optgroup->append_single_option_line("bridge_flow");
+	    optgroup->append_single_option_line("internal_bridge_flow");
+        optgroup->append_single_option_line("bridge_density");
+        optgroup->append_single_option_line("thick_bridges");
+        optgroup->append_single_option_line("thick_internal_bridges");
+        optgroup->append_single_option_line("dont_filter_internal_bridges");
+        optgroup->append_single_option_line("counterbole_hole_bridging","counterbole-hole-bridging");
+    
+        optgroup = page->new_optgroup(L("Overhangs"), L"param_advanced");
         optgroup->append_single_option_line("detect_overhang_wall");
         optgroup->append_single_option_line("make_overhang_printable");
         optgroup->append_single_option_line("make_overhang_printable_angle");
