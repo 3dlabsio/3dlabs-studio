@@ -70,6 +70,12 @@ public:
 
     static PrintHost* get_print_host(DynamicPrintConfig *config);
 
+    //Support for cloud webui login
+    virtual bool is_cloud() const { return false; }
+    virtual bool is_logged_in() const { return false; }
+    virtual void log_out() const {}
+    virtual bool get_login_url(wxString& auth_url) const { return false; }
+
 protected:
     virtual wxString format_error(const std::string &body, const std::string &error, unsigned status) const;
 };

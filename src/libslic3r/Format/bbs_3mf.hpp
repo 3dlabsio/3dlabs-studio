@@ -8,6 +8,7 @@
 
 namespace Slic3r {
 class Model;
+class ModelObject;
 struct ConfigSubstitutionContext;
 class DynamicPrintConfig;
 class Preset;
@@ -69,6 +70,8 @@ struct PlateData
     int plate_index;
     std::vector<std::pair<int, int>> objects_and_instances;
     std::map<int, std::pair<int, int>> obj_inst_map;
+    std::string     printer_model_id;
+    std::string     nozzle_diameters;
     std::string     gcode_file;
     std::string     gcode_file_md5;
     std::string     thumbnail_file;
@@ -231,7 +234,7 @@ extern bool load_bbs_3mf(const char* path, DynamicPrintConfig* config, ConfigSub
 
 extern std::string bbs_3mf_get_thumbnail(const char * path);
 
-extern bool load_gcode_3mf_from_stream(std::istream & data, DynamicPrintConfig* config, Model* model, PlateDataPtrs* plate_data_list, 
+extern bool load_gcode_3mf_from_stream(std::istream & data, DynamicPrintConfig* config, Model* model, PlateDataPtrs* plate_data_list,
        Semver* file_version);
 
 

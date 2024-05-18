@@ -27,12 +27,78 @@
 #include <slic3r/Utils/Http.hpp>
 #include <libslic3r/miniz_extension.hpp>
 #include <libslic3r/Utils.hpp>
+#include "CreatePresetsDialog.hpp"
 
 using namespace nlohmann;
 
 namespace Slic3r { namespace GUI {
 
 json m_ProfileJson;
+
+static wxString update_custom_filaments()
+{
+    json m_Res                                                                     = json::object();
+    m_Res["command"]                                                               = "update_custom_filaments";
+    m_Res["sequence_id"]                                                           = "2000";
+    json                                               m_CustomFilaments           = json::array();
+    PresetBundle *                                     preset_bundle               = wxGetApp().preset_bundle;
+    std::map<std::string, std::vector<Preset const *>> temp_filament_id_to_presets = preset_bundle->filaments.get_filament_presets();
+    
+    std::vector<std::pair<std::string, std::string>>   need_sort;
+    bool                                             need_delete_some_filament = false;
+    for (std::pair<std::string, std::vector<Preset const *>> filament_id_to_presets : temp_filament_id_to_presets) {
+        std::string filament_id = filament_id_to_presets.first;
+        if (filament_id.empty()) continue;
+        if (filament_id == "null") {
+            need_delete_some_filament = true;
+        }
+        bool filament_with_base_id = false;
+        bool not_need_show = false;
+        std::string filament_name;
+        for (const Preset *preset : filament_id_to_presets.second) {
+            if (preset->is_system) {
+                not_need_show = true;
+                break;
+            }
+            if (preset->inherits() != "") continue;
+            if (!preset->base_id.empty()) filament_with_base_id = true;
+
+            if (!not_need_show) {
+                auto filament_vendor = dynamic_cast<ConfigOptionStrings *>(const_cast<Preset *>(preset)->config.option("filament_vendor", false));
+                if (filament_vendor && filament_vendor->values.size() && filament_vendor->values[0] == "Generic") not_need_show = true;
+            }
+            
+            if (filament_name.empty()) {
+                std::string preset_name = preset->name;
+                size_t      index_at    = preset_name.find(" @");
+                if (std::string::npos != index_at) { preset_name = preset_name.substr(0, index_at); }
+                filament_name = preset_name;
+            }
+        }
+        if (not_need_show) continue;
+        if (!filament_name.empty()) {
+            if (filament_with_base_id) {
+                need_sort.push_back(std::make_pair("[Action Required] " + filament_name, filament_id));
+            } else {
+
+                need_sort.push_back(std::make_pair(filament_name, filament_id));
+            }
+        }
+    }
+    std::sort(need_sort.begin(), need_sort.end(), [](const std::pair<std::string, std::string> &a, const std::pair<std::string, std::string> &b) { return a.first < b.first; });
+    if (need_delete_some_filament) {
+        need_sort.push_back(std::make_pair("[Action Required]", "null"));
+    }
+    json temp_j;
+    for (std::pair<std::string, std::string> &filament_name_to_id : need_sort) {
+        temp_j["name"] = filament_name_to_id.first;
+        temp_j["id"]   = filament_name_to_id.second;
+        m_CustomFilaments.push_back(temp_j);
+    }
+    m_Res["data"]  = m_CustomFilaments;
+    wxString strJS = wxString::Format("HandleStudio(%s)", wxString::FromUTF8(m_Res.dump(-1, ' ', false, json::error_handler_t::ignore)));
+    return strJS;
+}
 
 GuideFrame::GuideFrame(GUI_App *pGUI, long style)
     : DPIDialog((wxWindow *) (pGUI->mainframe), wxID_ANY, "3DLabsStudio", wxDefaultPosition, wxDefaultSize, style),
@@ -125,7 +191,7 @@ GuideFrame::~GuideFrame()
 
 void GuideFrame::load_url(wxString &url)
 {
-    BOOST_LOG_TRIVIAL(info) << __FUNCTION__<< " enter, url=" << url.ToStdString();
+    BOOST_LOG_TRIVIAL(trace) << __FUNCTION__<< " enter, url=" << url.ToStdString();
     WebView::LoadUrl(m_browser, url);
     m_browser->SetFocus();
     UpdateState();
@@ -322,6 +388,17 @@ void GuideFrame::OnScriptMessage(wxWebViewEvent &evt)
 
             wxGetApp().CallAfter([this,strJS] { RunScript(strJS); });
         }
+        else if (strCmd == "request_custom_filaments") {
+            wxString strJS = update_custom_filaments();
+            wxGetApp().CallAfter([this, strJS] { RunScript(strJS); });
+        }
+        else if (strCmd == "create_custom_filament") {
+            this->EndModal(wxID_OK);
+            wxQueueEvent(wxGetApp().plater(), new SimpleEvent(EVT_CREATE_FILAMENT));
+        } else if (strCmd == "modify_custom_filament") {
+            m_editing_filament_id = j["id"];
+            this->EndModal(wxID_EDIT);
+        }
         else if (strCmd == "save_userguide_models")
         {
             json MSelected = j["data"];
@@ -475,7 +552,7 @@ void GuideFrame::OnError(wxWebViewEvent &evt)
     // Show the info bar with an error
     // m_info->ShowMessage(_L("An error occurred loading ") + evt.GetURL() +
     // "\n" + "'" + category + "'", wxICON_ERROR);
-    BOOST_LOG_TRIVIAL(info) << "GuideFrame::OnError: An error occurred loading " << evt.GetURL() << category;
+    BOOST_LOG_TRIVIAL(trace) << "GuideFrame::OnError: An error occurred loading " << evt.GetURL() << category;
 
     UpdateState();
 }
@@ -723,7 +800,7 @@ bool GuideFrame::apply_config(AppConfig *app_config, PresetBundle *preset_bundle
     check_unsaved_preset_changes = (enabled_vendors != old_enabled_vendors) || (enabled_filaments != old_enabled_filaments);
     wxString header = _L("The configuration package is changed in previous Config Guide");
     wxString caption = _L("Configuration package changed");
-    int act_btns = UnsavedChangesDialog::ActionButtons::KEEP|UnsavedChangesDialog::ActionButtons::SAVE;
+    int act_btns = ActionButtons::KEEP|ActionButtons::SAVE;
 
     if (check_unsaved_preset_changes &&
         !wxGetApp().check_and_keep_current_preset_changes(caption, header, act_btns, &apply_keeped_changes))
@@ -738,19 +815,20 @@ bool GuideFrame::apply_config(AppConfig *app_config, PresetBundle *preset_bundle
         BOOST_LOG_TRIVIAL(info) << "No bundles need to be installed from resource directory";
     }
 
-    if (remove_bundles.size() > 0) {
-        //remove unused bundles
-        for (const auto &it : remove_bundles) {
-            auto vendor_file = vendor_dir/(it + ".json");
-            auto sub_dir = vendor_dir/(it);
-            if (fs::exists(vendor_file))
-                fs::remove(vendor_file);
-            if (fs::exists(sub_dir))
-                fs::remove_all(sub_dir);
-        }
-    } else {
-        BOOST_LOG_TRIVIAL(info) << "No bundles need to be removed";
-    }
+    // Not remove, because these bundles may be updated
+    //if (remove_bundles.size() > 0) {
+    //    //remove unused bundles
+    //    for (const auto &it : remove_bundles) {
+    //        auto vendor_file = vendor_dir/(it + ".json");
+    //        auto sub_dir = vendor_dir/(it);
+    //        if (fs::exists(vendor_file))
+    //            fs::remove(vendor_file);
+    //        if (fs::exists(sub_dir))
+    //            fs::remove_all(sub_dir);
+    //    }
+    //} else {
+    //    BOOST_LOG_TRIVIAL(info) << "No bundles need to be removed";
+    //}
 
     std::string preferred_model;
     std::string preferred_variant;
@@ -866,6 +944,12 @@ bool GuideFrame::run()
         }
         else
             return false;
+    } else if (result == wxID_EDIT) {
+        this->Close();
+        FilamentInfomation *filament_info = new FilamentInfomation();
+        filament_info->filament_id        = m_editing_filament_id;
+        wxQueueEvent(wxGetApp().plater(), new SimpleEvent(EVT_MODIFY_FILAMENT, filament_info));
+        return false;
     }
     else
         return false;
@@ -1526,7 +1610,7 @@ bool GuideFrame::LoadFile(std::string jPath, std::string &sContent)
         std::stringstream buffer;
         buffer << t.rdbuf();
         sContent=buffer.str();
-        BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << boost::format(", load %1% into buffer")% jPath;
+        BOOST_LOG_TRIVIAL(trace) << __FUNCTION__ << boost::format(", load %1% into buffer")% jPath;
     }
     catch (std::exception &e)
     {

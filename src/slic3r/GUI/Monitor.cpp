@@ -274,7 +274,6 @@ void MonitorPanel::on_update_all(wxMouseEvent &event)
         return;
 
     set_default();
-    m_status_info_panel->set_print_finish_status(false);
     update_all();
 
     MachineObject *obj_ = dev->get_selected_machine();
@@ -445,14 +444,14 @@ void MonitorPanel::show_status(int status)
 {
     if (!m_initialized) return;
     if (last_status == status)return;
-    if (last_status & (int)MonitorStatus::MONITOR_CONNECTING != 0) {
+    if ((last_status & (int)MonitorStatus::MONITOR_CONNECTING) != 0) {
         NetworkAgent* agent = wxGetApp().getAgent();
         json j;
         j["dev_id"] = obj ? obj->dev_id : "obj_nullptr";
-        if (status & (int)MonitorStatus::MONITOR_DISCONNECTED != 0) {
+        if ((status & (int)MonitorStatus::MONITOR_DISCONNECTED) != 0) {
             j["result"] = "failed";
         }
-        else if (status & (int)MonitorStatus::MONITOR_NORMAL != 0) {
+        else if ((status & (int)MonitorStatus::MONITOR_NORMAL) != 0) {
             j["result"] = "success";
         }
     }

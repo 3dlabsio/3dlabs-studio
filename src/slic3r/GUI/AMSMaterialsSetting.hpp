@@ -5,6 +5,7 @@
 #include "wxExtensions.hpp"
 #include "GUI_Utils.hpp"
 #include "DeviceManager.hpp"
+#include "wx/colourdata.h"
 #include "wx/clrpicker.h"
 #include "Widgets/RadioBox.hpp"
 #include "Widgets/Button.hpp"
@@ -33,13 +34,18 @@ class ColorPicker : public wxWindow
 {
 public:
     wxBitmap        m_bitmap_border;
+    wxBitmap        m_bitmap_border_dark;
     wxBitmap        m_bitmap_transparent;
+    wxBitmap        m_bitmap_transparent_def; //default transparent material
 
     wxColour        m_colour;
     std::vector<wxColour>        m_cols;
     bool            m_selected{false};
     bool            m_show_full{false};
     bool            m_is_empty{false};
+    int             ctype;
+
+    bool            transparent_changed{false};
 
     ColorPicker(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
     ~ColorPicker();
@@ -108,6 +114,7 @@ public:
     void set_color(wxColour color);
     void set_empty_color(wxColour color);
     void set_colors(std::vector<wxColour> colors);
+    void set_ctype(int ctype);
 
     void on_picker_color(wxCommandEvent& color);
     MachineObject* obj{ nullptr };
@@ -180,6 +187,12 @@ protected:
 #endif
     ComboBox * m_comboBox_cali_result;
     TextInput*       m_readonly_filament;
+
+    struct FilamentInfos {
+        std::string filament_id;
+        std::string setting_id;
+    };
+    std::map<std::string, FilamentInfos> map_filament_items;
 };
 
 wxDECLARE_EVENT(EVT_SELECTED_COLOR, wxCommandEvent);

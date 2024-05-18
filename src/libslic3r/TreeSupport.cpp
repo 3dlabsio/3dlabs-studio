@@ -12,6 +12,10 @@
 #include "I18N.hpp"
 #include <libnest2d/backends/libslic3r/geometries.hpp>
 
+#include <boost/log/trivial.hpp>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_for.h>
+
 #define _L(s) Slic3r::I18N::translate(s)
 
 #define USE_PLAN_LAYER_HEIGHTS 1
@@ -3357,7 +3361,7 @@ std::vector<LayerHeightData> TreeSupport::plan_layer_heights(std::vector<std::ve
                 break;
             }
         }
-        BOOST_LOG_TRIVIAL(info) << "plan_layer_heights print_z, height, layer_nr->next_layer_nr: " << layer_heights[i].print_z << " " << layer_heights[i].height << "   "
+        BOOST_LOG_TRIVIAL(trace) << "plan_layer_heights print_z, height, layer_nr->next_layer_nr: " << layer_heights[i].print_z << " " << layer_heights[i].height << "   "
             << i << "->" << layer_heights[i].next_layer_nr << std::endl;
     }
 

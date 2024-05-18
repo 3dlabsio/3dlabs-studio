@@ -301,7 +301,7 @@ template <class T>
 class ConfigOptionSingle : public ConfigOption {
 public:
     T value;
-    explicit ConfigOptionSingle(T value) : value(value) {}
+    explicit ConfigOptionSingle(T value) : value(std::move(value)) {}
     operator T() const { return this->value; }
 
     void set(const ConfigOption *rhs) override
@@ -858,8 +858,8 @@ using ConfigOptionIntsNullable = ConfigOptionIntsTempl<true>;
 class ConfigOptionString : public ConfigOptionSingle<std::string>
 {
 public:
-    ConfigOptionString() : ConfigOptionSingle<std::string>("") {}
-    explicit ConfigOptionString(const std::string &value) : ConfigOptionSingle<std::string>(value) {}
+    ConfigOptionString() : ConfigOptionSingle<std::string>(std::string{}) {}
+    explicit ConfigOptionString(std::string value) : ConfigOptionSingle<std::string>(std::move(value)) {}
 
     static ConfigOptionType static_type() { return coString; }
     ConfigOptionType        type()  const override { return static_type(); }
@@ -1786,6 +1786,8 @@ public:
     // Create a default option to be inserted into a DynamicConfig.
     ConfigOption*						create_default_option() const;
 
+    bool                                is_scalar()     const { return (int(this->type) & int(coVectorType)) == 0; }
+
     template<class Archive> ConfigOption* load_option_from_archive(Archive &archive) const {
     	if (this->nullable) {
 		    switch (this->type) {
@@ -1973,6 +1975,7 @@ public:
             out.push_back(kvp.first);
         return out;
     }
+    bool                    empty() { return options.empty(); }
 
     // Iterate through all of the CLI options and write them to a stream.
     std::ostream&           print_cli_help(

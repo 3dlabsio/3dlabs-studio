@@ -1,3 +1,8 @@
+///|/ Copyright (c) Prusa Research 2021 - 2023 Vojtěch Bubník @bubnikv, Lukáš Matěna @lukasmatena, Lukáš Hejl @hejllukas
+///|/ Copyright (c) SuperSlicer 2023 Remi Durand @supermerill
+///|/
+///|/ PrusaSlicer is released under the terms of the AGPLv3 or higher
+///|/
 #include "clipper/clipper_z.hpp"
 
 #include "ClipperUtils.hpp"
@@ -12,6 +17,8 @@
 #include <numeric>
 #include <unordered_set>
 #include <tbb/parallel_for.h>
+
+#include <boost/log/trivial.hpp>
 
 #ifndef NDEBUG
     // #define BRIM_DEBUG_TO_SVG
@@ -1856,7 +1863,7 @@ ExtrusionEntityCollection make_brim(const Print &print, PrintTryCancel try_cance
 			// perform operation
 			ClipperLib_Z::PolyTree loops_trimmed_tree;
 			clipper.Execute(ClipperLib_Z::ctDifference, loops_trimmed_tree, ClipperLib_Z::pftNonZero, ClipperLib_Z::pftNonZero);
-			ClipperLib_Z::PolyTreeToPaths(loops_trimmed_tree, loops_trimmed);
+			ClipperLib_Z::PolyTreeToPaths(std::move(loops_trimmed_tree), loops_trimmed);
 		}
 
 		// Third, produce the extrusions, sorted by the source loop indices.

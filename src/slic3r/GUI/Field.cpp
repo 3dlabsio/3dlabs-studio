@@ -131,7 +131,9 @@ void Field::PostInitialize()
 	// For the mode, when settings are in non-modal dialog, neither dialog nor tabpanel doesn't receive wxEVT_KEY_UP event, when some field is selected.
 	// So, like a workaround check wxEVT_KEY_UP event for the Filed and switch between tabs if Ctrl+(1-4) was pressed
     if (getWindow()) {
-        if (m_opt.readonly) getWindow()->Disable();
+        if (m_opt.readonly) { 
+            this->disable();
+        }
 		getWindow()->Bind(wxEVT_KEY_UP, [](wxKeyEvent& evt) {
 		    if ((evt.GetModifiers() & wxMOD_CONTROL) != 0) {
 			    int tab_id = -1;
@@ -194,6 +196,11 @@ void Field::on_back_to_sys_value()
 		m_back_to_sys_value(m_opt_id);
 }
 
+void Field::on_edit_value()
+{
+    if (m_fn_edit_value)
+        m_fn_edit_value(m_opt_id);
+}
 
 /// Fires the enable or disable function, based on the input.
 
@@ -204,7 +211,7 @@ wxString Field::get_tooltip_text(const wxString &default_string)
 	wxString tooltip_text("");
 #ifdef NDEBUG
 	wxString tooltip = _(m_opt.tooltip);
-    edit_tooltip(tooltip);
+    ::edit_tooltip(tooltip);
 
     std::string opt_id = m_opt_id;
     auto hash_pos = opt_id.find("#");
@@ -424,6 +431,12 @@ void Field::get_value_by_opt_type(wxString& str, const bool check_value/* = true
                                     continue;
                                 }
                             }
+                            else if (m_opt_id == "printable_area") {
+                                if (0 <= x && x <= 1000 && 0 <= y && y <= 1000) {
+                                    out_values.push_back(Vec2d(x, y));
+                                    continue;
+                                }
+                            }
                             else {
                                 if (0 < x && x < 1000 && 0 < y && y < 1000) {
                                     out_values.push_back(Vec2d(x, y));
@@ -575,6 +588,14 @@ void TextCtrl::BUILD() {
             EnterPressed enter(this);
             propagate_value();
         }), text_ctrl->GetId());
+    } else {
+        // Orca: adds logic that scrolls the parent if the text control doesn't have focus
+        text_ctrl->Bind(wxEVT_MOUSEWHEEL, [text_ctrl](wxMouseEvent& event) {
+            if (text_ctrl->HasFocus() && text_ctrl->GetScrollRange(wxVERTICAL) != 1)
+                event.Skip(); // don't consume the event so that the text control will scroll
+            else
+                text_ctrl->GetParent()->ScrollLines((event.GetWheelRotation() > 0 ? -1 : 1) * event.GetLinesPerAction());
+        });
     }
 
 	text_ctrl->Bind(wxEVT_LEFT_DOWN, ([temp](wxEvent &event)
@@ -1333,7 +1354,7 @@ void Choice::set_value(const boost::any& value, bool change_event)
         if (m_opt_id.compare("host_type") == 0 && val != 0 &&
 			m_opt.enum_values.size() > field->GetCount()) // for case, when PrusaLink isn't used as a HostType
 			val--;
-        if (m_opt_id == "top_surface_pattern" || m_opt_id == "bottom_surface_pattern" || m_opt_id == "internal_solid_infill_pattern" || m_opt_id == "sparse_infill_pattern" || m_opt_id == "support_style")
+        if (m_opt_id == "top_surface_pattern" || m_opt_id == "bottom_surface_pattern" || m_opt_id == "internal_solid_infill_pattern" || m_opt_id == "sparse_infill_pattern" || m_opt_id == "support_style" || m_opt_id == "curr_bed_type")
 		{
 			std::string key;
 			const t_config_enum_values& map_names = *m_opt.enum_keys_map;
@@ -1420,7 +1441,8 @@ boost::any& Choice::get_value()
 	{
         if (m_opt.nullable && field->GetSelection() == -1)
             m_value = ConfigOptionEnumsGenericNullable::nil_value();
-        else if (m_opt_id == "top_surface_pattern" || m_opt_id == "bottom_surface_pattern" || m_opt_id == "internal_solid_infill_pattern" || m_opt_id == "sparse_infill_pattern" || m_opt_id == "support_style") {
+        else if (m_opt_id == "top_surface_pattern" || m_opt_id == "bottom_surface_pattern" || m_opt_id == "internal_solid_infill_pattern" || m_opt_id == "sparse_infill_pattern" ||
+                 m_opt_id == "support_style" || m_opt_id == "curr_bed_type") {
 			const std::string& key = m_opt.enum_values[field->GetSelection()];
 			m_value = int(m_opt.enum_keys_map->at(key));
 		}
@@ -1618,8 +1640,7 @@ boost::any& ColourPicker::get_value()
     if (colour == wxTransparentColour)
         m_value = std::string("");
     else {
-		auto clr_str = wxString::Format(wxT("#%02X%02X%02X"), colour.Red(), colour.Green(), colour.Blue());
-		m_value = clr_str.ToStdString();
+        m_value = encode_color(ColorRGB(colour.Red(), colour.Green(), colour.Blue()));
     }
 	return m_value;
 }

@@ -1,5 +1,3 @@
-[![Build OrcaSlicer](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_orca.yml/badge.svg?branch=main)](https://github.com/SoftFever/OrcaSlicer/actions/workflows/build_orca.yml)  
-
 # 3D Labs Studio
 The official slicer for the 3D Labs line of high-temperature 3D printers. 3D Labs Studio is custom tailored for HT 3D printing on the 3D Labs HTX/X400/X500 3D printers. 3D Labs Studio is maintained by our team of developers and testers for the best possible out-of-box experience.
 
@@ -36,6 +34,14 @@ Material profiles:
 - TPU
 2. Full device control of 3D Labs HTX and X400 HT 3D printers.
 3. Full remote upload and print support for 3D Labs ION firmware.
+
+## Some background
+OrcaSlicer is originaly forked from Bambu Studio, it was previously known as BambuStudio-SoftFever.
+
+Bambu Studio is forked from [PrusaSlicer](https://github.com/prusa3d/PrusaSlicer) by Prusa Research, which is from [Slic3r](https://github.com/Slic3r/Slic3r) by Alessandro Ranellucci and the RepRap community. 
+Orca Slicer incorporates a lot of features from SuperSlicer by @supermerill
+Orca Slicer's logo is designed by community member Justin Levine(@freejstnalxndr)  
+
 
 # License
 3D Labs Studio is licensed under the GNU Affero General Public License, version 3. 3D Labs Studio is based on PrusaSlicer by PrusaResearch. 3D Labs Studio is based on Bambu Studio by Bambu Labs. 3D Labs Studio is also based on the work of SoftFever's Bambu Studio fork.

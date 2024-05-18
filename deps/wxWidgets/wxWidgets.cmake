@@ -1,12 +1,16 @@
-set(_wx_git_tag v3.1.5)
+set(_wx_version 3.1.5)
+set(_wx_git_tag v${_wx_version})
 
 set(_wx_toolkit "")
-    set(_wx_private_font "-DwxUSE_PRIVATE_FONTS=1")
-    if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+set(_wx_private_font "-DwxUSE_PRIVATE_FONTS=1")
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(_gtk_ver 2)
+
     if (DEP_WX_GTK3)
         set(_gtk_ver 3)
     endif ()
+
     set(_wx_toolkit "-DwxBUILD_TOOLKIT=gtk${_gtk_ver}")
 endif()
 
@@ -16,20 +20,24 @@ else ()
     set(_wx_edge "-DwxUSE_WEBVIEW_EDGE=OFF")
 endif ()
 
+set(_wx_orcaslicer_patch "${CMAKE_CURRENT_LIST_DIR}/0001-wx-3.1.5-patch-for-Orca.patch")
 if (MSVC)
-    set(_patch_cmd if not exist WXWIDGETS_PATCHED ( "${GIT_EXECUTABLE}" apply --verbose --ignore-space-change --whitespace=fix ${CMAKE_CURRENT_LIST_DIR}/0001-wxWidget-fix.patch && type nul > WXWIDGETS_PATCHED ) )
+    set(_patch_cmd if not exist WXWIDGETS_PATCHED ( "${GIT_EXECUTABLE}" apply --verbose --ignore-space-change --whitespace=fix ${_wx_orcaslicer_patch} && type nul > WXWIDGETS_PATCHED ) )
 else ()
-    set(_patch_cmd test -f WXWIDGETS_PATCHED || ${PATCH_CMD} ${CMAKE_CURRENT_LIST_DIR}/0001-wxWidget-fix.patch && touch WXWIDGETS_PATCHED)
+    set(_patch_cmd test -f WXWIDGETS_PATCHED || ${PATCH_CMD} ${_wx_orcaslicer_patch} && touch WXWIDGETS_PATCHED)
 endif ()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    set(_patch_cmd ${PATCH_CMD} ${CMAKE_CURRENT_LIST_DIR}/0001-wxWidget-fix.patch)
+    set(_patch_cmd ${PATCH_CMD} ${_wx_orcaslicer_patch})
 endif ()
 
 bambustudio_add_cmake_project(
     wxWidgets
     GIT_REPOSITORY "https://github.com/wxWidgets/wxWidgets"
     GIT_TAG ${_wx_git_tag}
+    GIT_SHALLOW ON
+    # URL ${_wx_tarball_url}
+    # URL_HASH SHA256=${_wx_tarball_hash}
     PATCH_COMMAND ${_patch_cmd}
     DEPENDS ${PNG_PKG} ${ZLIB_PKG} ${EXPAT_PKG} dep_TIFF dep_JPEG
     CMAKE_ARGS

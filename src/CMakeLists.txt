@@ -17,6 +17,7 @@ add_subdirectory(semver)
 add_subdirectory(libigl)
 add_subdirectory(hints)
 add_subdirectory(mcut)
+add_subdirectory(qoi)
 
 # Adding libnest2d project for bin packing...
 add_subdirectory(libnest2d)
@@ -25,6 +26,7 @@ add_subdirectory(libslic3r)
 
 if (SLIC3R_GUI)
     add_subdirectory(imgui)
+    add_subdirectory(imguizmo)
     add_subdirectory(hidapi)
     include_directories(hidapi/include)
 
@@ -100,12 +102,20 @@ if (SLIC3R_GUI)
     add_subdirectory(slic3r)
 endif()
 
+if(ORCA_TOOLS)
+    # OrcaSlicer_profile_validator
+    add_executable(OrcaSlicer_profile_validator OrcaSlicer_profile_validator.cpp)
+    target_link_libraries(OrcaSlicer_profile_validator libslic3r boost_headeronly libcurl OpenSSL::SSL OpenSSL::Crypto)
+    target_compile_definitions(OrcaSlicer_profile_validator PRIVATE -DBOOST_ALL_NO_LIB -DBOOST_USE_WINAPI_VERSION=0x602 -DBOOST_SYSTEM_USE_UTF8)
+    if(WIN32)
+        target_link_libraries(OrcaSlicer_profile_validator bcrypt.lib)
+    endif()
+endif()
 
 # Create a slic3r executable
 # Process mainfests for various platforms.
-set(MACOSX_BUNDLE_COPYRIGHT "Copyright(C) 2022-2023 Li Jiang All Rights Reserved")
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/3DLabsStudio.rc.in ${CMAKE_CURRENT_BINARY_DIR}/3DLabsStudio.rc @ONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/3DLabsStudio.manifest.in ${CMAKE_CURRENT_BINARY_DIR}/3DLabsStudio.manifest @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/OrcaSlicer.rc.in ${CMAKE_CURRENT_BINARY_DIR}/OrcaSlicer.rc @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/msw/OrcaSlicer.manifest.in ${CMAKE_CURRENT_BINARY_DIR}/OrcaSlicer.manifest @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/platform/osx/Info.plist.in ${CMAKE_CURRENT_BINARY_DIR}/Info.plist @ONLY)
 if (WIN32)
     add_library(3DLabsStudio SHARED 3DLabsStudio.cpp 3DLabsStudio.hpp BaseException.cpp BaseException.h StackWalker.cpp StackWalker.h)

@@ -174,14 +174,28 @@ void Layer::make_perimeters()
                         && config.gap_infill_speed.value == other_config.gap_infill_speed.value
                         && config.filter_out_gap_fill.value == other_config.filter_out_gap_fill.value
 		                && config.detect_overhang_wall                   == other_config.detect_overhang_wall
+		                && config.overhang_reverse                       == other_config.overhang_reverse
+		                && config.overhang_reverse_threshold             == other_config.overhang_reverse_threshold
+		                && config.wall_direction                         == other_config.wall_direction
 		                && config.opt_serialize("inner_wall_line_width") == other_config.opt_serialize("inner_wall_line_width")
 		                && config.opt_serialize("outer_wall_line_width") == other_config.opt_serialize("outer_wall_line_width")
 		                && config.detect_thin_wall                  == other_config.detect_thin_wall
-		                //&& config.wall_infill_order   == other_config.wall_infill_order
 		                && config.infill_wall_overlap              == other_config.infill_wall_overlap
                         && config.fuzzy_skin                  == other_config.fuzzy_skin
                         && config.fuzzy_skin_thickness        == other_config.fuzzy_skin_thickness
-                        && config.fuzzy_skin_point_distance       == other_config.fuzzy_skin_point_distance)
+                        && config.fuzzy_skin_point_distance       == other_config.fuzzy_skin_point_distance
+                        && config.fuzzy_skin_first_layer          == other_config.fuzzy_skin_first_layer
+                        && config.seam_slope_type         == other_config.seam_slope_type
+                        && config.seam_slope_conditional == other_config.seam_slope_conditional
+                        && config.scarf_angle_threshold  == other_config.scarf_angle_threshold
+                        && config.scarf_overhang_threshold  == other_config.scarf_overhang_threshold
+                        && config.scarf_joint_speed       == other_config.scarf_joint_speed
+                        && config.scarf_joint_flow_ratio       == other_config.scarf_joint_flow_ratio
+                        && config.seam_slope_start_height == other_config.seam_slope_start_height
+                        && config.seam_slope_entire_loop  == other_config.seam_slope_entire_loop
+                        && config.seam_slope_min_length   == other_config.seam_slope_min_length
+                        && config.seam_slope_steps        == other_config.seam_slope_steps
+                        && config.seam_slope_inner_walls  == other_config.seam_slope_inner_walls)
 		            {
 			 			other_layerm->perimeters.clear();
 			 			other_layerm->fills.clear();

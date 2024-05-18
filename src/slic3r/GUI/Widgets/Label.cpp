@@ -2,6 +2,10 @@
 #include "Label.hpp"
 #include "StaticBox.hpp"
 #include <wx/intl.h> // For wxLocale
+#include <wx/dcclient.h>
+#include <wx/settings.h>
+#include <boost/log/trivial.hpp>
+
 
 wxFont Label::sysFont(int size, bool bold)
 {
@@ -46,6 +50,7 @@ wxFont Label::Body_12;
 wxFont Label::Body_11;
 wxFont Label::Body_10;
 wxFont Label::Body_9;
+wxFont Label::Body_8;
 
 void Label::initSysFont()
 {
@@ -90,6 +95,7 @@ void Label::initSysFont()
     Body_11 = Label::sysFont(11, false);
     Body_10 = Label::sysFont(10, false);
     Body_9  = Label::sysFont(9, false);
+    Body_8  = Label::sysFont(8, false);
 }
 
 class WXDLLIMPEXP_CORE wxTextWrapper2

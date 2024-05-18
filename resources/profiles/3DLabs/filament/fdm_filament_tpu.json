@@ -3,6 +3,7 @@
     "name": "fdm_filament_tpu",
     "from": "system",
     "instantiation": "false",
+<<<<<<< HEAD:resources/profiles/3DLabs/filament/fdm_filament_tpu.json
     "compatible_prints_condition": "notes=~/.*compatible_filaments:.*flex.*/",
     "idle_temperature": [
         "195"
@@ -23,6 +24,9 @@
     "filament_vendor": [
         "Generic"
     ],
+=======
+    "inherits": "fdm_filament_common",
+>>>>>>> v2.0.0:resources/profiles/Creality/filament/fdm_filament_tpu.json
     "cool_plate_temp" : [
         "30"
     ],
@@ -32,9 +36,12 @@
     "hot_plate_temp" : [
         "35"
     ],
+<<<<<<< HEAD:resources/profiles/3DLabs/filament/fdm_filament_tpu.json
     "textured_plate_temp" : [
         "35"
     ],
+=======
+>>>>>>> v2.0.0:resources/profiles/Creality/filament/fdm_filament_tpu.json
     "cool_plate_temp_initial_layer" : [
         "30"
     ],
@@ -44,15 +51,24 @@
     "hot_plate_temp_initial_layer" : [
         "35"
     ],
+<<<<<<< HEAD:resources/profiles/3DLabs/filament/fdm_filament_tpu.json
     "textured_plate_temp_initial_layer" : [
         "35"
     ],
+=======
+>>>>>>> v2.0.0:resources/profiles/Creality/filament/fdm_filament_tpu.json
     "fan_cooling_layer_time": [
         "100"
     ],
     "filament_max_volumetric_speed": [
         "15"
     ],
+<<<<<<< HEAD:resources/profiles/3DLabs/filament/fdm_filament_tpu.json
+=======
+    "filament_type": [
+        "TPU"
+    ],
+>>>>>>> v2.0.0:resources/profiles/Creality/filament/fdm_filament_tpu.json
     "filament_density": [
         "1.24"
     ],
@@ -68,6 +84,15 @@
     "reduce_fan_stop_start_freq": [
         "1"
     ],
+<<<<<<< HEAD:resources/profiles/3DLabs/filament/fdm_filament_tpu.json
+=======
+    "slow_down_for_layer_cooling": [
+        "1"
+    ],
+    "fan_max_speed": [
+        "100"
+    ],
+>>>>>>> v2.0.0:resources/profiles/Creality/filament/fdm_filament_tpu.json
     "fan_min_speed": [
         "100"
     ],
@@ -94,8 +119,13 @@
     ],
     "filament_start_gcode": [
         "; filament start gcode\n"
+<<<<<<< HEAD:resources/profiles/3DLabs/filament/fdm_filament_tpu.json
     ],
     "slow_down_layer_time": [
         "25"
     ]
 }
+=======
+    ]
+}
+>>>>>>> v2.0.0:resources/profiles/Creality/filament/fdm_filament_tpu.json

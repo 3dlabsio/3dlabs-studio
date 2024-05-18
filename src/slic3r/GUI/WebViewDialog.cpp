@@ -7,9 +7,13 @@
 #include "libslic3r_version.h"
 #include "../Utils/Http.hpp"
 
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
 #include <wx/sizer.h>
 #include <wx/toolbar.h>
 #include <wx/textdlg.h>
+#include <wx/url.h>
 
 #include <slic3r/GUI/Widgets/WebView.hpp>
 
@@ -90,12 +94,14 @@ WebViewPanel::WebViewPanel(wxWindow *parent)
     topsizer->Add(m_browser, wxSizerFlags().Expand().Proportion(1));
 
     // Log backend information
+    /* m_browser->GetUserAgent() may lead crash
     if (wxGetApp().get_mode() == comDevelop) {
         wxLogMessage(wxWebView::GetBackendVersionInfo().ToString());
         wxLogMessage("Backend: %s Version: %s", m_browser->GetClassInfo()->GetClassName(),
             wxWebView::GetBackendVersionInfo().ToString());
         wxLogMessage("User Agent: %s", m_browser->GetUserAgent());
     }
+    */
 
     // Create the Tools menu
     m_tools_menu = new wxMenu();
@@ -217,7 +223,7 @@ WebViewPanel::WebViewPanel(wxWindow *parent)
 
 WebViewPanel::~WebViewPanel()
 {
-    BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << " Start";
+    BOOST_LOG_TRIVIAL(trace) << __FUNCTION__ << " Start";
     SetEvtHandlerEnabled(false);
     
     delete m_tools_menu;
@@ -227,7 +233,7 @@ WebViewPanel::~WebViewPanel()
         delete m_LoginUpdateTimer;
         m_LoginUpdateTimer = NULL;
     }
-    BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << " End";
+    BOOST_LOG_TRIVIAL(trace) << __FUNCTION__ << " End";
 }
 
 
@@ -415,6 +421,11 @@ void WebViewPanel::OnFreshLoginStatus(wxTimerEvent &event)
         Slic3r::GUI::wxGetApp().get_login_info();
 }
 
+void WebViewPanel::SetLoginPanelVisibility(bool bshow)
+{
+    wxString strJS = wxString::Format("SetLoginPanelVisibility(%s)", bshow ? "true" : "false");
+    RunScript(strJS);
+}
 void WebViewPanel::SendRecentList(int images)
 {
     boost::property_tree::wptree req;
@@ -430,30 +441,39 @@ void WebViewPanel::SendRecentList(int images)
 
 void WebViewPanel::SendDesignStaffpick(bool on)
 {
-    if (on) {
-        get_design_staffpick(0, 60, [this](std::string body) {
-            if (body.empty() || body.front() != '{') {
-                BOOST_LOG_TRIVIAL(warning) << "get_design_staffpick failed " + body;
-                return;
-            }
-            CallAfter([this, body] {
-                auto body2 = from_u8(body);
-                body2.insert(1, "\"command\": \"modelmall_model_advise_get\", ");
-                RunScript(wxString::Format("window.postMessage(%s)", body2));
-            });
-        });
-    } else {
-        std::string body2 = "{\"total\":0, \"hits\":[]}";
-        body2.insert(1, "\"command\": \"modelmall_model_advise_get\", ");
-        RunScript(wxString::Format("window.postMessage(%s)", body2));
-    }
+    // if (on) {
+    //     get_design_staffpick(0, 60, [this](std::string body) {
+    //         if (body.empty() || body.front() != '{') {
+    //             BOOST_LOG_TRIVIAL(warning) << "get_design_staffpick failed " + body;
+    //             return;
+    //         }
+    //         CallAfter([this, body] {
+    //             auto body2 = from_u8(body);
+    //             body2.insert(1, "\"command\": \"modelmall_model_advise_get\", ");
+    //             RunScript(wxString::Format("window.postMessage(%s)", body2));
+    //         });
+    //     });
+    // } else {
+    //     std::string body2 = "{\"total\":0, \"hits\":[]}";
+    //     body2.insert(1, "\"command\": \"modelmall_model_advise_get\", ");
+    //     RunScript(wxString::Format("window.postMessage(%s)", body2));
+    // }
 }
 
 void WebViewPanel::OpenModelDetail(std::string id, NetworkAgent *agent)
 {
     std::string url;
-    if ((agent ? agent->get_model_mall_detail_url(&url, id) : get_model_mall_detail_url(&url, id)) == 0)
-        wxLaunchDefaultBrowser(url);
+    if ((agent ? agent->get_model_mall_detail_url(&url, id) : get_model_mall_detail_url(&url, id)) == 0) 
+    {
+        if (url.find("?") != std::string::npos) 
+        { 
+            url += "&from=orcaslicer";
+        } else {
+            url += "?from=orcaslicer";
+        }
+        
+        wxLaunchDefaultBrowser(url); 
+    }
 }
 
 void WebViewPanel::SendLoginInfo()
@@ -488,17 +508,17 @@ void WebViewPanel::ShowNetpluginTip()
 
 void WebViewPanel::get_design_staffpick(int offset, int limit, std::function<void(std::string)> callback)
 {
-    auto host = wxGetApp().get_http_url(wxGetApp().app_config->get_country_code(), "v1/design-service/design/staffpick");
-    std::string url = (boost::format("%1%/?offset=%2%&limit=%3%") % host % offset % limit).str();
+    // auto host = wxGetApp().get_http_url(wxGetApp().app_config->get_country_code(), "v1/design-service/design/staffpick");
+    // std::string url = (boost::format("%1%/?offset=%2%&limit=%3%") % host % offset % limit).str();
 
-    Http http = Http::get(url);
-    http.header("accept", "application/json")
-        .header("Content-Type", "application/json")
-        .on_complete([this, callback](std::string body, unsigned status) { callback(body); })
-        .on_error([this, callback](std::string body, std::string error, unsigned status) {
-            callback(body);
-        })
-        .perform();
+    // Http http = Http::get(url);
+    // http.header("accept", "application/json")
+    //     .header("Content-Type", "application/json")
+    //     .on_complete([this, callback](std::string body, unsigned status) { callback(body); })
+    //     .on_error([this, callback](std::string body, std::string error, unsigned status) {
+    //         callback(body);
+    //     })
+    //     .perform();
 }
 
 int WebViewPanel::get_model_mall_detail_url(std::string *url, std::string id)
@@ -524,10 +544,16 @@ void WebViewPanel::update_mode()
     */
 void WebViewPanel::OnNavigationRequest(wxWebViewEvent& evt)
 {
-    BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << ": " << evt.GetTarget().ToUTF8().data();
+    BOOST_LOG_TRIVIAL(trace) << __FUNCTION__ << ": " << evt.GetTarget().ToUTF8().data();
     const wxString &url = evt.GetURL();
     if (url.StartsWith("File://") || url.StartsWith("file://")) {
         if (!url.Contains("/web/homepage/index.html")) {
+            auto file = wxURL::Unescape(wxURL(url).GetPath());
+#ifdef _WIN32
+            if (file.StartsWith('/'))
+                file = file.Mid(1);
+#endif
+            wxGetApp().plater()->load_files(wxArrayString{1, &file});
             evt.Veto();
             return;
         }
@@ -562,7 +588,7 @@ void WebViewPanel::OnNavigationComplete(wxWebViewEvent& evt)
 {
     m_browser->Show();
     Layout();
-    BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << ": " << evt.GetTarget().ToUTF8().data();
+    BOOST_LOG_TRIVIAL(trace) << __FUNCTION__ << ": " << evt.GetTarget().ToUTF8().data();
     if (wxGetApp().get_mode() == comDevelop)
         wxLogMessage("%s", "Navigation complete; url='" + evt.GetURL() + "'");
     UpdateState();
@@ -573,7 +599,7 @@ void WebViewPanel::OnNavigationComplete(wxWebViewEvent& evt)
     */
 void WebViewPanel::OnDocumentLoaded(wxWebViewEvent& evt)
 {
-    BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << ": " << evt.GetTarget().ToUTF8().data();
+    BOOST_LOG_TRIVIAL(trace) << __FUNCTION__ << ": " << evt.GetTarget().ToUTF8().data();
     // Only notify if the document is the main frame, not a subframe
     if (evt.GetURL() == m_browser->GetCurrentURL())
     {
@@ -586,7 +612,7 @@ void WebViewPanel::OnDocumentLoaded(wxWebViewEvent& evt)
 
 void WebViewPanel::OnTitleChanged(wxWebViewEvent &evt)
 {
-    BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << ": " << evt.GetString().ToUTF8().data();
+    BOOST_LOG_TRIVIAL(trace) << __FUNCTION__ << ": " << evt.GetString().ToUTF8().data();
     // wxGetApp().CallAfter([this] { SendRecentList(); });
 }
 
@@ -595,7 +621,7 @@ void WebViewPanel::OnTitleChanged(wxWebViewEvent &evt)
     */
 void WebViewPanel::OnNewWindow(wxWebViewEvent& evt)
 {
-    BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << ": " << evt.GetURL().ToUTF8().data();
+    BOOST_LOG_TRIVIAL(trace) << __FUNCTION__ << ": " << evt.GetURL().ToUTF8().data();
     wxString flag = " (other)";
 
     if (evt.GetNavigationAction() == wxWEBVIEW_NAV_ACTION_USER)
@@ -616,7 +642,7 @@ void WebViewPanel::OnNewWindow(wxWebViewEvent& evt)
 
 void WebViewPanel::OnScriptMessage(wxWebViewEvent& evt)
 {
-    BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << ": " << evt.GetString().ToUTF8().data();
+    BOOST_LOG_TRIVIAL(trace) << __FUNCTION__ << ": " << evt.GetString().ToUTF8().data();
     // update login status
     if (m_LoginUpdateTimer == nullptr) {
         BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << " Create Timer";
@@ -862,7 +888,7 @@ void WebViewPanel::OnError(wxWebViewEvent& evt)
         WX_ERROR_CASE(wxWEBVIEW_NAV_ERR_OTHER);
     }
 
-    BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << ": [" << category << "] " << evt.GetString().ToUTF8().data();
+    BOOST_LOG_TRIVIAL(trace) << __FUNCTION__ << ": [" << category << "] " << evt.GetString().ToUTF8().data();
 
     if (wxGetApp().get_mode() == comDevelop)
         wxLogMessage("%s", "Error; url='" + evt.GetURL() + "', error='" + category + " (" + evt.GetString() + ")'");

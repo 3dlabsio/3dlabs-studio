@@ -1,6 +1,7 @@
 #ifndef slic3r_GUI_DropDown_hpp_
 #define slic3r_GUI_DropDown_hpp_
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <wx/stattext.h>
 #include "../wxExtensions.hpp"
 #include "StateHandler.hpp"
@@ -22,6 +23,7 @@ class DropDown : public PopupWindow
 
     double radius = 0;
     bool   use_content_width = false;
+    bool   limit_max_content_width = false;
     bool   align_icon        = false;
     bool   text_off          = false;
 
@@ -74,7 +76,7 @@ public:
 
     void SetSelectorBackgroundColor(StateColor const &color);
 
-    void SetUseContentWidth(bool use);
+    void SetUseContentWidth(bool use, bool limit_max_content_width = false);
 
     void SetAlignIcon(bool align);
     

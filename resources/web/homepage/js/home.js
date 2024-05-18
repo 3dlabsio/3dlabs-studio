@@ -1,5 +1,6 @@
 /*var TestData={"sequence_id":"0","command":"studio_send_recentfile","data":[{"path":"D:\\work\\Models\\Toy\\3d-puzzle-cube-model_files\\3d-puzzle-cube.3mf","time":"2022\/3\/24 20:33:10"},{"path":"D:\\work\\Models\\Art\\Carved Stone Vase - remeshed+drainage\\Carved Stone Vase.3mf","time":"2022\/3\/24 17:11:51"},{"path":"D:\\work\\Models\\Art\\Kity & Cat\\Cat.3mf","time":"2022\/3\/24 17:07:55"},{"path":"D:\\work\\Models\\Toy\\鐩村墤.3mf","time":"2022\/3\/24 17:06:02"},{"path":"D:\\work\\Models\\Toy\\minimalistic-dual-tone-whistle-model_files\\minimalistic-dual-tone-whistle.3mf","time":"2022\/3\/22 21:12:22"},{"path":"D:\\work\\Models\\Toy\\spiral-city-model_files\\spiral-city.3mf","time":"2022\/3\/22 18:58:37"},{"path":"D:\\work\\Models\\Toy\\impossible-dovetail-puzzle-box-model_files\\impossible-dovetail-puzzle-box.3mf","time":"2022\/3\/22 20:08:40"}]};*/
 
+var m_HotModelList=null;
 
 function OnInit()
 {	
@@ -22,7 +23,7 @@ var RightBtnFilePath='';
 var MousePosX=0;
 var MousePosY=0;
 var sImages = {};
-
+ 
 function Set_RecentFile_MouseRightBtn_Event()
 {
 	$(".FileItem").mousedown(
@@ -79,52 +80,54 @@ function Set_RecentFile_MouseRightBtn_Event()
 	
 }
 
+function SetLoginPanelVisibility(visible) {
+  var leftBoard = document.getElementById("LeftBoard");
+  if (visible) {
+    leftBoard.style.display = "block";
+  } else {
+    leftBoard.style.display = "none";
+  }
+}
 
 function HandleStudio( pVal )
 {
 	let strCmd = pVal['command'];
 	
-	if(strCmd=='get_recent_projects')
-	{
-		ShowRecentFileList(pVal['response']);
-	}
-	else if(strCmd=='studio_userlogin')
-	{
-		SetLoginInfo(pVal['data']['avatar'],pVal['data']['name']);
-	}
-	else if(strCmd=='studio_useroffline')
-	{
-		SetUserOffline();
-	}
-	else if( strCmd=="studio_set_mallurl" )
-	{
-		SetMallUrl( pVal['data']['url'] );
-	}
-	else if( strCmd=="studio_clickmenu" )
-	{
-		let strName=pVal['data']['menu'];
-		
-		GotoMenu(strName);
-	}
-	else if( strCmd=="network_plugin_installtip" )
-	{
-		let nShow=pVal["show"]*1;
-		
-	    if(nShow==1)
-		{
-			$("#NoPluginTip").show();
-			$("#NoPluginTip").css("display","flex");
-		}
-		else
-		{
-			$("#NoPluginTip").hide();
-		}
-	}
-	else if( strCmd=="modelmall_model_advise_get")
-	{
-		//alert('hot');
-		ShowStaffPick( pVal['hits'] );
-	}
+	if (strCmd == "get_recent_projects") {
+    ShowRecentFileList(pVal["response"]);
+  } else if (strCmd == "studio_userlogin") {
+    SetLoginInfo(pVal["data"]["avatar"], pVal["data"]["name"]);
+  } else if (strCmd == "studio_useroffline") {
+    SetUserOffline();
+  } else if (strCmd == "studio_set_mallurl") {
+    SetMallUrl(pVal["data"]["url"]);
+  } else if (strCmd == "studio_clickmenu") {
+    let strName = pVal["data"]["menu"];
+
+    GotoMenu(strName);
+  } else if (strCmd == "network_plugin_installtip") {
+    let nShow = pVal["show"] * 1;
+
+    if (nShow == 1) {
+      $("#NoPluginTip").show();
+      $("#NoPluginTip").css("display", "flex");
+    } else {
+      $("#NoPluginTip").hide();
+    }
+  } else if (strCmd == "modelmall_model_advise_get") {
+    //alert('hot');
+    if (m_HotModelList != null) {
+      let SS1 = JSON.stringify(pVal["hits"]);
+      let SS2 = JSON.stringify(m_HotModelList);
+
+      if (SS1 == SS2) return;
+    }
+
+    m_HotModelList = pVal["hits"];
+    ShowStaffPick(m_HotModelList);
+  } else if (data.cmd === "SetLoginPanelVisibility") {
+    SetLoginPanelVisibility(data.visible);
+  }
 }
 
 function GotoMenu( strMenu )
@@ -477,15 +480,15 @@ function ShowStaffPick( ModelList )
 		
 		let ModelID=OnePickModel['design']['id'];
 		let ModelName=OnePickModel['design']['title'];
-		let ModelCover=OnePickModel['design']['cover'];
+		let ModelCover=OnePickModel['design']['cover']+'?image_process=resize,w_200/format,webp';
 		
 		let DesignerName=OnePickModel['design']['designCreator']['name'];
-		let DesignerAvatar=OnePickModel['design']['designCreator']['avatar'];
+		let DesignerAvatar=OnePickModel['design']['designCreator']['avatar']+'?image_process=resize,w_32/format,webp';
 		
 		strPickHtml+='<div class="HotModelPiece swiper-slide"  onClick="OpenOneStaffPickModel('+ModelID+')" >'+
 			    '<div class="HotModel_Designer_Info"><img src="'+DesignerAvatar+'" /><span class="TextS2">'+DesignerName+'</span></div>'+
 				'	<div class="HotModel_PrevBlock"><img class="HotModel_PrevImg" src="'+ModelCover+'" /></div>'+
-				'	<div  class="HotModel_NameText TextS1">'+ModelName+'</div>'+
+				'	<div  class="HotModel_NameText TextS1" title="'+ModelName+'">'+ModelName+'</div>'+
 				'</div>';
 	}
 	

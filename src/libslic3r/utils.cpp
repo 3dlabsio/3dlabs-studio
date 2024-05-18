@@ -1,3 +1,9 @@
+///|/ Copyright (c) Prusa Research 2016 - 2023 Pavel Mikuš @Godrak, Oleksandra Iushchenko @YuSanka, Vojtěch Bubník @bubnikv, Lukáš Matěna @lukasmatena, Filip Sykala @Jony01, David Kocík @kocikdav, Roman Beránek @zavorka, Enrico Turri @enricoturri1966, Tomáš Mészáros @tamasmeszaros, Vojtěch Král @vojtechkral
+///|/ Copyright (c) 2021 Justin Schuh @jschuh
+///|/ Copyright (c) Slic3r 2013 - 2015 Alessandro Ranellucci @alranel
+///|/
+///|/ PrusaSlicer is released under the terms of the AGPLv3 or higher
+///|/
 #include "Utils.hpp"
 #include "I18N.hpp"
 
@@ -7,6 +13,7 @@
 #include <cstdarg>
 #include <stdio.h>
 
+#include "format.hpp"
 #include "Platform.hpp"
 #include "Time.hpp"
 #include "libslic3r.h"
@@ -164,7 +171,7 @@ boost::shared_ptr<boost::log::sinks::synchronous_sink<boost::log::sinks::text_fi
 // to perform unit and integration tests.
 static struct RunOnInit {
     RunOnInit() {
-        set_logging_level(1);
+        set_logging_level(2);
 
     }
 } g_RunOnInit;
@@ -202,6 +209,11 @@ const std::string& var_dir()
 
 std::string var(const std::string &file_name)
 {
+    boost::system::error_code ec;
+    if (boost::filesystem::exists(file_name, ec)) {
+       return file_name;
+    }
+
     auto file = (boost::filesystem::path(g_var_dir) / file_name).make_preferred();
     return file.string();
 }
@@ -254,6 +266,18 @@ const std::string& sys_shapes_dir()
 	return g_sys_shapes_dir;
 }
 
+static std::string g_custom_gcodes_dir;
+
+void set_custom_gcodes_dir(const std::string &dir)
+{
+    g_custom_gcodes_dir = dir;
+}
+
+const std::string& custom_gcodes_dir()
+{
+    return g_custom_gcodes_dir;
+}
+
 // Translate function callback, to call wxWidgets translate function to convert non-localized UTF8 string to a localized one.
 Slic3r::I18N::translate_fn_type Slic3r::I18N::translate_fn = nullptr;
 static std::string g_data_dir;
@@ -261,6 +285,9 @@ static std::string g_data_dir;
 void set_data_dir(const std::string &dir)
 {
     g_data_dir = dir;
+    if (!g_data_dir.empty() && !boost::filesystem::exists(g_data_dir)) {
+       boost::filesystem::create_directory(g_data_dir);
+    }
 }
 
 const std::string& data_dir()
@@ -318,10 +345,11 @@ void set_log_path_and_level(const std::string& file, unsigned int level)
 		keywords::format =
 		(
 			expr::stream
+			<< "[" << expr::attr< logging::trivial::severity_level >("Severity") << "]\t"
 			<< expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "%Y-%m-%d %H:%M:%S.%f")
 			<<"[Thread " << expr::attr<attrs::current_thread_id::value_type>("ThreadID") << "]"
 			<< ":" << expr::smessage
-			)
+		)
 	);
 
 	logging::add_common_attributes();
@@ -846,70 +874,20 @@ CopyFileResult copy_file(const std::string &from, const std::string &to, std::st
     ::MultiByteToWideChar(CP_UTF8, NULL, dest_str, strlen(dest_str), dst_wstr, dst_wlen);
     dst_wstr[dst_wlen] = '\0';
 
-    BOOL result;
-    char* buff = nullptr;
-    HANDLE handlesrc = nullptr;
-    HANDLE handledst = nullptr;
     CopyFileResult ret = SUCCESS;
-
-    handlesrc = CreateFile(src_wstr,
-        GENERIC_READ,
-        FILE_SHARE_READ,
-        NULL,
-        OPEN_EXISTING,
-        FILE_ATTRIBUTE_TEMPORARY,
-        0);
-    if(handlesrc==INVALID_HANDLE_VALUE){
-        error_message = "Error: open src file";
-        ret = FAIL_COPY_FILE;
-        goto __finished;
-    }
-
-    handledst=CreateFile(dst_wstr,
-        GENERIC_WRITE,
-        FILE_SHARE_READ,
-        NULL,
-        CREATE_ALWAYS,
-        FILE_ATTRIBUTE_TEMPORARY,
-        0);
-    if(handledst==INVALID_HANDLE_VALUE){
-        error_message = "Error: create dest file";
-        ret = FAIL_COPY_FILE;
-        goto __finished;
-    }
-
-    DWORD size=GetFileSize(handlesrc,NULL);
-    buff = new char[size+1];
-    DWORD dwRead=0,dwWrite;
-    result = ReadFile(handlesrc, buff, size, &dwRead, NULL);
+    BOOL result = CopyFileW(src_wstr, dst_wstr, FALSE);
     if (!result) {
         DWORD errCode = GetLastError();
         error_message = "Error: " + errCode;
         ret = FAIL_COPY_FILE;
         goto __finished;
     }
-    buff[size]=0;
-    result = WriteFile(handledst,buff,size,&dwWrite,NULL);
-    if (!result) {
-        DWORD errCode = GetLastError();
-        error_message = "Error: " + errCode;
-        ret = FAIL_COPY_FILE;
-        goto __finished;
-    }
-
-	FlushFileBuffers(handledst);
 
 __finished:
     if (src_wstr)
         delete[] src_wstr;
     if (dst_wstr)
         delete[] dst_wstr;
-    if (handlesrc)
-        CloseHandle(handlesrc);
-    if (handledst)
-        CloseHandle(handledst);
-    if (buff)
-        delete[] buff;
 
     return ret;
 #else
@@ -1029,6 +1007,76 @@ bool is_shapes_dir(const std::string& dir)
 #endif /* WIN32 */
 
 namespace Slic3r {
+
+size_t get_utf8_sequence_length(const std::string& text, size_t pos)
+{
+	assert(pos < text.size());
+	return get_utf8_sequence_length(text.c_str() + pos, text.size() - pos);
+}
+
+size_t get_utf8_sequence_length(const char *seq, size_t size)
+{
+	size_t length = 0;
+	unsigned char c = seq[0];
+	if (c < 0x80) { // 0x00-0x7F
+		// is ASCII letter
+		length++;
+	}
+	// Bytes 0x80 to 0xBD are trailer bytes in a multibyte sequence.
+	// pos is in the middle of a utf-8 sequence. Add the utf-8 trailer bytes.
+	else if (c < 0xC0) { // 0x80-0xBF
+		length++;
+		while (length < size) {
+			c = seq[length];
+			if (c < 0x80 || c >= 0xC0) {
+				break; // prevent overrun
+			}
+			length++; // add a utf-8 trailer byte
+		}
+	}
+	// Bytes 0xC0 to 0xFD are header bytes in a multibyte sequence.
+	// The number of one bits above the topmost zero bit indicates the number of bytes (including this one) in the whole sequence.
+	else if (c < 0xE0) { // 0xC0-0xDF
+	 // add a utf-8 sequence (2 bytes)
+		if (2 > size) {
+			return size; // prevent overrun
+		}
+		length += 2;
+	}
+	else if (c < 0xF0) { // 0xE0-0xEF
+	 // add a utf-8 sequence (3 bytes)
+		if (3 > size) {
+			return size; // prevent overrun
+		}
+		length += 3;
+	}
+	else if (c < 0xF8) { // 0xF0-0xF7
+	 // add a utf-8 sequence (4 bytes)
+		if (4 > size) {
+			return size; // prevent overrun
+		}
+		length += 4;
+	}
+	else if (c < 0xFC) { // 0xF8-0xFB
+	 // add a utf-8 sequence (5 bytes)
+		if (5 > size) {
+			return size; // prevent overrun
+		}
+		length += 5;
+	}
+	else if (c < 0xFE) { // 0xFC-0xFD
+	 // add a utf-8 sequence (6 bytes)
+		if (6 > size) {
+			return size; // prevent overrun
+		}
+		length += 6;
+	}
+	else { // 0xFE-0xFF
+	 // not a utf-8 sequence
+		length++;
+	}
+	return length;
+}
 
 // Encode an UTF-8 string to the local code page.
 std::string encode_path(const char *src)
@@ -1185,6 +1233,34 @@ std::string xml_escape(std::string text, bool is_marked/* = false*/)
         case '&':  replacement = "&amp;";  break;
         case '<':  replacement = is_marked ? "<" :"&lt;"; break;
         case '>':  replacement = is_marked ? ">" :"&gt;"; break;
+        default: break;
+        }
+
+        text.replace(pos, 1, replacement);
+        pos += replacement.size();
+    }
+
+    return text;
+}
+
+// Definition of escape symbols https://www.w3.org/TR/REC-xml/#AVNormalize
+// During the read of xml attribute normalization of white spaces is applied
+// Soo for not lose white space character it is escaped before store
+std::string xml_escape_double_quotes_attribute_value(std::string text)
+{
+    std::string::size_type pos = 0;
+    for (;;) {
+        pos = text.find_first_of("\"&<\r\n\t", pos);
+        if (pos == std::string::npos) break;
+
+        std::string replacement;
+        switch (text[pos]) {
+        case '\"': replacement = "&quot;"; break;
+        case '&': replacement = "&amp;"; break;
+        case '<': replacement = "&lt;"; break;
+        case '\r': replacement = "&#xD;"; break;
+        case '\n': replacement = "&#xA;"; break;
+        case '\t': replacement = "&#x9;"; break;
         default: break;
         }
 
@@ -1435,9 +1511,9 @@ bool bbl_calc_md5(std::string &filename, std::string &md5_out)
 }
 
 // SoftFever: copy directory recursively
-void copy_directory_recursively(const boost::filesystem::path &source, const boost::filesystem::path &target)
+void copy_directory_recursively(const boost::filesystem::path &source, const boost::filesystem::path &target, std::function<bool(const std::string)> filter)
 {
-    BOOST_LOG_TRIVIAL(info) << format("copy_directory_recursively %1% -> %2%", source, target);
+    BOOST_LOG_TRIVIAL(info) << Slic3r::format("copy_directory_recursively %1% -> %2%", source, target);
     std::string error_message;
 
     if (boost::filesystem::exists(target))
@@ -1454,16 +1530,36 @@ void copy_directory_recursively(const boost::filesystem::path &source, const boo
             copy_directory_recursively(dir_entry, target_path);
         }
         else {
+			if(filter && filter(name))
+				continue;
             CopyFileResult cfr = copy_file(source_file, target_file, error_message, false);
             if (cfr != CopyFileResult::SUCCESS) {
                 BOOST_LOG_TRIVIAL(error) << "Copying failed(" << cfr << "): " << error_message;
-                throw Slic3r::CriticalException(format(
+                throw Slic3r::CriticalException(Slic3r::format(
                     ("Copying directory %1% to %2% failed: %3%"),
                     source, target, error_message));
             }
         }
     }
     return;
+}
+
+void save_string_file(const boost::filesystem::path& p, const std::string& str)
+{
+    boost::nowide::ofstream file;
+    file.exceptions(std::ios_base::failbit | std::ios_base::badbit);
+    file.open(p.generic_string(), std::ios_base::binary);
+    file.write(str.c_str(), str.size());
+}
+
+void load_string_file(const boost::filesystem::path& p, std::string& str)
+{
+    boost::nowide::ifstream file;
+    file.exceptions(std::ios_base::failbit | std::ios_base::badbit);
+    file.open(p.generic_string(), std::ios_base::binary);
+    std::size_t sz = static_cast<std::size_t>(boost::filesystem::file_size(p));
+    str.resize(sz, '\0');
+    file.read(&str[0], sz);
 }
 
 }; // namespace Slic3r

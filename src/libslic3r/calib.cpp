@@ -425,6 +425,224 @@ std::string CalibPressureAdvance::draw_box(GCodeWriter &writer, double min_x, do
     return gcode.str();
 }
 
+
+double CalibPressureAdvance::get_distance(Vec2d from, Vec2d to) const
+{
+    return std::hypot((to.x() - from.x()), (to.y() - from.y()));
+}
+
+std::string CalibPressureAdvance::draw_line(
+    GCodeWriter &writer, Vec2d to_pt, double line_width, double layer_height, double speed, const std::string &comment)
+{
+    const double e_per_mm = CalibPressureAdvance::e_per_mm(line_width, layer_height,
+                                                           m_config.option<ConfigOptionFloats>("nozzle_diameter")->get_at(0),
+                                                           m_config.option<ConfigOptionFloats>("filament_diameter")->get_at(0),
+                                                           m_config.option<ConfigOptionFloats>("filament_flow_ratio")->get_at(0));
+
+    const double length = get_distance(Vec2d(m_last_pos.x(), m_last_pos.y()), to_pt);
+    auto         dE     = e_per_mm * length;
+
+    std::stringstream gcode;
+
+    gcode << writer.set_speed(speed);
+    gcode << writer.extrude_to_xy(to_pt, dE, comment);
+
+    m_last_pos = Vec3d(to_pt.x(), to_pt.y(), 0);
+
+    return gcode.str();
+}
+
+std::string CalibPressureAdvance::draw_box(GCodeWriter &writer, double min_x, double min_y, double size_x, double size_y, DrawBoxOptArgs opt_args)
+{
+    std::stringstream gcode;
+
+    double       x     = min_x;
+    double       y     = min_y;
+    const double max_x = min_x + size_x;
+    const double max_y = min_y + size_y;
+
+    const double spacing = opt_args.line_width - opt_args.height * (1 - M_PI / 4);
+
+    // if number of perims exceeds size of box, reduce it to max
+    const int max_perimeters = std::min(
+        // this is the equivalent of number of perims for concentric fill
+        std::floor(size_x * std::sin(to_radians(45))) / (spacing / std::sin(to_radians(45))),
+        std::floor(size_y * std::sin(to_radians(45))) / (spacing / std::sin(to_radians(45))));
+
+    opt_args.num_perimeters = std::min(opt_args.num_perimeters, max_perimeters);
+
+    gcode << move_to(Vec2d(min_x, min_y), writer, "Move to box start");
+
+    // DrawLineOptArgs line_opt_args(*this);
+    auto line_arg_height     = opt_args.height;
+    auto line_arg_line_width = opt_args.line_width;
+    auto line_arg_speed      = opt_args.speed;
+    std::string comment = "";
+
+    for (int i = 0; i < opt_args.num_perimeters; ++i) {
+        if (i != 0) { // after first perimeter, step inwards to start next perimeter
+            x += spacing;
+            y += spacing;
+            gcode << move_to(Vec2d(x, y), writer, "Step inwards to print next perimeter");
+        }
+
+        y += size_y - i * spacing * 2;
+        comment = "Draw perimeter (up)";
+        gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+
+        x += size_x - i * spacing * 2;
+        comment = "Draw perimeter (right)";
+        gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+
+        y -= size_y - i * spacing * 2;
+        comment = "Draw perimeter (down)";
+        gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+
+        x -= size_x - i * spacing * 2;
+        comment = "Draw perimeter (left)";
+        gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+    }
+
+    if (!opt_args.is_filled) {
+        return gcode.str();
+    }
+
+    // create box infill
+    const double spacing_45 = spacing / std::sin(to_radians(45));
+
+    const double bound_modifier = (spacing * (opt_args.num_perimeters - 1)) + (opt_args.line_width * (1 - m_encroachment));
+    const double x_min_bound    = min_x + bound_modifier;
+    const double x_max_bound    = max_x - bound_modifier;
+    const double y_min_bound    = min_y + bound_modifier;
+    const double y_max_bound    = max_y - bound_modifier;
+    const int    x_count        = std::floor((x_max_bound - x_min_bound) / spacing_45);
+    const int    y_count        = std::floor((y_max_bound - y_min_bound) / spacing_45);
+
+    double x_remainder = std::fmod((x_max_bound - x_min_bound), spacing_45);
+    double y_remainder = std::fmod((y_max_bound - y_min_bound), spacing_45);
+
+    x = x_min_bound;
+    y = y_min_bound;
+
+    gcode << move_to(Vec2d(x, y), writer, "Move to fill start");
+
+    for (int i = 0; i < x_count + y_count + (x_remainder + y_remainder >= spacing_45 ? 1 : 0);
+         ++i) { // this isn't the most robust way, but less expensive than finding line intersections
+        if (i < std::min(x_count, y_count)) {
+            if (i % 2 == 0) {
+                x += spacing_45;
+                y = y_min_bound;
+                gcode << move_to(Vec2d(x, y), writer, "Fill: Step right");
+
+                y += x - x_min_bound;
+                x                     = x_min_bound;
+                comment = "Fill: Print up/left";
+                gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+            } else {
+                y += spacing_45;
+                x = x_min_bound;
+                gcode << move_to(Vec2d(x, y), writer, "Fill: Step up");
+
+                x += y - y_min_bound;
+                y                     = y_min_bound;
+                comment = "Fill: Print down/right";
+                gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+            }
+        } else if (i < std::max(x_count, y_count)) {
+            if (x_count > y_count) {
+                // box is wider than tall
+                if (i % 2 == 0) {
+                    x += spacing_45;
+                    y = y_min_bound;
+                    gcode << move_to(Vec2d(x, y), writer, "Fill: Step right");
+
+                    x -= y_max_bound - y_min_bound;
+                    y                     = y_max_bound;
+                    comment = "Fill: Print up/left";
+                    gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+                } else {
+                    if (i == y_count) {
+                        x += spacing_45 - y_remainder;
+                        y_remainder = 0;
+                    } else {
+                        x += spacing_45;
+                    }
+                    y = y_max_bound;
+                    gcode << move_to(Vec2d(x, y), writer, "Fill: Step right");
+
+                    x += y_max_bound - y_min_bound;
+                    y                     = y_min_bound;
+                    comment = "Fill: Print down/right";
+                    gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+                }
+            } else {
+                // box is taller than wide
+                if (i % 2 == 0) {
+                    x = x_max_bound;
+                    if (i == x_count) {
+                        y += spacing_45 - x_remainder;
+                        x_remainder = 0;
+                    } else {
+                        y += spacing_45;
+                    }
+                    gcode << move_to(Vec2d(x, y), writer, "Fill: Step up");
+
+                    x = x_min_bound;
+                    y += x_max_bound - x_min_bound;
+                    comment = "Fill: Print up/left";
+                    gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+                } else {
+                    x = x_min_bound;
+                    y += spacing_45;
+                    gcode << move_to(Vec2d(x, y), writer, "Fill: Step up");
+
+                    x = x_max_bound;
+                    y -= x_max_bound - x_min_bound;
+                    comment = "Fill: Print down/right";
+                    gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+                }
+            }
+        } else {
+            if (i % 2 == 0) {
+                x = x_max_bound;
+                if (i == x_count) {
+                    y += spacing_45 - x_remainder;
+                } else {
+                    y += spacing_45;
+                }
+                gcode << move_to(Vec2d(x, y), writer, "Fill: Step up");
+
+                x -= y_max_bound - y;
+                y                     = y_max_bound;
+                comment = "Fill: Print up/left";
+                gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+            } else {
+                if (i == y_count) {
+                    x += spacing_45 - y_remainder;
+                } else {
+                    x += spacing_45;
+                }
+                y = y_max_bound;
+                gcode << move_to(Vec2d(x, y), writer, "Fill: Step right");
+
+                y -= x_max_bound - x;
+                x                     = x_max_bound;
+                comment = "Fill: Print down/right";
+                gcode << draw_line(writer, Vec2d(x, y), line_arg_line_width, line_arg_height, line_arg_speed, comment);
+            }
+        }
+    }
+
+    return gcode.str();
+}
+CalibPressureAdvanceLine::CalibPressureAdvanceLine(GCode* gcodegen)
+    : CalibPressureAdvance(gcodegen->config()), mp_gcodegen(gcodegen), m_nozzle_diameter(gcodegen->config().nozzle_diameter.get_at(0))
+{
+    m_line_width        = m_nozzle_diameter < 0.51 ? m_nozzle_diameter * 1.5 : m_nozzle_diameter * 1.05;
+    m_height_layer      = gcodegen->config().initial_layer_print_height;
+    m_number_line_width = m_thin_line_width = m_nozzle_diameter;
+};
+
 std::string CalibPressureAdvanceLine::generate_test(double start_pa /*= 0*/, double step_pa /*= 0.002*/, int count /*= 10*/)
 {
     BoundingBoxf bed_ext = get_extents(mp_gcodegen->config().printable_area.values);
@@ -439,11 +657,8 @@ std::string CalibPressureAdvanceLine::generate_test(double start_pa /*= 0*/, dou
 
     m_length_long = 40 + std::min(w - 120.0, 0.0);
 
-    auto startx = (w - m_length_short * 2 - m_length_long - 20) / 2;
-    auto starty = (h - count * m_space_y) / 2;
-    if (is_delta()) {
-        CalibPressureAdvanceLine::delta_modify_start(startx, starty, count);
-    }
+    auto startx = bed_ext.min.x() + (w - m_length_short * 2 - m_length_long - 20) / 2;
+    auto starty = bed_ext.min.y() + (h - count * m_space_y) / 2;
 
     return print_pa_lines(startx, starty, start_pa, step_pa, count);
 }
@@ -499,14 +714,15 @@ std::string CalibPressureAdvanceLine::print_pa_lines(double start_x, double star
         // gcode << move_to(Vec2d(start_x + m_length_short + m_length_long, y_pos + (num - 1) * m_space_y + 7), writer);
         // gcode << writer.extrude_to_xy(Vec2d(start_x + m_length_short + m_length_long, y_pos + (num - 1) * m_space_y + 2), thin_e_per_mm * 7);
 
-        DrawBoxOptArgs default_box_opt_args(2, m_height_layer, 0.6, fast);
+        const auto     box_start_x = start_x + m_length_short + m_length_long + m_length_short;
+        DrawBoxOptArgs default_box_opt_args(2, m_height_layer, m_line_width, fast);
         default_box_opt_args.is_filled = true;
-        gcode << draw_box(writer, start_x + m_length_short + m_length_long + m_length_short, start_y-m_space_y, number_spacing() * 8,
-                 num * m_space_y, default_box_opt_args);
+        gcode << draw_box(writer, box_start_x, start_y - m_space_y,
+                          number_spacing() * 8, (num + 1) * m_space_y, default_box_opt_args);
         gcode << writer.travel_to_z(m_height_layer*2);
         for (int i = 0; i < num; i += 2) {
-            gcode << draw_number(start_x + m_length_short + m_length_long + m_length_short + 3, y_pos + i * m_space_y + m_space_y / 2,
-                                 start_pa + i * step_pa, m_draw_digit_mode, m_number_line_width, number_e_per_mm, 3600, writer);
+            gcode << draw_number(box_start_x + 3 + m_line_width, y_pos + i * m_space_y + m_space_y / 2, start_pa + i * step_pa, m_draw_digit_mode,
+                                 m_number_line_width, number_e_per_mm, 3600, writer);
         }
     }
     return gcode.str();
@@ -528,14 +744,14 @@ CalibPressureAdvancePattern::CalibPressureAdvancePattern(
 };
 
 void CalibPressureAdvancePattern::generate_custom_gcodes(const DynamicPrintConfig &config,
-                                                         bool                      is_bbl_machine,
+                                                                                                                  bool                      is_bbl_machine,
                                                          Model                    &model,
                                                          const Vec3d              &origin)
 {
     std::stringstream gcode;
     gcode << "; start pressure advance pattern for layer\n";
 
-    refresh_setup(config, is_bbl_machine, model, origin);
+        refresh_setup(config, is_bbl_machine, model, origin);
 
     gcode << move_to(Vec2d(m_starting_point.x(), m_starting_point.y()), m_writer, "Move to start XY position");
     gcode << m_writer.travel_to_z(height_first_layer(), "Move to start Z position");
@@ -560,6 +776,9 @@ void CalibPressureAdvancePattern::generate_custom_gcodes(const DynamicPrintConfi
 
     // draw pressure advance pattern
     for (int i = 0; i < m_num_layers; ++i) {
+        const double layer_height = height_first_layer() + (i * height_layer());
+        const double zhop_height = layer_height + height_layer();
+
         if (i > 0) {
             gcode << "; end pressure advance pattern for layer\n";
             CustomGCode::Item item;
@@ -571,8 +790,8 @@ void CalibPressureAdvancePattern::generate_custom_gcodes(const DynamicPrintConfi
             gcode = std::stringstream(); // reset for next layer contents
             gcode << "; start pressure advance pattern for layer\n";
 
-            const double layer_height = height_first_layer() + (i * height_layer());
             gcode << m_writer.travel_to_z(layer_height, "Move to layer height");
+            gcode << m_writer.reset_e();
         }
 
         // line numbering
@@ -609,7 +828,9 @@ void CalibPressureAdvancePattern::generate_custom_gcodes(const DynamicPrintConfi
         double initial_x = to_x;
         double initial_y = to_y;
 
+        gcode << m_writer.travel_to_z(zhop_height, "z-hop before move");
         gcode << move_to(Vec2d(to_x, to_y), m_writer, "Move to pattern start");
+        gcode << m_writer.travel_to_z(layer_height, "undo z-hop");
 
         for (int j = 0; j < num_patterns; ++j) {
             // increment pressure advance
@@ -634,15 +855,22 @@ void CalibPressureAdvancePattern::generate_custom_gcodes(const DynamicPrintConfi
                 if (k != wall_count() - 1) {
                     // perimeters not done yet. move to next perimeter
                     to_x += line_spacing_angle();
+                    gcode << m_writer.travel_to_z(zhop_height, "z-hop before move");
                     gcode << move_to(Vec2d(to_x, to_y), m_writer, "Move to start next pattern wall");
+                    gcode << m_writer.travel_to_z(layer_height, "undo z-hop");
                 } else if (j != num_patterns - 1) {
                     // patterns not done yet. move to next pattern
                     to_x += m_pattern_spacing + line_width();
+                    gcode << m_writer.travel_to_z(zhop_height, "z-hop before move");
                     gcode << move_to(Vec2d(to_x, to_y), m_writer, "Move to next pattern");
+                    gcode << m_writer.travel_to_z(layer_height, "undo z-hop");
                 } else if (i != m_num_layers - 1) {
                     // layers not done yet. move back to start
                     to_x = initial_x;
+                    gcode << m_writer.travel_to_z(zhop_height, "z-hop before move");
                     gcode << move_to(Vec2d(to_x, to_y), m_writer, "Move back to start position");
+                    gcode << m_writer.travel_to_z(layer_height, "undo z-hop");
+                    gcode << m_writer.reset_e(); // reset extruder before printing placeholder cube to avoid
                 } else {
                     // everything done
                 }
@@ -686,8 +914,6 @@ void CalibPressureAdvancePattern::refresh_setup(const DynamicPrintConfig &config
     m_config.apply(model.objects.front()->config.get(), true);
     m_config.apply(model.objects.front()->volumes.front()->config.get(), true);
 
-    m_is_delta = (m_config.option<ConfigOptionPoints>("printable_area")->values.size() > 4);
-
     _refresh_starting_point(model);
     _refresh_writer(is_bbl_machine, model, origin);
 }
@@ -702,11 +928,6 @@ void CalibPressureAdvancePattern::_refresh_starting_point(const Model &model)
 
     m_starting_point = Vec3d(bbox.min.x(), bbox.max.y(), 0);
     m_starting_point.y() += m_handle_spacing;
-
-    if (m_is_delta) {
-        m_starting_point.x() *= -1;
-        m_starting_point.y() -= (frame_size_y() / 2);
-    }
 }
 
 void CalibPressureAdvancePattern::_refresh_writer(bool is_bbl_machine, const Model &model, const Vec3d &origin)

@@ -1,3 +1,10 @@
+#/|/ Copyright (c) Prusa Research 2018 - 2023 Tomáš Mészáros @tamasmeszaros, Oleksandra Iushchenko @YuSanka, Enrico Turri @enricoturri1966, Vojtěch Bubník @bubnikv, Pavel Mikuš @Godrak, Lukáš Hejl @hejllukas, Lukáš Matěna @lukasmatena, Filip Sykala @Jony01, David Kocík @kocikdav, Vojtěch Král @vojtechkral
+#/|/ Copyright (c) BambuStudio 2023 manch1n @manch1n
+#/|/ Copyright (c) 2023 Mimoja @Mimoja
+#/|/ Copyright (c) 2022 ole00 @ole00
+#/|/
+#/|/ PrusaSlicer is released under the terms of the AGPLv3 or higher
+#/|/
 cmake_minimum_required(VERSION 3.13)
 project(libslic3r)
 
@@ -5,6 +12,10 @@ include(PrecompiledHeader)
 
 string(TIMESTAMP COMPILE_TIME %Y%m%d-%H%M%S)
 set(SLIC3R_BUILD_TIME ${COMPILE_TIME})
+
+if(NOT DEFINED ORCA_CHECK_GCODE_PLACEHOLDERS)
+    set(ORCA_CHECK_GCODE_PLACEHOLDERS "0")
+endif()
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libslic3r_version.h.in ${CMAKE_CURRENT_BINARY_DIR}/libslic3r_version.h @ONLY)
 
@@ -26,6 +37,9 @@ set(lisbslic3r_sources
     AABBTreeLines.hpp
     AABBMesh.hpp
     AABBMesh.cpp
+    Algorithm/PathSorting.hpp
+    Algorithm/RegionExpansion.hpp
+    Algorithm/RegionExpansion.cpp
     AnyPtr.hpp
     BoundingBox.cpp
     BoundingBox.hpp
@@ -45,6 +59,9 @@ set(lisbslic3r_sources
     ClipperUtils.hpp
     Clipper2Utils.cpp
     Clipper2Utils.hpp
+    ClipperZUtils.hpp
+    Color.cpp
+    Color.hpp
     Config.cpp
     Config.hpp
     CurveAnalyzer.cpp
@@ -53,9 +70,15 @@ set(lisbslic3r_sources
     EdgeGrid.hpp
     ElephantFootCompensation.cpp
     ElephantFootCompensation.hpp
+    Emboss.cpp
+    Emboss.hpp
+    EmbossShape.hpp
     enum_bitmask.hpp
     ExPolygon.cpp
     ExPolygon.hpp
+    ExPolygonSerialize.hpp
+    ExPolygonsIndex.cpp
+    ExPolygonsIndex.hpp
     Extruder.cpp
     Extruder.hpp
     ExtrusionEntity.cpp
@@ -136,6 +159,8 @@ set(lisbslic3r_sources
     GCode/PrintExtents.hpp
     GCode/RetractWhenCrossingPerimeters.cpp
     GCode/RetractWhenCrossingPerimeters.hpp
+    GCode/SmallAreaInfillFlowCompensator.cpp
+    GCode/SmallAreaInfillFlowCompensator.hpp
     GCode/SpiralVase.cpp
     GCode/SpiralVase.hpp
     GCode/SeamPlacer.cpp
@@ -187,12 +212,17 @@ set(lisbslic3r_sources
     BlacklistedLibraryCheck.hpp
     LocalesUtils.cpp
     LocalesUtils.hpp
+    CutUtils.cpp
+    CutUtils.hpp
     Model.cpp
     Model.hpp
     ModelArrange.hpp
     ModelArrange.cpp
     MultiMaterialSegmentation.cpp
     MultiMaterialSegmentation.hpp
+    Measure.hpp
+    Measure.cpp
+    MeasureUtils.hpp
     CustomGCode.cpp
     CustomGCode.hpp
     Arrange.hpp
@@ -204,6 +234,8 @@ set(lisbslic3r_sources
     MultiPoint.cpp
     MultiPoint.hpp
     MutablePriorityQueue.hpp
+    NSVGUtils.cpp
+    NSVGUtils.hpp
     ObjectID.cpp
     ObjectID.hpp
     PerimeterGenerator.cpp
@@ -284,7 +316,7 @@ set(lisbslic3r_sources
     PrincipalComponents2D.hpp
     SupportSpotsGenerator.cpp
     SupportSpotsGenerator.hpp
-    TreeSupport.hpp
+    TreeSupport.hpp 
     TreeSupport.cpp
     MinimumSpanningTree.hpp
     MinimumSpanningTree.cpp
@@ -292,11 +324,13 @@ set(lisbslic3r_sources
     Surface.hpp
     SurfaceCollection.cpp
     SurfaceCollection.hpp
+    SurfaceMesh.hpp
     SVG.cpp
     SVG.hpp
     Technologies.hpp
     Tesselate.cpp
     Tesselate.hpp
+    TextConfiguration.hpp
     TriangleMesh.cpp
     TriangleMesh.hpp
     TriangleMeshSlicer.cpp
@@ -308,6 +342,8 @@ set(lisbslic3r_sources
     Utils.hpp
     Time.cpp
     Time.hpp
+    Timer.cpp
+    Timer.hpp
     Thread.cpp
     Thread.hpp
     TriangleSelector.cpp
@@ -409,6 +445,8 @@ set(lisbslic3r_sources
     Shape/TextShape.cpp
     calib.hpp
     calib.cpp
+        GCode/Thumbnails.cpp
+        GCode/Thumbnails.hpp
 )
 
 if (APPLE)
@@ -434,8 +472,13 @@ cmake_policy(SET CMP0011 NEW)
 find_package(CGAL REQUIRED)
 cmake_policy(POP)
 
-add_library(libslic3r_cgal STATIC MeshBoolean.cpp MeshBoolean.hpp  TryCatchSignal.hpp
-    TryCatchSignal.cpp)
+add_library(libslic3r_cgal STATIC 
+    CutSurface.hpp CutSurface.cpp
+    IntersectionPoints.hpp IntersectionPoints.cpp
+    MeshBoolean.hpp MeshBoolean.cpp
+    TryCatchSignal.hpp TryCatchSignal.cpp
+    Triangulation.hpp Triangulation.cpp
+)
 target_include_directories(libslic3r_cgal PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 # Reset compile options of libslic3r_cgal. Despite it being linked privately, CGAL options
@@ -470,6 +513,8 @@ target_include_directories(libslic3r PUBLIC ${EXPAT_INCLUDE_DIRS})
 set(OpenCASCADE_DIR "${CMAKE_PREFIX_PATH}/lib/cmake/occt")
 find_package(OpenCASCADE REQUIRED)
 target_include_directories(libslic3r PUBLIC ${OpenCASCADE_INCLUDE_DIR})
+
+find_package(JPEG REQUIRED)
 
 set(OCCT_LIBS
     TKXDESTEP
@@ -523,6 +568,8 @@ target_link_libraries(libslic3r
     ${OCCT_LIBS}
     Clipper2
     mcut
+    JPEG::JPEG
+    qoi
     )
 
 if(NOT WIN32)

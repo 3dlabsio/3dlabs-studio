@@ -1,3 +1,8 @@
+///|/ Copyright (c) Prusa Research 2016 - 2023 Pavel Mikuš @Godrak, Vojtěch Bubník @bubnikv
+///|/ Copyright (c) Slic3r 2014 - 2015 Alessandro Ranellucci @alranel
+///|/
+///|/ PrusaSlicer is released under the terms of the AGPLv3 or higher
+///|/
 #ifndef slic3r_BridgeDetector_hpp_
 #define slic3r_BridgeDetector_hpp_
 
@@ -38,8 +43,7 @@ public:
     BridgeDetector(const ExPolygons &_expolygons, const ExPolygons &_lower_slices, coord_t _extrusion_width);
     // If bridge_direction_override != 0, then the angle is used instead of auto-detect.
     bool detect_angle(double bridge_direction_override = 0.);
-    // Coverage is currently only used by the unit tests. It is extremely slow and unreliable!
-    Polygons coverage(double angle = -1) const;
+    Polygons coverage(double angle = -1, bool precise = true) const;
     void unsupported_edges(double angle, Polylines* unsupported) const;
     Polylines unsupported_edges(double angle = -1) const;
     
@@ -73,12 +77,9 @@ private:
 
 
 //return ideal bridge direction and unsupported bridge endpoints distance.
-inline std::tuple<Vec2d, double> detect_bridging_direction(const Polygons &to_cover, const Polygons &anchors_area)
+inline std::tuple<Vec2d, double> detect_bridging_direction(const Lines &floating_edges, const Polygons &overhang_area)
 {
-    Polygons  overhang_area      = diff(to_cover, anchors_area);
-    Polylines floating_polylines = diff_pl(to_polylines(overhang_area), expand(anchors_area, float(SCALED_EPSILON)));
-
-    if (floating_polylines.empty()) {
+    if (floating_edges.empty()) {
         // consider this area anchored from all sides, pick bridging direction that will likely yield shortest bridges
         auto [pc1, pc2] = compute_principal_components(overhang_area);
         if (pc2 == Vec2f::Zero()) { // overhang may be smaller than resolution. In this case, any direction is ok
@@ -89,7 +90,6 @@ inline std::tuple<Vec2d, double> detect_bridging_direction(const Polygons &to_co
     }
 
     // Overhang is not fully surrounded by anchors, in that case, find such direction that will minimize the number of bridge ends/180turns in the air
-    Lines     floating_edges     = to_lines(floating_polylines);
     std::unordered_map<double, Vec2d> directions{};
     for (const Line &l : floating_edges) {
         Vec2d normal = l.normal().cast<double>().normalized();
@@ -123,6 +123,13 @@ inline std::tuple<Vec2d, double> detect_bridging_direction(const Polygons &to_co
     return {result_dir, min_cost};
 };
 
+//return ideal bridge direction and unsupported bridge endpoints distance.
+inline std::tuple<Vec2d, double> detect_bridging_direction(const Polygons &to_cover, const Polygons &anchors_area)
+{
+    Polygons  overhang_area      = diff(to_cover, anchors_area);
+    Lines     floating_edges     = to_lines(diff_pl(to_polylines(overhang_area), expand(anchors_area, float(SCALED_EPSILON))));
+    return detect_bridging_direction(floating_edges, overhang_area);
+}
 
 }
 

@@ -69,5 +69,9 @@
     "prime_tower_width": "60",
     "xy_hole_compensation": "0",
     "xy_contour_compensation": "0",
+<<<<<<< HEAD:resources/profiles/3DLabs/process/fdm_process_common.json
     "min_width_top_surface": "50%"
+=======
+    "exclude_object": "1"
+>>>>>>> v2.0.0:resources/profiles/Voron/process/fdm_process_common.json
 }

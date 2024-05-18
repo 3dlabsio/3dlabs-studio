@@ -1,11 +1,12 @@
 #!/bin/bash
-set -e # exit on first error
 
 export ROOT=`pwd`
 export NCORES=`nproc --all`
 export CMAKE_BUILD_PARALLEL_LEVEL=${NCORES}
 FOUND_GTK2=$(dpkg -l libgtk* | grep gtk2)
 FOUND_GTK3=$(dpkg -l libgtk* | grep gtk-3)
+
+set -e # exit on first error
 
 function check_available_memory_and_disk() {
     FREE_MEM_GB=$(free -g -t | grep 'Mem:' | rev | cut -d" " -f1 | rev)
@@ -77,7 +78,7 @@ then
 fi
 
 # Addtional Dev packages for OrcaSlicer
-export REQUIRED_DEV_PACKAGES="libmspack-dev libgstreamerd-3-dev libsecret-1-dev libwebkit2gtk-4.0-dev libosmesa6-dev libssl-dev libcurl4-openssl-dev eglexternalplatform-dev libudev-dev libdbus-1-dev extra-cmake-modules"
+export REQUIRED_DEV_PACKAGES="libmspack-dev libgstreamerd-3-dev libsecret-1-dev libwebkit2gtk-4.0-dev libosmesa6-dev libssl-dev libcurl4-openssl-dev eglexternalplatform-dev libudev-dev libdbus-1-dev extra-cmake-modules texinfo"
 # libwebkit2gtk-4.1-dev ??
 export DEV_PACKAGES_COUNT=$(echo ${REQUIRED_DEV_PACKAGES} | wc -w)
 if [ $(dpkg --get-selections | grep -E "$(echo ${REQUIRED_DEV_PACKAGES} | tr ' ' '|')" | wc -l) -lt ${DEV_PACKAGES_COUNT} ]; then
@@ -162,9 +163,10 @@ then
     fi
     if [[ -n "$BUILD_DEBUG" ]]
     then
-        # have to build deps with debug & release or the cmake won't find evrything it needs
+        # have to build deps with debug & release or the cmake won't find everything it needs
         mkdir deps/build/release
         pushd deps/build/release
+            echo -e "cmake ../.. -DDESTDIR=\"../destdir\" $BUILD_ARGS"
             cmake ../.. -DDESTDIR="../destdir" $BUILD_ARGS
             make -j$NCORES
         popd
@@ -173,12 +175,13 @@ then
     
     # cmake deps
     pushd deps/build
+        echo "cmake .. $BUILD_ARGS"
         cmake .. $BUILD_ARGS
         echo "done"
         
         # make deps
         echo "[4/9] Building dependencies..."
-        make -j$NCORES
+        make deps -j$NCORES
         echo "done"
 
         # rename wxscintilla # TODO: DeftDawg: Does 3DLabsStudio need this?
@@ -224,7 +227,8 @@ then
     
     # cmake
     pushd build
-        cmake .. -DCMAKE_PREFIX_PATH="$PWD/../deps/build/destdir/usr/local" -DSLIC3R_STATIC=1 ${BUILD_ARGS}
+        echo -e "cmake .. -DCMAKE_PREFIX_PATH=\"$PWD/../deps/build/destdir/usr/local\" -DSLIC3R_STATIC=1 -DORCA_TOOLS=ON ${BUILD_ARGS}"
+        cmake .. -DCMAKE_PREFIX_PATH="$PWD/../deps/build/destdir/usr/local" -DSLIC3R_STATIC=1 ${BUILD_ARGS} -DORCA_TOOLS=ON 
         echo "done"
         
         # make Slic3r
