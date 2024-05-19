@@ -1717,7 +1717,6 @@ int MachineObject::command_set_chamber(int temp)
 int MachineObject::command_ams_switch(int tray_index, int old_temp, int new_temp)
 {
     BOOST_LOG_TRIVIAL(trace) << "ams_switch to " << tray_index << " with temp: " << old_temp << ", " << new_temp;
-
     if (old_temp < 0) old_temp = FILAMENT_DEF_TEMP;
     if (new_temp < 0) new_temp = FILAMENT_DEF_TEMP;
 

@@ -59,11 +59,6 @@ enum PrinterArch {
     ARCH_I3,
 };
 
-enum PrinterArch {
-    ARCH_CORE_XY,
-    ARCH_I3,
-};
-
 enum PrinterSeries {
     SERIES_X1 = 0,
     SERIES_P1P,

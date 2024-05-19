@@ -3601,7 +3601,6 @@ void TabPrinter::build_fff()
         //        on_value_change(opt_key, value);
         //    });
         //};
-#endif
 
         optgroup = page->new_optgroup(L("Advanced"), L"param_advanced");
         optgroup->append_single_option_line("printer_structure");

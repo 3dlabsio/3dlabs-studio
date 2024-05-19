@@ -660,16 +660,6 @@ void AMSLib::create(wxWindow *parent, wxWindowID id, const wxPoint &pos, const w
     m_bitmap_extra_tray_right_selected = ScalableBitmap(this, "extra_ams_tray_right_selected", 80);
     
 
-    m_bitmap_extra_tray_left    = ScalableBitmap(this, "extra_ams_tray_left", 80);
-    m_bitmap_extra_tray_right    = ScalableBitmap(this, "extra_ams_tray_right", 80);
-
-    m_bitmap_extra_tray_left_hover = ScalableBitmap(this, "extra_ams_tray_left_hover", 80);
-    m_bitmap_extra_tray_right_hover = ScalableBitmap(this, "extra_ams_tray_right_hover", 80);
-
-    m_bitmap_extra_tray_left_selected = ScalableBitmap(this, "extra_ams_tray_left_selected", 80);
-    m_bitmap_extra_tray_right_selected = ScalableBitmap(this, "extra_ams_tray_right_selected", 80);
-    
-
     m_sizer_body->Add(0, 0, 1, wxEXPAND, 0);
     m_sizer_body->Add(m_sizer_edit, 0, wxALIGN_CENTER, 0);
     m_sizer_body->Add(0, 0, 0, wxBOTTOM, GetSize().y * 0.12);
@@ -2500,7 +2490,9 @@ AMSControl::AMSControl(wxWindow *parent, wxWindowID id, const wxPoint &pos, cons
 
     //m_sizer_left_bottom->Add(0, 0, 0, wxEXPAND, 0);
 
-    StateColor btn_bg_green(std::pair<wxColour, int>(AMS_CONTROL_DISABLE_COLOUR, StateColor::Disabled),std::pair<wxColour, int>(wxColour(82, 142, 255), StateColor::Pressed), std::pair<wxColour, int>(wxColour(82, 142, 255), StateColor::Hovered),
+    StateColor btn_bg_green(std::pair<wxColour, int>(AMS_CONTROL_DISABLE_COLOUR, StateColor::Disabled),
+                            std::pair<wxColour, int>(wxColour(0, 137, 123), StateColor::Pressed), 
+                            std::pair<wxColour, int>(wxColour(38, 166, 154), StateColor::Hovered),
                             std::pair<wxColour, int>(AMS_CONTROL_BRAND_COLOUR, StateColor::Normal));
 
     StateColor btn_bg_white(std::pair<wxColour, int>(AMS_CONTROL_DISABLE_COLOUR, StateColor::Disabled), 
@@ -2950,7 +2942,7 @@ void AMSControl::SetActionState(bool button_status[])
     else m_button_extruder_back->Disable();
 }
 
-void AMSControl::EnterNoneAMSMode(bool support_vt_load)
+void AMSControl::EnterNoneAMSMode()
 {
     m_vams_lib->m_ams_model = m_ext_model;
     if(m_is_none_ams_mode == AMSModel::NO_AMS) return;
@@ -2964,7 +2956,6 @@ void AMSControl::EnterNoneAMSMode(bool support_vt_load)
     m_button_guide->Hide();
     m_button_extruder_feed->Show();
     m_button_extruder_back->Show();
-
 
     ShowFilamentTip(false);
     m_amswin->Layout();
@@ -3572,6 +3563,7 @@ bool AMSControl::Enable(bool enable)
         AmsCansWindow *cans = m_ams_cans_list[i];
         cans->amsCans->Enable(enable);
     }
+
     m_button_extruder_feed->Enable(enable);
     m_button_extruder_back->Enable(enable);
     m_button_ams_setting->Enable(enable);

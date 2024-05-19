@@ -13,7 +13,7 @@
 #include <wx/animate.h>
 #include <wx/dynarray.h>
 
-#define AMS_CONTROL_BRAND_COLOUR wxColour(72, 94, 112)
+#define AMS_CONTROL_BRAND_COLOUR wxColour(0, 150, 136)
 #define AMS_CONTROL_GRAY700 wxColour(107, 107, 107)
 #define AMS_CONTROL_GRAY800 wxColour(50, 58, 61)
 #define AMS_CONTROL_GRAY500 wxColour(172, 172, 172)
@@ -325,15 +325,6 @@ protected:
     ScalableBitmap  m_bitmap_readonly_light;
     ScalableBitmap  m_bitmap_transparent;
     ScalableBitmap  m_bitmap_transparent_def;
-
-    ScalableBitmap  m_bitmap_extra_tray_left;
-    ScalableBitmap  m_bitmap_extra_tray_right;
-
-    ScalableBitmap  m_bitmap_extra_tray_left_hover;
-    ScalableBitmap  m_bitmap_extra_tray_right_hover;
-
-    ScalableBitmap  m_bitmap_extra_tray_left_selected;
-    ScalableBitmap  m_bitmap_extra_tray_right_selected;
 
     ScalableBitmap  m_bitmap_extra_tray_left;
     ScalableBitmap  m_bitmap_extra_tray_right;

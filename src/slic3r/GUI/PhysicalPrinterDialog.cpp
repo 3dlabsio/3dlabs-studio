@@ -370,35 +370,6 @@ void PhysicalPrinterDialog::update_ports() {
     const PrinterTechnology tech = Preset::printer_technology(*m_config);
     if (tech == ptFFF) {
         const auto opt = m_config->option<ConfigOptionEnum<PrintHostType>>("host_type");
-        if (opt->value == htObico) {
-            auto build_web_ui = [](DynamicPrintConfig* config) {
-                auto host = config->opt_string("print_host");
-                auto port = config->opt_string("printhost_port");
-                auto api_key = config->opt_string("printhost_apikey");
-                if (host.empty() || port.empty()) {
-                    return std::string();
-                }
-                boost::regex  re("\\[(\\d+)\\]");
-                boost::smatch match;
-                if (!boost::regex_search(port, match, re))
-                    return std::string();
-                if (match.size() <= 1) {
-                    return std::string();
-                }
-                boost::format urlFormat("%1%/printers/%2%/control");
-                urlFormat % host % match[1];
-                return urlFormat.str();
-            };
-            auto url = build_web_ui(m_config);
-            if (Field* print_host_webui_field = m_optgroup->get_field("print_host_webui"); print_host_webui_field) {
-                if (TextInput* temp_input = dynamic_cast<TextInput*>(print_host_webui_field->getWindow()); temp_input) {
-                    if (wxTextCtrl* temp = temp_input->GetTextCtrl()) {
-                        temp->SetValue(wxString(url));
-                        m_config->opt_string("print_host_webui") = url;
-                    }
-                }
-            }
-        }
     }
 }
 

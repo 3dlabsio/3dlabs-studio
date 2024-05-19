@@ -293,7 +293,23 @@ AboutDialog::AboutDialog()
     copyright_hor_sizer->Add(copyright_ver_sizer, 0, wxALL,5);
     copyright_hor_sizer->Add( 0, 0, 0, wxLEFT, FromDIP(120));
 
-    wxStaticText *html_text = new wxStaticText(this, wxID_ANY, "Copyright(C) 2021-2023 3D Laboratories LLC", wxDefaultPosition, wxDefaultSize);
+    // 3DL
+    // Rearrange version text position and appearance
+    auto          version_string = _L("Version") + " " + std::string(SLIC3R_VERSION);
+    wxStaticText* version_text   = new wxStaticText(this, wxID_ANY, version_string.c_str(), wxDefaultPosition, wxDefaultSize);
+    wxFont        version_font   = GetFont();
+#ifdef __WXMSW__
+    version_font.SetPointSize(version_font.GetPointSize() - 1);
+#else
+    version_font.SetPointSize(11);
+#endif
+    version_font.SetPointSize(FromDIP(10));
+    version_text->SetFont(version_font);
+    version_text->SetForegroundColour(wxColour(107, 107, 107));
+
+    wxStaticText* html_text = new wxStaticText(this, wxID_ANY, "Copyright(C) 2021-2023 3D Laboratories LLC", wxDefaultPosition,
+                                               wxDefaultSize);
+
     html_text->SetForegroundColour(wxColour(107, 107, 107));
 
     copyright_ver_sizer->Add(version_text, 0, wxALL , 0);
