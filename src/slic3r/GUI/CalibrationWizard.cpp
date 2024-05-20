@@ -1112,7 +1112,7 @@ void FlowRateWizard::on_cali_save()
 
             wxString message;
             if (!save_preset(old_preset_name, into_u8(new_preset_name), key_value_map, message)) {
-                MessageDialog error_msg_dlg(nullptr, from_u8(message), wxEmptyString, wxICON_WARNING | wxOK);
+                MessageDialog error_msg_dlg(nullptr, message, wxEmptyString, wxICON_WARNING | wxOK);
                 error_msg_dlg.ShowModal();
                 return;
             }
@@ -1393,7 +1393,7 @@ void MaxVolumetricSpeedWizard::on_cali_save()
 
     wxString message;
     if (!save_preset(old_preset_name, new_preset_name, key_value_map, message)) {
-        MessageDialog error_msg_dlg(nullptr, from_u8(message), wxEmptyString, wxICON_WARNING | wxOK);
+        MessageDialog error_msg_dlg(nullptr, message, wxEmptyString, wxICON_WARNING | wxOK);
         error_msg_dlg.ShowModal();
         return;
     }

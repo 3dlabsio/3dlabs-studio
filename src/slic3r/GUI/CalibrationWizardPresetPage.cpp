@@ -1867,7 +1867,7 @@ MaxVolumetricSpeedPresetPage::MaxVolumetricSpeedPresetPage(
         wxArrayString titles;
         titles.push_back(_L("From Volumetric Speed"));
         titles.push_back(_L("To Volumetric Speed"));
-        titles.push_back(_L("Step value"));
+        titles.push_back(_L("Step"));
         m_custom_range_panel->set_titles(titles);
 
         m_custom_range_panel->set_unit(_L("mm\u00B3/s"));

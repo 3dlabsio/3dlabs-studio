@@ -3384,6 +3384,7 @@ void TabFilament::toggle_options()
           wxGetApp().preset_bundle->is_bbl_vendor();
     }
 
+    auto cfg = m_preset_bundle->printers.get_edited_preset().config;
     if (m_active_page->title() == "Cooling") {
       bool cooling = m_config->opt_bool("slow_down_for_layer_cooling", 0);
       toggle_option("slow_down_min_speed", cooling);

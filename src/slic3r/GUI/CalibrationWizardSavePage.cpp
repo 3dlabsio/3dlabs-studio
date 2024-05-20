@@ -538,21 +538,6 @@ void CaliPASaveManualPanel::set_pa_cali_method(ManualPaCaliMethod method)
     }
 }
 
-void CaliPASaveManualPanel::set_pa_cali_method(ManualPaCaliMethod method)
-{
-    if (method == ManualPaCaliMethod::PA_LINE) {
-        m_complete_text->SetLabel(_L("Please find the best line on your plate"));
-        set_save_img();
-    } else if (method == ManualPaCaliMethod::PA_PATTERN) {
-        m_complete_text->SetLabel(_L("Please find the cornor with perfect degree of extrusion"));
-        if (wxGetApp().app_config->get_language_code() == "zh-cn") {
-            m_picture_panel->set_img(create_scaled_bitmap("fd_pattern_manual_result_CN", nullptr, 350));
-        } else {
-            m_picture_panel->set_img(create_scaled_bitmap("fd_pattern_manual_result", nullptr, 350));
-        }
-    }
-}
-
 void CaliPASaveManualPanel::set_default_name(const wxString& name) {
     m_save_name_input->GetTextCtrl()->SetValue(name);
 }
@@ -711,22 +696,6 @@ void CaliPASaveP1PPanel::set_pa_cali_method(ManualPaCaliMethod method)
             m_picture_panel->set_bmp(ScalableBitmap(this, "fd_pattern_manual_result_CN", 350));
         } else {
             m_picture_panel->set_bmp(ScalableBitmap(this, "fd_pattern_manual_result", 350));
-        }
-    }
-}
-
-void CaliPASaveP1PPanel::set_pa_cali_method(ManualPaCaliMethod method)
-{
-    if (method == ManualPaCaliMethod::PA_LINE) {
-        m_complete_text->SetLabel(_L("Please find the best line on your plate"));
-        set_save_img();
-    }
-    else if (method == ManualPaCaliMethod::PA_PATTERN) {
-        m_complete_text->SetLabel(_L("Please find the cornor with perfect degree of extrusion"));
-        if (wxGetApp().app_config->get_language_code() == "zh-cn") {
-            m_picture_panel->set_img(create_scaled_bitmap("fd_pattern_manual_result_CN", nullptr, 350));
-        } else {
-            m_picture_panel->set_img(create_scaled_bitmap("fd_pattern_manual_result", nullptr, 350));
         }
     }
 }

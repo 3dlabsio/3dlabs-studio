@@ -3022,21 +3022,6 @@ void StatusPanel::update_subtask(MachineObject *obj)
     this->Layout();
 }
 
-bool StatusPanel::model_score_is_update()
-{ 
-    try {
-        if (m_last_result["id"] != m_rating_result["id"] || m_last_result["content"] != m_rating_result["content"] || m_last_result["images"] != m_rating_result["images"]) {
-            m_last_result = m_rating_result;
-            return true;
-        } 
-    } catch (...) {
-        BOOST_LOG_TRIVIAL(info) << "m_last_result first initial";
-        m_last_result = m_rating_result;
-    }
-    
-    return false;
-}
-
 void StatusPanel::update_cloud_subtask(MachineObject *obj)
 {
     if (!obj) return;

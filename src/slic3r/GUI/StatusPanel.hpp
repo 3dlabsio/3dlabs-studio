@@ -599,9 +599,6 @@ protected:
     void on_webrequest_state(wxWebRequestEvent &evt);
     bool is_task_changed(MachineObject* obj);
 
-    /* model mall score */
-    bool model_score_is_update();
-
     /* camera */
     void update_camera_state(MachineObject* obj);
     bool show_vcamera = false;
