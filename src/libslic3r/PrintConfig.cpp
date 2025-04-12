@@ -327,6 +327,13 @@ static const t_config_enum_values s_keys_map_RetractLiftEnforceType = {
 };
 CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(RetractLiftEnforceType)
 
+static const t_config_enum_values s_keys_map_CounterboreHoleBridgingOption = {
+    { "none", chbNone },
+    { "partiallybridge", chbBridges },
+    { "sacrificiallayer", chbFilled },
+};
+CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(CounterboreHoleBridgingOption)
+
 static void assign_printer_technology_to_unknown(t_optiondef_map &options, PrinterTechnology printer_technology)
 {
     for (std::pair<const t_config_option_key, ConfigOptionDef> &kvp : options)
@@ -577,8 +584,6 @@ void PrintConfigDef::init_fff_params()
     def->tooltip = L("Bed temperature for layers except the initial one. "
         "0 to disable.");
     def->sidetext = L("°C");
-    def->full_label = L("Bed temperature");
-    def->min = 0;
     def->max = 300;
     def->set_default_value(new ConfigOptionInts{ 45 });
 
@@ -1824,14 +1829,6 @@ void PrintConfigDef::init_fff_params()
     def->min = 0;
     def->set_default_value(new ConfigOptionFloat(0.2));
 
-    //def = this->add("adaptive_layer_height", coBool);
-    //def->label = L("Adaptive layer height");
-    //def->category = L("Quality");
-    //def->tooltip = L("Enabling this option means the height of every layer except the first will be automatically calculated "
-    //    "during slicing according to the slope of the model’s surface.\n"
-    //    "Note that this option only takes effect if no prime tower is generated in current plate.");
-    //def->set_default_value(new ConfigOptionBool(0));
-
     def = this->add("initial_layer_speed", coFloat);
     def->label = L("Initial layer");
     def->tooltip = L("Speed of initial layer, except the solid infill");
@@ -1952,34 +1949,24 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(30));
 
-    // BBS
     def = this->add("enable_arc_fitting", coBool);
     def->label = L("Arc fitting");
     def->tooltip = L("Enable this to get a G-code file which has G2 and G3 moves. "
                      "The fitting tolerance is same with resolution");
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(0));
-    // BBS
+
     def = this->add("gcode_add_line_number", coBool);
     def->label = L("Add line number");
     def->tooltip = L("Enable this to add line number(Nx) at the beginning of each G-Code line");
     def->mode = comDevelop;
     def->set_default_value(new ConfigOptionBool(0));
 
-    // BBS
     def = this->add("scan_first_layer", coBool);
     def->label = L("Scan first layer");
     def->tooltip = L("Enable this to enable the camera on printer to check the quality of first layer");
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(false));
-
-
-    //BBS
-    // def = this->add("spaghetti_detector", coBool);
-    // def->label = L("Enable spaghetti detector");
-    // def->tooltip = L("Enable the camera on printer to check spaghetti");
-    // def->mode = comSimple;
-    // def->set_default_value(new ConfigOptionBool(false));
 
     def = this->add("nozzle_type", coEnum);
     def->label = L("Nozzle type");
@@ -2038,9 +2025,7 @@ void PrintConfigDef::init_fff_params()
 
 
     def = this->add("fan_speedup_time", coFloat);
-	// Label is set in Tab.cpp in the Line object.
-    //def->label = L("Fan speed-up time");
-    def->tooltip = L("Start the fan this number of seconds earlier than its target start time (you can use fractional seconds)."
+	def->tooltip = L("Start the fan this number of seconds earlier than its target start time (you can use fractional seconds)."
         " It assumes infinite acceleration for this time estimation, and will only take into account G1 and G0 moves (arc fitting"
         " is unsupported)."
         "\nIt won't move fan comands from custom gcodes (they act as a sort of 'barrier')."
@@ -2096,28 +2081,11 @@ void PrintConfigDef::init_fff_params()
     def->enum_values.push_back("marlin");
     def->enum_values.push_back("klipper");
     def->enum_values.push_back("reprapfirmware");
-    //def->enum_values.push_back("repetier");
-    //def->enum_values.push_back("teacup");
-    //def->enum_values.push_back("makerware");
     def->enum_values.push_back("marlin2");
-    //def->enum_values.push_back("sailfish");
-    //def->enum_values.push_back("mach3");
-    //def->enum_values.push_back("machinekit");
-    //def->enum_values.push_back("smoothie");
-    //def->enum_values.push_back("no-extrusion");
     def->enum_labels.push_back("Marlin(legacy)");
     def->enum_labels.push_back(L("Klipper"));
     def->enum_labels.push_back("RepRapFirmware");
-    //def->enum_labels.push_back("RepRap/Sprinter");
-    //def->enum_labels.push_back("Repetier");
-    //def->enum_labels.push_back("Teacup");
-    //def->enum_labels.push_back("MakerWare (MakerBot)");
     def->enum_labels.push_back("Marlin 2");
-    //def->enum_labels.push_back("Sailfish (MakerBot)");
-    //def->enum_labels.push_back("Mach3/LinuxCNC");
-    //def->enum_labels.push_back("Machinekit");
-    //def->enum_labels.push_back("Smoothie");
-    //def->enum_labels.push_back(L("No extrusion"));
     def->mode = comAdvanced;
     def->readonly = false;
     def->set_default_value(new ConfigOptionEnum<GCodeFlavor>(gcfMarlinLegacy));
@@ -2144,7 +2112,6 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(0));
     
-    //BBS
     def = this->add("infill_combination", coBool);
     def->label = L("Infill combination");
     def->category = L("Strength");
@@ -2192,23 +2159,18 @@ void PrintConfigDef::init_fff_params()
     def->set_default_value(new ConfigOptionFloat(100));
 
     def = this->add("inherits", coString);
-    //def->label = L("Inherits profile");
     def->label = "Inherits profile";
-    //def->tooltip = L("Name of parent profile");
     def->tooltip = "Name of parent profile";
     def->full_width = true;
     def->height = 5;
     def->set_default_value(new ConfigOptionString());
     def->cli = ConfigOptionDef::nocli;
 
-    // The following value is to be stored into the project file (AMF, 3MF, Config ...)
-    // and it contains a sum of "inherits" values over the print and filament profiles.
     def = this->add("inherits_group", coStrings);
     def->set_default_value(new ConfigOptionStrings());
     def->cli = ConfigOptionDef::nocli;
 
     def = this->add("interface_shells", coBool);
-    def->label = L("Interface shells");
     def->label = "Interface shells";
     def->tooltip = L("Force the generation of solid shells between adjacent materials/volumes. "
                   "Useful for multi-extruder prints with translucent materials or manual soluble "
@@ -2336,7 +2298,6 @@ void PrintConfigDef::init_fff_params()
             std::vector<double> max_jerk;
         };
         std::vector<AxisDefault> axes {
-            // name, max_feedrate,  max_acceleration, max_jerk
             { "x", { 500., 200. }, {  1000., 1000. }, { 10. , 10.  } },
             { "y", { 500., 200. }, {  1000., 1000. }, { 10. , 10.  } },
             { "z", {  12.,  12. }, {   500.,  200. }, {  0.2,  0.4 } },
@@ -2344,56 +2305,29 @@ void PrintConfigDef::init_fff_params()
         };
         for (const AxisDefault &axis : axes) {
             std::string axis_upper = boost::to_upper_copy<std::string>(axis.name);
-            // Add the machine feedrate limits for XYZE axes. (M203)
             def = this->add("machine_max_speed_" + axis.name, coFloats);
             def->full_label = (boost::format("Maximum speed %1%") % axis_upper).str();
-            (void)L("Maximum speed X");
-            (void)L("Maximum speed Y");
-            (void)L("Maximum speed Z");
-            (void)L("Maximum speed E");
             def->category = L("Machine limits");
             def->readonly = false;
             def->tooltip  = (boost::format("Maximum speed of %1% axis") % axis_upper).str();
-            (void)L("Maximum X speed");
-            (void)L("Maximum Y speed");
-            (void)L("Maximum Z speed");
-            (void)L("Maximum E speed");
             def->sidetext = L("mm/s");
             def->min = 0;
             def->mode = comSimple;
             def->set_default_value(new ConfigOptionFloats(axis.max_feedrate));
-            // Add the machine acceleration limits for XYZE axes (M201)
             def = this->add("machine_max_acceleration_" + axis.name, coFloats);
             def->full_label = (boost::format("Maximum acceleration %1%") % axis_upper).str();
-            (void)L("Maximum acceleration X");
-            (void)L("Maximum acceleration Y");
-            (void)L("Maximum acceleration Z");
-            (void)L("Maximum acceleration E");
             def->category = L("Machine limits");
             def->readonly = false;
             def->tooltip  = (boost::format("Maximum acceleration of the %1% axis") % axis_upper).str();
-            (void)L("Maximum acceleration of the X axis");
-            (void)L("Maximum acceleration of the Y axis");
-            (void)L("Maximum acceleration of the Z axis");
-            (void)L("Maximum acceleration of the E axis");
             def->sidetext = L("mm/s²");
             def->min = 0;
             def->mode = comSimple;
             def->set_default_value(new ConfigOptionFloats(axis.max_acceleration));
-            // Add the machine jerk limits for XYZE axes (M205)
             def = this->add("machine_max_jerk_" + axis.name, coFloats);
             def->full_label = (boost::format("Maximum jerk %1%") % axis_upper).str();
-            (void)L("Maximum jerk X");
-            (void)L("Maximum jerk Y");
-            (void)L("Maximum jerk Z");
-            (void)L("Maximum jerk E");
             def->category = L("Machine limits");
             def->readonly = false;
             def->tooltip  = (boost::format("Maximum jerk of the %1% axis") % axis_upper).str();
-            (void)L("Maximum jerk of the X axis");
-            (void)L("Maximum jerk of the Y axis");
-            (void)L("Maximum jerk of the Z axis");
-            (void)L("Maximum jerk of the E axis");
             def->sidetext = L("mm/s");
             def->min = 0;
             def->mode = comSimple;
@@ -2401,7 +2335,6 @@ void PrintConfigDef::init_fff_params()
         }
     }
 
-    // M205 S... [mm/sec]
     def = this->add("machine_min_extruding_rate", coFloats);
     def->full_label = L("Minimum speed for extruding");
     def->category = L("Machine limits");
@@ -2411,7 +2344,6 @@ void PrintConfigDef::init_fff_params()
     def->mode = comDevelop;
     def->set_default_value(new ConfigOptionFloats{ 0., 0. });
 
-    // M205 T... [mm/sec]
     def = this->add("machine_min_travel_rate", coFloats);
     def->full_label = L("Minimum travel speed");
     def->category = L("Machine limits");
@@ -2421,21 +2353,16 @@ void PrintConfigDef::init_fff_params()
     def->mode = comDevelop;
     def->set_default_value(new ConfigOptionFloats{ 0., 0. });
 
-    // M204 P... [mm/sec^2]
     def = this->add("machine_max_acceleration_extruding", coFloats);
     def->full_label = L("Maximum acceleration for extruding");
     def->category = L("Machine limits");
     def->tooltip = L("Maximum acceleration for extruding (M204 P)");
-    //                 "Marlin (legacy) firmware flavor will use this also "
-    //                 "as travel acceleration (M204 T).");
     def->sidetext = L("mm/s²");
     def->min = 0;
     def->readonly = false;
     def->mode = comSimple;
     def->set_default_value(new ConfigOptionFloats{ 1500., 1250. });
 
-
-    // M204 R... [mm/sec^2]
     def = this->add("machine_max_acceleration_retracting", coFloats);
     def->full_label = L("Maximum acceleration for retracting");
     def->category = L("Machine limits");
@@ -2446,7 +2373,6 @@ void PrintConfigDef::init_fff_params()
     def->mode = comSimple;
     def->set_default_value(new ConfigOptionFloats{ 1500., 1250. });
 
-    // M204 T... [mm/sec^2]
     def = this->add("machine_max_acceleration_travel", coFloats);
     def->full_label = L("Maximum acceleration for travel");
     def->category = L("Machine limits");
@@ -4026,6 +3952,24 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(true));
 
+    def = this->add("counterbore_hole_bridging", coEnum);
+    def->label = L("Counterbore hole bridging");
+    def->category = L("Quality");
+    def->tooltip  = L(
+        "This option creates bridges for counterbore holes, allowing them to be printed without support. Available modes include:\n"
+         "1. None: No bridge is created.\n"
+         "2. Partially Bridged: Only a part of the unsupported area will be bridged.\n"
+         "3. Sacrificial Layer: A full sacrificial bridge layer is created.");
+    def->enum_keys_map = &ConfigOptionEnum<CounterboreHoleBridgingOption>::get_enum_values();
+    def->enum_values.push_back("none");
+    def->enum_values.push_back("partiallybridge");
+    def->enum_values.push_back("sacrificiallayer");
+    def->enum_labels.push_back(L("Disabled"));
+    def->enum_labels.push_back(L("Bridge detected areas"));
+    def->enum_labels.push_back(L("Create sacrificial layer"));
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionEnum<CounterboreHoleBridgingOption>(chbNone));
+
     def = this->add("thumbnails", coPoints);
     def->label = L("G-code thumbnails");
     def->tooltip = L("Picture sizes to be stored into a .gcode and .sl1 / .sl1s files, in the following format: \"XxY, XxY, ...\"");
@@ -4324,7 +4268,7 @@ void PrintConfigDef::init_sla_params()
     def = this->add("relative_correction", coFloats);
     def->label = L(" ");
     def->full_label = L(" ");
-    def->tooltip  = L(" ");
+    def->tooltip = L(" ");
     def->min = 0;
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloats( { 1., 1.} ));
@@ -4332,7 +4276,7 @@ void PrintConfigDef::init_sla_params()
     def = this->add("relative_correction_x", coFloat);
     def->label = L(" ");
     def->full_label = L(" ");
-    def->tooltip  = L(" ");
+    def->tooltip = L(" ");
     def->min = 0;
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(1.));
@@ -4340,7 +4284,7 @@ void PrintConfigDef::init_sla_params()
     def = this->add("relative_correction_y", coFloat);
     def->label = L(" ");
     def->full_label = L(" ");
-    def->tooltip  = L(" ");
+    def->tooltip = L(" ");
     def->min = 0;
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(1.));
@@ -4348,7 +4292,7 @@ void PrintConfigDef::init_sla_params()
     def = this->add("relative_correction_z", coFloat);
     def->label = L(" ");
     def->full_label = L(" ");
-    def->tooltip  = L(" ");
+    def->tooltip = L(" ");
     def->min = 0;
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(1.));
@@ -4356,7 +4300,7 @@ void PrintConfigDef::init_sla_params()
     def = this->add("absolute_correction", coFloat);
     def->label = L(" ");
     def->full_label = L(" ");
-    def->tooltip  = L(" ");
+    def->tooltip = L(" ");
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(0.0));
 
@@ -4372,7 +4316,7 @@ void PrintConfigDef::init_sla_params()
     def = this->add("gamma_correction", coFloat);
     def->label = L(" ");
     def->full_label = L(" ");
-    def->tooltip  = L(" ");
+    def->tooltip = L(" ");
     def->min = 0;
     def->max = 1;
     def->mode = comAdvanced;
@@ -5104,6 +5048,11 @@ void DynamicPrintConfig::normalize_fdm(int used_filaments)
         }
         */
     }
+    
+    // Ensure counterbore_hole_bridging is set to a valid default if missing
+    if (!this->has("counterbore_hole_bridging")) {
+        this->option<ConfigOptionEnum<CounterboreHoleBridgingOption>>("counterbore_hole_bridging", true)->value = chbNone;
+    }
 }
 
 //BBS:divide normalize_fdm to 2 steps and call them one by one in Print::Apply
@@ -5149,6 +5098,11 @@ void DynamicPrintConfig::normalize_fdm_1()
     if (auto *opt_gcode_resolution = this->opt<ConfigOptionFloat>("resolution", false); opt_gcode_resolution)
         // Resolution will be above 1um.
         opt_gcode_resolution->value = std::max(opt_gcode_resolution->value, 0.001);
+
+    // Ensure counterbore_hole_bridging is set to a valid default if missing
+    if (!this->has("counterbore_hole_bridging")) {
+        this->option<ConfigOptionEnum<CounterboreHoleBridgingOption>>("counterbore_hole_bridging", true)->value = chbNone;
+    }
 
     return;
 }
