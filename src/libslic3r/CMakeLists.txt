@@ -429,6 +429,14 @@ if (SLIC3R_STATIC)
 endif ()
 set(CGAL_DO_NOT_WARN_ABOUT_CMAKE_BUILD_TYPE ON CACHE BOOL "" FORCE)
 
+# Explicitly set GMP and MPFR libraries for CGAL
+if(WIN32)
+    set(GMP_INCLUDE_DIR "${CMAKE_PREFIX_PATH}/include" CACHE PATH "Path to GMP include directory")
+    set(GMP_LIBRARIES "${CMAKE_PREFIX_PATH}/lib/libgmp-10.lib" CACHE FILEPATH "Path to GMP library")
+    set(MPFR_INCLUDE_DIR "${CMAKE_PREFIX_PATH}/include" CACHE PATH "Path to MPFR include directory")
+    set(MPFR_LIBRARIES "${CMAKE_PREFIX_PATH}/lib/libmpfr-4.lib" CACHE FILEPATH "Path to MPFR library")
+endif()
+
 cmake_policy(PUSH)
 cmake_policy(SET CMP0011 NEW)
 find_package(CGAL REQUIRED)
@@ -437,6 +445,17 @@ cmake_policy(POP)
 add_library(libslic3r_cgal STATIC MeshBoolean.cpp MeshBoolean.hpp  TryCatchSignal.hpp
     TryCatchSignal.cpp)
 target_include_directories(libslic3r_cgal PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+
+# Add GMP and MPFR include directories and definitions
+if(WIN32)
+    target_include_directories(libslic3r_cgal PRIVATE "${CMAKE_PREFIX_PATH}/include")
+    target_compile_definitions(libslic3r_cgal PRIVATE 
+        -DMPFR_HAVE_GMP_IMPL
+        -DMPFR_USE_THREAD_SAFE
+        -DGMP_DONT_NEED_DECLARATIONS
+        -DCGAL_USE_GMP
+        -DCGAL_USE_MPFR)
+endif()
 
 # Reset compile options of libslic3r_cgal. Despite it being linked privately, CGAL options
 # (-frounding-math) still propagate to dependent libs which is not desired.
@@ -454,7 +473,12 @@ if (_opts)
     target_compile_options(libslic3r_cgal PRIVATE "${_opts_bad}")
 endif()
 
-target_link_libraries(libslic3r_cgal PRIVATE ${_cgal_tgt} libigl mcut)
+# Link with CGAL and explicitly add GMP and MPFR libraries
+if(WIN32)
+    target_link_libraries(libslic3r_cgal PRIVATE ${_cgal_tgt} libigl mcut "${CMAKE_PREFIX_PATH}/lib/libgmp-10.lib" "${CMAKE_PREFIX_PATH}/lib/libmpfr-4.lib")
+else()
+    target_link_libraries(libslic3r_cgal PRIVATE ${_cgal_tgt} libigl mcut)
+endif()
 
 if (MSVC AND "${CMAKE_SIZEOF_VOID_P}" STREQUAL "4") # 32 bit MSVC workaround
     target_compile_definitions(libslic3r_cgal PRIVATE CGAL_DO_NOT_USE_MPZF)
@@ -465,6 +489,17 @@ encoding_check(libslic3r)
 target_compile_definitions(libslic3r PUBLIC -DUSE_TBB -DTBB_USE_CAPTURED_EXCEPTION=0)
 target_include_directories(libslic3r PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(libslic3r PUBLIC ${EXPAT_INCLUDE_DIRS})
+
+# Add GMP and MPFR include directories and definitions to libslic3r
+if(WIN32)
+    target_include_directories(libslic3r PUBLIC "${CMAKE_PREFIX_PATH}/include")
+    target_compile_definitions(libslic3r PRIVATE 
+        -DMPFR_HAVE_GMP_IMPL
+        -DMPFR_USE_THREAD_SAFE
+        -DGMP_DONT_NEED_DECLARATIONS
+        -DCGAL_USE_GMP
+        -DCGAL_USE_MPFR)
+endif()
 
 # Find the OCCT and related libraries
 set(OpenCASCADE_DIR "${CMAKE_PREFIX_PATH}/lib/cmake/occt")
@@ -524,6 +559,11 @@ target_link_libraries(libslic3r
     Clipper2
     mcut
     )
+
+# Directly link GMP and MPFR to libslic3r on Windows
+if(WIN32)
+    target_link_libraries(libslic3r "${CMAKE_PREFIX_PATH}/lib/libgmp-10.lib" "${CMAKE_PREFIX_PATH}/lib/libmpfr-4.lib")
+endif()
 
 if(NOT WIN32)
     target_link_libraries(libslic3r freetype)
