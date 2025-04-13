@@ -158,6 +158,13 @@ static t_config_enum_values s_keys_map_WallInfillOrder {
 };
 CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(WallInfillOrder)
 
+static t_config_enum_values s_keys_map_WallSequence {
+    { "inner wall/outer wall",     int(WallSequence::InnerOuter) },
+    { "outer wall/inner wall",     int(WallSequence::OuterInner) },
+    { "inner-outer-inner wall",    int(WallSequence::InnerOuterInner)}
+};
+CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(WallSequence)
+
 //BBS
 static t_config_enum_values s_keys_map_PrintSequence {
     { "by layer",     int(PrintSequence::ByLayer) },
@@ -1891,7 +1898,7 @@ void PrintConfigDef::init_fff_params()
     //def->label = L("Adaptive layer height");
     //def->category = L("Quality");
     //def->tooltip = L("Enabling this option means the height of every layer except the first will be automatically calculated "
-    //    "during slicing according to the slope of the model’s surface.\n"
+    //    "during slicing according to the slope of the model's surface.\n"
     //    "Note that this option only takes effect if no prime tower is generated in current plate.");
     //def->set_default_value(new ConfigOptionBool(0));
 
@@ -2123,7 +2130,7 @@ void PrintConfigDef::init_fff_params()
     def->label = L("Fan kick-start time");
     def->tooltip = L("Emit a max fan speed command for this amount of seconds before reducing to target speed to kick-start the cooling fan."
                     "\nThis is useful for fans where a low PWM/power may be insufficient to get the fan started spinning from a stop, or to "
-                    "get the fan up to speed faster."
+                    "\nget the fan up to speed faster."
                     "\nSet to 0 to deactivate.");
     def->sidetext = L("s");
     def->min = 0;
@@ -3116,7 +3123,7 @@ void PrintConfigDef::init_fff_params()
     def->label = "Warp/Ooze shield";
     def->tooltip = L("With warp shield active, the skirt will be printed skirt_distance from the object, possibly intersecting brim.\n"
                      "Enabled = skirt is as tall as the highest printed object.\n"
-                    "Limited = skirt is as tall as specified by skirt_height.\n"
+    				 "Limited = skirt is as tall as specified by skirt_height.\n"
                      "Use this feature if you're having problems with dual extrusion prints and bits of filament getting on your parts.\n"
     				 "Also use this feature when you're having trouble printing high-temperature filaments, such as PEEK or PEI, and experience cracks or warping. This helps to keep the heat around the printed object.");
     def->enum_keys_map = &ConfigOptionEnum<DraftShield>::get_enum_values();

@@ -81,6 +81,7 @@ private:
     void split_top_surfaces(const ExPolygons &orig_polygons, ExPolygons &top_fills, ExPolygons &non_top_polygons, ExPolygons &fill_clip) const;
     void apply_extra_perimeters(ExPolygons& infill_area);
     void process_no_bridge(Surfaces& all_surfaces, coord_t perimeter_spacing, coord_t ext_perimeter_width);
+    void add_infill_contour_for_arachne(ExPolygons infill_contour, int loops, coord_t ext_perimeter_spacing, coord_t perimeter_spacing, coord_t min_perimeter_infill_spacing, coord_t spacing, bool is_inner_part);
 
 private:
     bool        m_spiral_vase;

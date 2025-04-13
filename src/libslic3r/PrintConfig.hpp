@@ -73,7 +73,15 @@ enum class WallInfillOrder {
     InnerOuterInnerInfill,
     Count,
 };
-//BBS
+
+// BBS
+enum class WallSequence {
+    InnerOuter,
+    OuterInner,
+    InnerOuterInner,
+    Count,
+};
+
 enum class PrintSequence {
     ByLayer,
     ByObject,
@@ -328,6 +336,8 @@ CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(CounterboreHoleBridgingOption)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(PrintHostType)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(AuthorizationType)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(PerimeterGeneratorType)
+CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(WallInfillOrder)
+CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(WallSequence)
 
 #undef CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS
 
