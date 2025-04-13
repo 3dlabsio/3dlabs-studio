@@ -600,50 +600,60 @@ bool ConfigBase::set_deserialize_raw(const t_config_option_key &opt_key_src, con
     assert(opt != nullptr);
     bool success     = false;
     bool substituted = false;
-    if (optdef->type == coBools && substitutions_ctxt.rule != ForwardCompatibilitySubstitutionRule::Disable) {
-        //FIXME Special handling of vectors of bools, quick and not so dirty solution before PrusaSlicer 2.3.2 release.
-    	bool nullable = opt->nullable();
-    	ConfigHelpers::DeserializationSubstitution default_value = ConfigHelpers::DeserializationSubstitution::DefaultsToFalse;
-    	if (optdef->default_value) {
-    		// Default value for vectors of booleans used in a "per extruder" context, thus the default contains just a single value.
-    		assert(dynamic_cast<const ConfigOptionVector<unsigned char>*>(optdef->default_value.get()));
-			auto &values = static_cast<const ConfigOptionVector<unsigned char>*>(optdef->default_value.get())->values;
-			if (values.size() == 1 && values.front() == 1)
-				default_value = ConfigHelpers::DeserializationSubstitution::DefaultsToTrue;
-		}
-    	auto result = nullable ?
-    		static_cast<ConfigOptionBoolsNullable*>(opt)->deserialize_with_substitutions(value, append, default_value) :
-    		static_cast<ConfigOptionBools*>(opt)->deserialize_with_substitutions(value, append, default_value);
-    	success     = result != ConfigHelpers::DeserializationResult::Failed;
-    	substituted = result == ConfigHelpers::DeserializationResult::Substituted;
+    if (optdef->type == coEnum) {
+        // Enum values may have been renamed between versions.
+        // Try to parse the old value and if it fails, parse it as a new value.
+        auto *opt_enum = static_cast<ConfigOptionEnumGeneric*>(opt);
+        std::string enum_value(value);
+        boost::trim(enum_value);
+        if (enum_value.empty()) {
+            // Empty string cannot be a valid enum value, use the default.
+            if (substitutions_ctxt.rule != ForwardCompatibilitySubstitutionRule::Disable) {
+                // Use the default value.
+                opt_enum->value = static_cast<const ConfigOptionEnumGeneric*>(optdef->default_value.get())->value;
+                success = true;
+                substituted = true;
+            }
+        } else {
+            // Not empty string. Is it a valid value?
+            const t_config_enum_values *enum_keys_map = optdef->enum_keys_map;
+            auto it = enum_keys_map->find(enum_value);
+            if (it == enum_keys_map->end()) {
+                // The value is not valid. Try to substitute it.
+                if (substitutions_ctxt.rule != ForwardCompatibilitySubstitutionRule::Disable) {
+                    // Use the default value.
+                    opt_enum->value = static_cast<const ConfigOptionEnumGeneric*>(optdef->default_value.get())->value;
+                    success = true;
+                    substituted = true;
+                }
+            } else {
+                // The value is valid.
+                opt_enum->value = it->second;
+                success = true;
+            }
+        }
     } else {
-		//bool test = (opt_key == "filament_end_gcode");
-		success = opt->deserialize(value, append);
-	    if (! success && substitutions_ctxt.rule != ForwardCompatibilitySubstitutionRule::Disable &&
-	        // Only allow substitutions of an enum value by another enum value or a boolean value with an enum value.
-	        // That means, we expect enum values being added in the future and possibly booleans being converted to enums.
-            (optdef->type == coEnum || optdef->type == coEnums || optdef->type == coBool) /*&& ConfigHelpers::looks_like_enum_value(value)*/) {
-	        // Deserialize failed, try to substitute with a default value.
-	        //assert(substitutions_ctxt.rule == ForwardCompatibilitySubstitutionRule::Enable || substitutions_ctxt.rule == ForwardCompatibilitySubstitutionRule::EnableSilent);
-	        if (optdef->type == coBool)
-	            static_cast<ConfigOptionBool*>(opt)->value = ConfigHelpers::enum_looks_like_true_value(value);
-	        else
-	        	// Just use the default of the option.
-	            opt->set(optdef->default_value.get());
-            success     = true;
-            substituted = true;
-	    }
-	}
-
-    if (substituted && (substitutions_ctxt.rule == ForwardCompatibilitySubstitutionRule::Enable ||
-                        substitutions_ctxt.rule == ForwardCompatibilitySubstitutionRule::EnableSystemSilent)) {
-        // Log the substitution.
-        ConfigSubstitution config_substitution;
-        config_substitution.opt_def   = optdef;
-        config_substitution.old_value = value;
-        config_substitution.new_value = ConfigOptionUniquePtr(opt->clone());
-        substitutions_ctxt.substitutions.emplace_back(std::move(config_substitution));
+        // Any other value type.
+        success = opt->deserialize(value, append);
     }
+
+    if (substituted) {
+        std::string substitution_text;
+        if (const ConfigOptionEnumGeneric* opt_enum = dynamic_cast<const ConfigOptionEnumGeneric*>(optdef->default_value.get())) {
+            // For enum types, use the enum key string as the substitution text
+            for (const auto& enum_pair : *optdef->enum_keys_map) {
+                if (enum_pair.second == opt_enum->value) {
+                    substitution_text = enum_pair.first;
+                    break;
+                }
+            }
+        } else {
+            // For other types, use the serialized default value
+            substitution_text = optdef->default_value->serialize();
+        }
+        substitutions_ctxt.substitutions.push_back(ConfigSubstitution{optdef, value, ConfigOptionUniquePtr(optdef->default_value->clone())});
+    }
+
     return success;
 }
 

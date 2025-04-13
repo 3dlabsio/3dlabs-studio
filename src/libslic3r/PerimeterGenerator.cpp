@@ -2241,10 +2241,7 @@ void PerimeterGenerator::process_no_bridge(Surfaces& all_surfaces, coord_t perim
         hole_bridging_type = this->config->counterbore_hole_bridging;
     }
     
-    if (hole_bridging_type != chbNone
-        && this->lower_slices != NULL && !this->lower_slices->empty()) {
-    if (this->config->counterbore_hole_bridging != chbNone
-        && this->lower_slices != NULL && !this->lower_slices->empty()) {
+    if (hole_bridging_type != chbNone && this->lower_slices != NULL && !this->lower_slices->empty()) {
         const coordf_t bridged_infill_margin = scale_(BRIDGE_INFILL_MARGIN);
 
         for (size_t surface_idx = 0; surface_idx < all_surfaces.size(); surface_idx++) {

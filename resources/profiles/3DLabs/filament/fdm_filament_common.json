@@ -140,5 +140,6 @@
     ],
     "temperature_vitrification": [
         "100"
-    ]
+    ],
+    "version": "2.6.2"
 }

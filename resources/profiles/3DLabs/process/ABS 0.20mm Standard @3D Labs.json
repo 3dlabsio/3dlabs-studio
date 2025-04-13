@@ -13,6 +13,5 @@
     "inner_wall_speed": "150",
     "outer_wall_speed": "100",
     "sparse_infill_speed": "120",
-    "version": "2.6.2",
-    "counterbore_hole_bridging": "none"
+    "version": "2.6.2"
 }

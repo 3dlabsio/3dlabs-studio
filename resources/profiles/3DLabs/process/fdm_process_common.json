@@ -69,5 +69,7 @@
     "prime_tower_width": "60",
     "xy_hole_compensation": "0",
     "xy_contour_compensation": "0",
-    "min_width_top_surface": "50%"
+    "min_width_top_surface": "50%",
+    "counterbore_hole_bridging": "none",
+    "version": "2.6.2"
 }

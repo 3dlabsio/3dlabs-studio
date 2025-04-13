@@ -5048,11 +5048,7 @@ void DynamicPrintConfig::normalize_fdm(int used_filaments)
         }
         */
     }
-    
-    // Ensure counterbore_hole_bridging is set to a valid default if missing
-    if (!this->has("counterbore_hole_bridging")) {
-        this->option<ConfigOptionEnum<CounterboreHoleBridgingOption>>("counterbore_hole_bridging", true)->value = chbNone;
-    }
+
 }
 
 //BBS:divide normalize_fdm to 2 steps and call them one by one in Print::Apply
@@ -5099,10 +5095,6 @@ void DynamicPrintConfig::normalize_fdm_1()
         // Resolution will be above 1um.
         opt_gcode_resolution->value = std::max(opt_gcode_resolution->value, 0.001);
 
-    // Ensure counterbore_hole_bridging is set to a valid default if missing
-    if (!this->has("counterbore_hole_bridging")) {
-        this->option<ConfigOptionEnum<CounterboreHoleBridgingOption>>("counterbore_hole_bridging", true)->value = chbNone;
-    }
 
     return;
 }
