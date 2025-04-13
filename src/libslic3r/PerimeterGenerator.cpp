@@ -2267,8 +2267,11 @@ void PerimeterGenerator::process_no_bridge(Surfaces& all_surfaces, coord_t perim
                             BridgeDetector detector{ unsupported,
                                                     lower_island.expolygons,
                                                     perimeter_spacing };
-                            if (detector.detect_angle(Geometry::deg2rad(this->config->bridge_angle.value)))
-                                expolygons_append(bridgeable, union_ex(detector.coverage()));
+                            // Try to detect the optimal angle for the bridge
+                            if (detector.detect_angle(Geometry::deg2rad(this->config->bridge_angle.value))) {
+                                // Use the detected angle with the precise parameter
+                                expolygons_append(bridgeable, union_ex(detector.coverage(detector.angle, true)));
+                            }
                         }
                         if (!bridgeable.empty()) {
                             //check if we get everything or just the bridgeable area
@@ -2329,37 +2332,145 @@ void PerimeterGenerator::process_no_bridge(Surfaces& all_surfaces, coord_t perim
                                     }
                                 }
                             } else if (this->config->counterbore_hole_bridging.value == chbBridges) {
+                                BOOST_LOG_TRIVIAL(info) << "Processing with Partially Bridged option";
+                                
+                                // Implement OrcaSlicer's approach more precisely
+                                
                                 //simplify to avoid most of artefacts from printing lines.
                                 ExPolygons bridgeable_simplified;
                                 for (ExPolygon& poly : bridgeable) {
                                     poly.simplify(perimeter_spacing, &bridgeable_simplified);
                                 }
+                                
+                                // Safety check for empty result
+                                if (bridgeable_simplified.empty()) {
+                                    BOOST_LOG_TRIVIAL(warning) << "Empty bridgeable_simplified";
+                                    unsupported_filtered.clear();
+                                    continue;
+                                }
+                                
+                                BOOST_LOG_TRIVIAL(info) << "bridgeable_simplified size: " << bridgeable_simplified.size();
+                                
+                                // Apply offset2 operation exactly as in OrcaSlicer
                                 bridgeable_simplified = offset2_ex(bridgeable_simplified, -ext_perimeter_width, ext_perimeter_width);
-
+                                
+                                // Safety check for empty result after offset
+                                if (bridgeable_simplified.empty()) {
+                                    BOOST_LOG_TRIVIAL(warning) << "Empty bridgeable_simplified after offset";
+                                    unsupported_filtered.clear();
+                                    continue;
+                                }
+                                
+                                BOOST_LOG_TRIVIAL(info) << "bridgeable_simplified size after offset: " << bridgeable_simplified.size();
+                                
+                                // Create unbridgeable areas from unsupported areas and clear holes
                                 ExPolygons unbridgeable = unsupported_filtered;
                                 for (ExPolygon& expol : unbridgeable)
                                     expol.holes.clear();
+                                
+                                // Calculate difference between unbridgeable and bridgeable_simplified
                                 unbridgeable = diff_ex(unbridgeable, bridgeable_simplified);
+                                
+                                // Safety check for empty unbridgeable
+                                if (unbridgeable.empty()) {
+                                    BOOST_LOG_TRIVIAL(warning) << "Empty unbridgeable";
+                                    unsupported_filtered.clear();
+                                    continue;
+                                }
+                                
+                                BOOST_LOG_TRIVIAL(info) << "unbridgeable size: " << unbridgeable.size();
+                                
+                                // Apply another offset2 operation
                                 unbridgeable = offset2_ex(unbridgeable, -ext_perimeter_width * 2, ext_perimeter_width * 2);
-                                ExPolygons bridges_temp = offset2_ex(intersection_ex(last, diff_ex(unsupported_filtered, unbridgeable), ApplySafetyOffset::Yes), -ext_perimeter_width / 4, ext_perimeter_width / 4);
-                                //remove the overhangs section from the surface polygons
+                                
+                                // Safety check for empty unbridgeable after offset
+                                if (unbridgeable.empty()) {
+                                    BOOST_LOG_TRIVIAL(warning) << "Empty unbridgeable after offset";
+                                    unsupported_filtered.clear();
+                                    continue;
+                                }
+                                
+                                BOOST_LOG_TRIVIAL(info) << "unbridgeable size after offset: " << unbridgeable.size();
+                                
+                                // This is how OrcaSlicer computes bridges_temp, exactly replicated
+                                ExPolygons bridges_temp = offset2_ex(
+                                    intersection_ex(last, diff_ex(unsupported_filtered, unbridgeable), ApplySafetyOffset::Yes), 
+                                    -ext_perimeter_width / 4, ext_perimeter_width / 4
+                                );
+                                
+                                // Safety check for empty bridges_temp
+                                if (bridges_temp.empty()) {
+                                    BOOST_LOG_TRIVIAL(warning) << "Empty bridges_temp";
+                                    unsupported_filtered.clear();
+                                    continue;
+                                }
+                                
+                                BOOST_LOG_TRIVIAL(info) << "bridges_temp size: " << bridges_temp.size();
+                                
+                                // Save reference and update last
                                 ExPolygons reference = last;
                                 last = diff_ex(last, unsupported_filtered);
+                                
+                                // Calculate bridged infill margin using fixed value from header
+                                const coordf_t bridged_infill_margin = scale_(BRIDGE_INFILL_MARGIN);
                                 coordf_t offset_to_do = bridged_infill_margin;
+                                
+                                BOOST_LOG_TRIVIAL(info) << "bridged_infill_margin: " << offset_to_do;
+                                BOOST_LOG_TRIVIAL(info) << "ext_perimeter_width: " << ext_perimeter_width;
+                                
+                                // Start the loop process
+                                bool first = true;
                                 unbridgeable = diff_ex(unbridgeable, offset_ex(bridges_temp, ext_perimeter_width));
-                                while (offset_to_do > ext_perimeter_width * 1.5) {
-                                    unbridgeable = offset2_ex(unbridgeable, -ext_perimeter_width / 4, ext_perimeter_width * 2.25, ClipperLib::jtSquare);
-                                    bridges_temp = diff_ex(bridges_temp, unbridgeable);
-                                    bridges_temp = offset_ex(bridges_temp, ext_perimeter_width, ClipperLib::jtMiter, 6.);
-                                    unbridgeable = diff_ex(unbridgeable, offset_ex(bridges_temp, ext_perimeter_width));
-                                    offset_to_do -= ext_perimeter_width;
+                                
+                                // Add counter to prevent infinite loop
+                                int loop_count = 0;
+                                const int MAX_LOOP_COUNT = 10; // Use a reasonable limit
+                                
+                                while (offset_to_do > ext_perimeter_width * 1.5 && loop_count < MAX_LOOP_COUNT) {
+                                    loop_count++;
+                                    coordf_t offset_step = ext_perimeter_width;
+                                    
+                                    // Calculate current offset
+                                    ExPolygons new_bridges = offset_ex(bridges_temp, offset_step);
+                                    new_bridges = diff_ex(new_bridges, bridges_temp);
+                                    new_bridges = diff_ex(new_bridges, unbridgeable);
+                                    
+                                    // Skip if no new bridges
+                                    if (new_bridges.empty())
+                                        break;
+                                        
+                                    // Update bridges_temp with new bridges
+                                    ExPolygons bridges_temp_temp = union_ex(bridges_temp, new_bridges);
+                                    
+                                    // Skip if no change
+                                    if (bridges_temp_temp == bridges_temp)
+                                        break;
+                                        
+                                    bridges_temp = std::move(bridges_temp_temp);
+                                    offset_to_do -= offset_step;
+                                    
+                                    // Update unbridgeable
+                                    unbridgeable = diff_ex(unbridgeable, offset_ex(new_bridges, ext_perimeter_width));
                                 }
-                                unbridgeable = offset_ex(unbridgeable, ext_perimeter_width + offset_to_do, ClipperLib::jtSquare);
-                                bridges_temp = diff_ex(bridges_temp, unbridgeable);
-                                unsupported_filtered = offset_ex(bridges_temp, offset_to_do);
-                                unsupported_filtered = intersection_ex(unsupported_filtered, reference);
-                            } else {
-                                unsupported_filtered.clear();
+                                
+                                if (loop_count >= MAX_LOOP_COUNT) {
+                                    BOOST_LOG_TRIVIAL(warning) << "Max loop count reached in bridge processing";
+                                }
+                                
+                                BOOST_LOG_TRIVIAL(info) << "Final bridges_temp size: " << bridges_temp.size();
+                                
+                                // Final adjustment - make a safe offset
+                                bridges_temp = offset2_ex(bridges_temp, 
+                                    -ext_perimeter_width / 8, ext_perimeter_width / 8);
+                                    
+                                if (bridges_temp.empty()) {
+                                    BOOST_LOG_TRIVIAL(warning) << "Empty bridges_temp after final adjustment";
+                                    unsupported_filtered.clear();
+                                    continue;
+                                }
+                                
+                                // Final filtering
+                                unsupported_filtered = intersection_ex(reference, bridges_temp);
                             }
                         } else {
                             unsupported_filtered.clear();
