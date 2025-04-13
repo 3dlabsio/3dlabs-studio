@@ -153,9 +153,14 @@ enable_testing ()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if(NOT WIN32)
-    # Add DEBUG flags to debug builds.
-    add_compile_options("$<$<CONFIG:DEBUG>:-DDEBUG>")
+# Add DEBUG flags to debug builds.
+add_compile_definitions("$<IF:$<CONFIG:Debug>,DEBUG,NDEBUG>")
+
+# Force consistent iterator debug level to match dependencies
+add_compile_definitions("$<$<CONFIG:Debug>:_ITERATOR_DEBUG_LEVEL=0>")
+# Use release runtime library for Debug builds to match dependencies
+if(MSVC)
+    add_compile_options("$<$<CONFIG:Debug>:/MD>")
 endif()
 
 # To be able to link libslic3r with the Perl XS module.
