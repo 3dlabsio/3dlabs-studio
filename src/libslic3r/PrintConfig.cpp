@@ -327,6 +327,13 @@ static const t_config_enum_values s_keys_map_RetractLiftEnforceType = {
 };
 CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(RetractLiftEnforceType)
 
+static const t_config_enum_values s_keys_map_CounterboreHoleBridgingOption = {
+    {"none",              chbNone},
+    {"partiallybridge",   chbBridges},
+    {"sacrificiallayer",  chbFilled}
+};
+CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(CounterboreHoleBridgingOption)
+
 static void assign_printer_technology_to_unknown(t_optiondef_map &options, PrinterTechnology printer_technology)
 {
     for (std::pair<const t_config_option_key, ConfigOptionDef> &kvp : options)
@@ -1112,6 +1119,22 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(false));
 
+    def = this->add("counterbore_hole_bridging", coEnum);
+    def->label = L("Bridge counterbore holes");
+    def->category = L("Quality");
+    def->tooltip = L("Enables support-free printing of counterbored holes by bridging them. "
+                     "None - no special handling, Partially bridged - bridges only areas that can be fully supported, "
+                     "Sacrificial layer - creates a complete sacrificial layer across the entire hole");
+    def->enum_keys_map = &ConfigOptionEnum<CounterboreHoleBridgingOption>::get_enum_values();
+    def->enum_values.emplace_back("none");
+    def->enum_values.emplace_back("partiallybridge");
+    def->enum_values.emplace_back("sacrificiallayer");
+    def->enum_labels.emplace_back(L("None"));
+    def->enum_labels.emplace_back(L("Partially bridged"));
+    def->enum_labels.emplace_back(L("Sacrificial layer"));
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionEnum<CounterboreHoleBridgingOption>(chbNone));
+
     def = this->add("max_bridge_length", coFloat);
     def->label = L("Max bridge length");
     def->category = L("Support");
@@ -1828,7 +1851,7 @@ void PrintConfigDef::init_fff_params()
     //def->label = L("Adaptive layer height");
     //def->category = L("Quality");
     //def->tooltip = L("Enabling this option means the height of every layer except the first will be automatically calculated "
-    //    "during slicing according to the slope of the model’s surface.\n"
+    //    "during slicing according to the slope of the model's surface.\n"
     //    "Note that this option only takes effect if no prime tower is generated in current plate.");
     //def->set_default_value(new ConfigOptionBool(0));
 
@@ -2060,7 +2083,7 @@ void PrintConfigDef::init_fff_params()
     def->label = L("Fan kick-start time");
     def->tooltip = L("Emit a max fan speed command for this amount of seconds before reducing to target speed to kick-start the cooling fan."
                     "\nThis is useful for fans where a low PWM/power may be insufficient to get the fan started spinning from a stop, or to "
-                    "get the fan up to speed faster."
+                    "\nget the fan up to speed faster."
                     "\nSet to 0 to deactivate.");
     def->sidetext = L("s");
     def->min = 0;
@@ -4072,7 +4095,7 @@ void PrintConfigDef::init_fff_params()
         "- margin, 2 * Minimum wall width + margin]. Increasing this margin "
         "reduces the number of transitions, which reduces the number of extrusion "
         "starts/stops and travel time. However, large extrusion width variation can lead to "
-        "under or over extrusion problems. "
+        "under or overextrusion problems. "
         "It's expressed as a percentage over nozzle diameter");
     def->sidetext = L("%");
     def->mode = comAdvanced;

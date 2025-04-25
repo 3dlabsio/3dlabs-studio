@@ -763,98 +763,146 @@ static ExtrusionEntityCollection traverse_extrusions(const PerimeterGenerator& p
 }
 
 void PerimeterGenerator::split_top_surfaces(const ExPolygons &orig_polygons, ExPolygons &top_fills,
-                                            ExPolygons &non_top_polygons, ExPolygons &fill_clip) const {
-    // other perimeters
-    coord_t perimeter_width = this->perimeter_flow.scaled_width();
-    coord_t perimeter_spacing = this->perimeter_flow.scaled_spacing();
+                                            ExPolygons &non_top_polygons, ExPolygons &fill_clip) const
+{
+    if (orig_polygons.empty())
+        return;
 
-    // external perimeters
-    coord_t ext_perimeter_width = this->ext_perimeter_flow.scaled_width();
-    coord_t ext_perimeter_spacing = this->ext_perimeter_flow.scaled_spacing();
+    // detect top surfaces
+    // we consider a surface as a top surface if it has no upper surface
+    const double top_surface_threshold_area = 1.0;
 
-    bool has_gap_fill = this->config->gap_infill_speed.value > 0;
+    std::vector<unsigned char> top_polygons_marked(orig_polygons.size(), false);
 
-    // split the polygons with top/not_top
-    // get the offset from solid surface anchor
-    coord_t offset_top_surface =
-        scale_(1.5 * (config->wall_loops.value == 0
-                          ? 0.
-                          : unscaled(double(ext_perimeter_width +
-                                            perimeter_spacing * int(int(config->wall_loops.value) - int(1))))));
-    // if possible, try to not push the extra perimeters inside the sparse infill
-    if (offset_top_surface >
-        0.9 * (config->wall_loops.value <= 1 ? 0. : (perimeter_spacing * (config->wall_loops.value - 1))))
-        offset_top_surface -=
-            coord_t(0.9 * (config->wall_loops.value <= 1 ? 0. : (perimeter_spacing * (config->wall_loops.value - 1))));
-    else
-        offset_top_surface = 0;
-    // don't takes into account too thin areas
-    // skip if the exposed area is smaller than "min_width_top_surface"
-    double min_width_top_surface = std::max(double(ext_perimeter_spacing / 2 + 10), config->min_width_top_surface.get_abs_value(perimeter_width));
+    for (size_t i = 0; i < orig_polygons.size(); i++) {
+        const ExPolygon& ex_poly = orig_polygons[i];
+        bool has_upper_surface = false;
+        if (upper_slices != nullptr) {
+            for (const ExPolygon& upper_ex_poly : *upper_slices) {
+                bool up_polys_are_subset = true;
+                for (const Point& up_poly_point : upper_ex_poly.contour.points) {
+                    if (!ex_poly.contains(up_poly_point)) {
+                        up_polys_are_subset = false;
+                        break;
+                    }
+                }
+                if (up_polys_are_subset) {
+                    has_upper_surface = true;
+                    break;
+                }
+            }
+        }
 
-    Polygons grown_upper_slices = offset(*this->upper_slices, min_width_top_surface);
-
-    // get boungding box of last
-    BoundingBox last_box = get_extents(orig_polygons);
-    last_box.offset(SCALED_EPSILON);
-
-    // get the Polygons upper the polygon this layer
-    Polygons upper_polygons_series_clipped =
-        ClipperUtils::clip_clipper_polygons_with_subject_bbox(grown_upper_slices, last_box);
-
-    // set the clip to a virtual "second perimeter"
-    fill_clip = offset_ex(orig_polygons, -double(ext_perimeter_spacing));
-    // get the real top surface
-    ExPolygons grown_lower_slices;
-    ExPolygons bridge_checker;
-    auto nozzle_diameter = this->print_config->nozzle_diameter.get_at(this->config->wall_filament - 1);
-    // Check whether surface be bridge or not
-    if (this->lower_slices != NULL) {
-        // BBS: get the Polygons below the polygon this layer
-        Polygons lower_polygons_series_clipped =
-            ClipperUtils::clip_clipper_polygons_with_subject_bbox(*this->lower_slices, last_box);
-        double bridge_offset = std::max(double(ext_perimeter_spacing), (double(perimeter_width)));
-        // SoftFever: improve bridging
-        const float bridge_margin =
-            std::min(float(scale_(BRIDGE_INFILL_MARGIN)), float(scale_(nozzle_diameter * BRIDGE_INFILL_MARGIN / 0.4)));
-        bridge_checker = offset_ex(diff_ex(orig_polygons, lower_polygons_series_clipped, ApplySafetyOffset::Yes),
-                                   1.5 * bridge_offset + bridge_margin + perimeter_spacing / 2);
+        Polygons ex_poly_polygons = to_polygons(ex_poly);
+        for (const Surface& surface2 : fill_surfaces->surfaces) {
+            if (surface2.is_top() && !ex_poly_polygons.empty()) {
+                if (area(diff(ex_poly_polygons, to_polygons(surface2.expolygon))) == 0) {
+                    if (surface2.area() > top_surface_threshold_area) {
+                        top_polygons_marked[i] = !has_upper_surface;
+                    }
+                    break;
+                }
+            }
+        }
     }
-    ExPolygons delete_bridge = diff_ex(orig_polygons, bridge_checker, ApplySafetyOffset::Yes);
 
-    ExPolygons top_polygons = diff_ex(delete_bridge, upper_polygons_series_clipped, ApplySafetyOffset::Yes);
-    // get the not-top surface, from the "real top" but enlarged by external_infill_margin (and the
-    // min_width_top_surface we removed a bit before)
-    ExPolygons temp_gap = diff_ex(top_polygons, fill_clip);
-    ExPolygons inner_polygons =
-        diff_ex(orig_polygons,
-                offset_ex(top_polygons, offset_top_surface + min_width_top_surface - double(ext_perimeter_spacing / 2)),
-                ApplySafetyOffset::Yes);
-    // get the enlarged top surface, by using inner_polygons instead of upper_slices, and clip it for it to be exactly
-    // the polygons to fill.
-    top_polygons = diff_ex(fill_clip, inner_polygons, ApplySafetyOffset::Yes);
-    // increase by half peri the inner space to fill the frontier between last and stored.
-    top_fills = union_ex(top_fills, top_polygons);
-    //set the clip to the external wall but go back inside by infill_extrusion_width/2 to be sure the extrusion won't go outside even with a 100% overlap.
-    double infill_spacing_unscaled = this->config->sparse_infill_line_width.get_abs_value(nozzle_diameter);
-    if (infill_spacing_unscaled == 0) infill_spacing_unscaled = Flow::auto_extrusion_width(frInfill, nozzle_diameter);
-    fill_clip = offset_ex(orig_polygons, double(ext_perimeter_spacing / 2) - scale_(infill_spacing_unscaled / 2));
-    // ExPolygons oldLast = last;
+    top_fills.clear();
+    non_top_polygons.clear();
+    for (size_t i = 0; i < orig_polygons.size(); i++) {
+        if (top_polygons_marked[i]) {
+            top_fills.push_back(orig_polygons[i]);
+        }
+        else {
+            non_top_polygons.push_back(orig_polygons[i]);
+        }
+    }
 
-    non_top_polygons = intersection_ex(inner_polygons, orig_polygons);
-    if (has_gap_fill)
-        non_top_polygons = union_ex(non_top_polygons, temp_gap);
-    //{
-    //    std::stringstream stri;
-    //    stri << this->layer_id << "_1_"<< i <<"_only_one_peri"<< ".svg";
-    //    SVG svg(stri.str());
-    //    svg.draw(to_polylines(top_fills), "green");
-    //    svg.draw(to_polylines(inner_polygons), "yellow");
-    //    svg.draw(to_polylines(top_polygons), "cyan");
-    //    svg.draw(to_polylines(oldLast), "orange");
-    //    svg.draw(to_polylines(last), "red");
-    //    svg.Close();
-    //}
+    fill_clip = top_fills;
+}
+
+void PerimeterGenerator::apply_counterbore_bridging(Surfaces &all_surfaces, coord_t perimeter_spacing, coord_t ext_perimeter_width)
+{
+    // Skip if feature is disabled
+    if (object_config->counterbore_hole_bridging == chbNone)
+        return;
+
+    // Define constants
+    const coord_t bridged_margin = scale_(1.0); // 1mm scaled
+    const double min_area_threshold = 5.0 * ext_perimeter_width * ext_perimeter_width; // Minimum area to consider for bridging
+
+    // Iterate through all surfaces to find unsupported areas that could be counterbores
+    for (size_t surface_idx = 0; surface_idx < all_surfaces.size(); ++surface_idx) {
+        Surface &surface = all_surfaces[surface_idx];
+        
+        // Skip surfaces that are already bridges or top/bottom surfaces
+        if (surface.is_bridge() || surface.is_top() || surface.is_bottom())
+            continue;
+            
+        // Detect unsupported portions by comparing with lower layer slices
+        if (lower_slices == nullptr || lower_slices->empty())
+            continue;
+
+        // Calculate unsupported regions (potential counterbores)
+        ExPolygons unsupported = diff_ex(surface.expolygon, *lower_slices);
+        if (unsupported.empty())
+            continue;
+            
+        // Filter out small regions that aren't worth bridging
+        ExPolygons unsupported_filtered;
+        for (const ExPolygon &ex : unsupported) {
+            double area = ex.area();
+            if (area >= min_area_threshold) {
+                unsupported_filtered.push_back(ex);
+            }
+        }
+        
+        if (unsupported_filtered.empty())
+            continue;
+            
+        // Apply offset to perimeter spacing for detection
+        unsupported_filtered = offset2_ex(unsupported_filtered, -perimeter_spacing, +perimeter_spacing);
+        if (unsupported_filtered.empty())
+            continue;
+
+        // Analyze each potential counterbore for bridging
+        for (const ExPolygon &counterbore : unsupported_filtered) {
+            // Create bridge detector
+            BridgeDetector detector(counterbore, *lower_slices, perimeter_spacing);
+            
+            // Skip if we can't detect a good bridging angle
+            if (!detector.detect_angle()) 
+                continue;
+                
+            if (object_config->counterbore_hole_bridging == chbBridges) {
+                // Partial bridging - only bridge areas that can be fully supported
+                ExPolygons bridgeable = intersection_ex(counterbore, detector.coverage(-1));
+                
+                if (!bridgeable.empty()) {
+                    // Create a new bridge surface
+                    Surface bridge_surface(stInternalBridge, bridgeable.front());
+                    bridge_surface.bridge_angle = detector.angle;
+                    
+                    // Add bridge to surfaces and subtract it from the original surface
+                    all_surfaces.push_back(bridge_surface);
+                    surface.expolygon = diff_ex(surface.expolygon, bridgeable).front();
+                }
+            } 
+            else if (object_config->counterbore_hole_bridging == chbFilled) {
+                // Sacrificial layer - bridge the entire counterbore
+                ExPolygons filled = offset_ex(counterbore, bridged_margin);
+                
+                if (!filled.empty()) {
+                    // Create a new bridge surface
+                    Surface bridge_surface(stInternalBridge, filled.front());
+                    bridge_surface.bridge_angle = detector.angle;
+                    
+                    // Add bridge to surfaces and subtract it from the original surface
+                    all_surfaces.push_back(bridge_surface);
+                    surface.expolygon = diff_ex(surface.expolygon, filled).front();
+                }
+            }
+        }
+    }
 }
 
 // Port "extra perimeters on overhangs" from PrusaSlicer. Original author: PavelMikus pavel.mikus.mail@seznam.cz
@@ -1060,7 +1108,7 @@ ExtrusionPaths sort_extra_perimeters(const ExtrusionPaths& extra_perims, int ind
 }
 
 #define EXTRA_PERIMETER_OFFSET_PARAMETERS ClipperLib::jtSquare, 0.
-// #define EXTRA_PERIM_DEBUG_FILES
+// #define EXTRA_PER_DEBUG_FILES
 // Function will generate extra perimeters clipped over nonbridgeable areas of the provided surface and returns both the new perimeters and
 // Polygons filled by those clipped perimeters
 std::tuple<std::vector<ExtrusionPaths>, Polygons> generate_extra_perimeters_over_overhangs(ExPolygons               infill_area,
@@ -1085,7 +1133,7 @@ std::tuple<std::vector<ExtrusionPaths>, Polygons> generate_extra_perimeters_over
                                                                    expand(overhangs, anchors_size + 0.1 * overhang_flow.scaled_width(), EXTRA_PERIMETER_OFFSET_PARAMETERS));
     Polygons                            inset_overhang_area = diff(infill_area, inset_anchors);
 
-#ifdef EXTRA_PERIM_DEBUG_FILES
+#ifdef EXTRA_PER_DEBUG_FILES
     {
         BoundingBox bbox = get_extents(inset_overhang_area);
         bbox.offset(scale_(1.));
@@ -1121,7 +1169,7 @@ std::tuple<std::vector<ExtrusionPaths>, Polygons> generate_extra_perimeters_over
 
         auto [dir, unsupp_dist] = detect_bridging_direction(real_overhang, anchors);
 
-#ifdef EXTRA_PERIM_DEBUG_FILES
+#ifdef EXTRA_PER_DEBUG_FILES
         {
             BoundingBox bbox = get_extents(anchoring_convex_hull);
             bbox.offset(scale_(1.));
@@ -1702,7 +1750,11 @@ void PerimeterGenerator::process_classic()
         if (!top_fills.empty()) {
             infill_exp = union_ex(infill_exp, offset_ex(top_infill_exp, double(infill_peri_overlap)));
         }
+        
         this->fill_surfaces->append(infill_exp, stInternal);
+        
+        // Apply counterbore bridging if enabled
+        apply_counterbore_bridging(this->fill_surfaces->surfaces, perimeter_spacing, ext_perimeter_width);
 
         apply_extra_perimeters(infill_exp);
 
@@ -2161,7 +2213,11 @@ void PerimeterGenerator::process_arachne()
         if (!top_fills.empty()) {
             infill_exp = union_ex(infill_exp, offset_ex(top_fills, double(inset)));
         }
+        
         this->fill_surfaces->append(infill_exp, stInternal);
+        
+        // Apply counterbore bridging if enabled
+        apply_counterbore_bridging(this->fill_surfaces->surfaces, perimeter_spacing, ext_perimeter_width);
 
         apply_extra_perimeters(infill_exp);
 

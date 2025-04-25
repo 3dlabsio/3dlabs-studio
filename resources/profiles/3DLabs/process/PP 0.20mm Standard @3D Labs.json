@@ -25,9 +25,10 @@
     "sparse_infill_line_width": "0.48",
     "sparse_infill_speed": "85",
     "thick_bridges": "1",
+    "counterbore_hole_bridging": "none",
     "top_shell_layers": "5",
     "top_shell_thickness": "0.8",
     "top_solid_infill_flow_ratio": "1",
-    "version": "2.6.0",
+    "version": "2.8.0",
     "wall_infill_order": "inner-outer-inner wall/infill"
 }

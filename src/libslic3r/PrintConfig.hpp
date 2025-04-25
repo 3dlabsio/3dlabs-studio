@@ -233,6 +233,12 @@ enum RetractLiftEnforceType {
     rletTopAndBottom
 };
 
+enum CounterboreHoleBridgingOption {
+    chbNone = 0,           // No counterbore bridging
+    chbBridges,            // Partially bridge counterbore holes
+    chbFilled              // Use sacrificial layer for counterbore holes
+};
+
 static std::string bed_type_to_gcode_string(const BedType type)
 {
     std::string type_str;
@@ -315,6 +321,7 @@ CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(TimelapseType)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(BedType)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(DraftShield)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(ForwardCompatibilitySubstitutionRule)
+CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(CounterboreHoleBridgingOption)
 
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(PrintHostType)
 CONFIG_OPTION_ENUM_DECLARE_STATIC_MAPS(AuthorizationType)
@@ -697,6 +704,7 @@ PRINT_CONFIG_CLASS_DEFINE(
     // BBS
     //((ConfigOptionBool,                independent_support_layer_height))
     ((ConfigOptionBool,                thick_bridges))
+    ((ConfigOptionEnum<CounterboreHoleBridgingOption>, counterbore_hole_bridging))
     // Overhang angle threshold.
     ((ConfigOptionInt,                 support_threshold_angle))
     ((ConfigOptionFloat,               support_object_xy_distance))

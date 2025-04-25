@@ -16,6 +16,7 @@
     "brim_width": "5",
     "brim_object_gap": "0.1",
     "brim_type": "no_brim",
+    "counterbore_hole_bridging": "none",
     "compatible_printers_condition": "",
     "print_sequence": "by layer",
     "default_acceleration": "2500",
@@ -111,5 +112,5 @@
       "3D Labs HTX 0.4 nozzle",
       "3D Labs X400 0.4 nozzle"
     ],
-    "version": "2.5.0"
+    "version": "2.8.0"
 }
