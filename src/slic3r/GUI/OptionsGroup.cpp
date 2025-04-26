@@ -1028,8 +1028,11 @@ boost::any ConfigOptionsGroup::get_config_value(const DynamicPrintConfig& config
 		ret = config.opt_int(opt_key, idx);
 		break;
 	case coEnum:
-        ret = config.option(opt_key)->getInt();
-		break;
+        {
+            const ConfigOption *opt_ptr = config.option(opt_key);
+            ret = opt_ptr ? opt_ptr->getInt() : 0;
+        }
+        break;
     // BBS
     case coEnums:
         ret = config.opt_int(opt_key, idx);
@@ -1144,7 +1147,10 @@ boost::any ConfigOptionsGroup::get_config_value2(const DynamicPrintConfig& confi
         ret = config.opt_int(opt_key, idx);
         break;
     case coEnum:
-        ret = config.option(opt_key)->getInt();
+        {
+            const ConfigOption *opt_ptr = config.option(opt_key);
+            ret = opt_ptr ? opt_ptr->getInt() : 0;
+        }
         break;
     case coEnums:
         ret = config.opt_int(opt_key, idx);

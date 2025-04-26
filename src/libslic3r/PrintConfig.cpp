@@ -3076,7 +3076,7 @@ void PrintConfigDef::init_fff_params()
     def->label = "Warp/Ooze shield";
     def->tooltip = L("With warp shield active, the skirt will be printed skirt_distance from the object, possibly intersecting brim.\n"
                      "Enabled = skirt is as tall as the highest printed object.\n"
-                    "Limited = skirt is as tall as specified by skirt_height.\n"
+    				 "Limited = skirt is as tall as specified by skirt_height.\n"
                      "Use this feature if you're having problems with dual extrusion prints and bits of filament getting on your parts.\n"
     				 "Also use this feature when you're having trouble printing high-temperature filaments, such as PEEK or PEI, and experience cracks or warping. This helps to keep the heat around the printed object.");
     def->enum_keys_map = &ConfigOptionEnum<DraftShield>::get_enum_values();
@@ -5060,6 +5060,12 @@ double min_object_distance(const ConfigBase &cfg)
 
 void DynamicPrintConfig::normalize_fdm(int used_filaments)
 {
+    // Ensure the new enum option exists even for legacy profiles.
+    // This prevents GUI crashes when older presets (without the key) are loaded.
+    if (!this->has("counterbore_hole_bridging"))
+        // Create the option instance with default value chbNone.
+        this->option("counterbore_hole_bridging", /*create=*/true)->setInt(static_cast<int>(chbNone));
+
     if (this->has("extruder")) {
         int extruder = this->option("extruder")->getInt();
         this->erase("extruder");
@@ -5132,6 +5138,10 @@ void DynamicPrintConfig::normalize_fdm(int used_filaments)
 //BBS:divide normalize_fdm to 2 steps and call them one by one in Print::Apply
 void DynamicPrintConfig::normalize_fdm_1()
 {
+    // Ensure the new enum option exists even for legacy profiles.
+    if (!this->has("counterbore_hole_bridging"))
+        this->option("counterbore_hole_bridging", /*create=*/true)->setInt(static_cast<int>(chbNone));
+
     if (this->has("extruder")) {
         int extruder = this->option("extruder")->getInt();
         this->erase("extruder");
@@ -5179,6 +5189,9 @@ void DynamicPrintConfig::normalize_fdm_1()
 t_config_option_keys DynamicPrintConfig::normalize_fdm_2(int num_objects, int used_filaments)
 {
     t_config_option_keys changed_keys;
+    // Ensure counterbore_hole_bridging option exists.
+    if (!this->has("counterbore_hole_bridging"))
+        this->option("counterbore_hole_bridging", /*create=*/true)->setInt(static_cast<int>(chbNone));
     ConfigOptionBool* ept_opt = this->option<ConfigOptionBool>("enable_prime_tower");
     if (used_filaments > 0 && ept_opt != nullptr) {
         ConfigOptionBool* islh_opt = this->option<ConfigOptionBool>("independent_support_layer_height", true);
