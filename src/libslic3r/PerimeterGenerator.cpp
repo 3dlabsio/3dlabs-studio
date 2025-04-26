@@ -13,6 +13,7 @@
 
 #include <cmath>
 #include <cassert>
+#include <boost/log/trivial.hpp>
 
 static const int overhang_sampling_number = 6;
 static const double narrow_loop_length_threshold = 10;
@@ -822,9 +823,14 @@ void PerimeterGenerator::split_top_surfaces(const ExPolygons &orig_polygons, ExP
 
 void PerimeterGenerator::apply_counterbore_bridging(Surfaces &all_surfaces, coord_t perimeter_spacing, coord_t ext_perimeter_width)
 {
+    // Debug: Entry and config value
+    BOOST_LOG_TRIVIAL(info) << "counterbore: Entered apply_counterbore_bridging, config=" << (int)object_config->counterbore_hole_bridging;
+
     // Skip if feature is disabled
-    if (object_config->counterbore_hole_bridging == chbNone)
+    if (object_config->counterbore_hole_bridging == chbNone) {
+        BOOST_LOG_TRIVIAL(info) << "counterbore: Feature disabled, skipping.";
         return;
+    }
 
     // Define constants
     const coord_t bridged_margin = scale_(1.0); // 1mm scaled
@@ -833,72 +839,81 @@ void PerimeterGenerator::apply_counterbore_bridging(Surfaces &all_surfaces, coor
     // Iterate through all surfaces to find unsupported areas that could be counterbores
     for (size_t surface_idx = 0; surface_idx < all_surfaces.size(); ++surface_idx) {
         Surface &surface = all_surfaces[surface_idx];
-        
+        BOOST_LOG_TRIVIAL(info) << "counterbore: Surface " << surface_idx << ": type=" << (int)surface.surface_type << ", area=" << surface.expolygon.area();
         // Skip surfaces that are already bridges or top/bottom surfaces
-        if (surface.is_bridge() || surface.is_top() || surface.is_bottom())
+        if (surface.is_bridge() || surface.is_top() || surface.is_bottom()) {
+            BOOST_LOG_TRIVIAL(info) << "counterbore:   Skipping: already bridge/top/bottom.";
             continue;
-            
+        }
         // Detect unsupported portions by comparing with lower layer slices
-        if (lower_slices == nullptr || lower_slices->empty())
+        if (lower_slices == nullptr || lower_slices->empty()) {
+            BOOST_LOG_TRIVIAL(info) << "counterbore:   Skipping: no lower_slices.";
             continue;
-
+        }
         // Calculate unsupported regions (potential counterbores)
         ExPolygons unsupported = diff_ex(surface.expolygon, *lower_slices);
-        if (unsupported.empty())
+        if (unsupported.empty()) {
+            BOOST_LOG_TRIVIAL(info) << "counterbore:   No unsupported regions.";
             continue;
-            
+        }
         // Filter out small regions that aren't worth bridging
         ExPolygons unsupported_filtered;
         for (const ExPolygon &ex : unsupported) {
             double area = ex.area();
             if (area >= min_area_threshold) {
                 unsupported_filtered.push_back(ex);
+            } else {
+                BOOST_LOG_TRIVIAL(info) << "counterbore:   Region filtered out (area=" << area << " < min=" << min_area_threshold << ").";
             }
         }
-        
-        if (unsupported_filtered.empty())
+        if (unsupported_filtered.empty()) {
+            BOOST_LOG_TRIVIAL(info) << "counterbore:   No unsupported regions after filtering.";
             continue;
-            
+        }
         // Apply offset to perimeter spacing for detection
         unsupported_filtered = offset2_ex(unsupported_filtered, -perimeter_spacing, +perimeter_spacing);
-        if (unsupported_filtered.empty())
+        if (unsupported_filtered.empty()) {
+            BOOST_LOG_TRIVIAL(info) << "counterbore:   No unsupported regions after offset.";
             continue;
-
+        }
         // Analyze each potential counterbore for bridging
         for (const ExPolygon &counterbore : unsupported_filtered) {
             // Create bridge detector
             BridgeDetector detector(counterbore, *lower_slices, perimeter_spacing);
-            
             // Skip if we can't detect a good bridging angle
-            if (!detector.detect_angle()) 
+            if (!detector.detect_angle()) {
+                BOOST_LOG_TRIVIAL(info) << "counterbore:   BridgeDetector: no valid angle.";
                 continue;
-                
+            }
+            BOOST_LOG_TRIVIAL(info) << "counterbore:   BridgeDetector: angle=" << detector.angle;
             if (object_config->counterbore_hole_bridging == chbBridges) {
                 // Partial bridging - only bridge areas that can be fully supported
                 ExPolygons bridgeable = intersection_ex(counterbore, detector.coverage(-1));
-                
                 if (!bridgeable.empty()) {
                     // Create a new bridge surface
                     Surface bridge_surface(stInternalBridge, bridgeable.front());
                     bridge_surface.bridge_angle = detector.angle;
-                    
                     // Add bridge to surfaces and subtract it from the original surface
                     all_surfaces.push_back(bridge_surface);
                     surface.expolygon = diff_ex(surface.expolygon, bridgeable).front();
+                    BOOST_LOG_TRIVIAL(info) << "counterbore:   Created partial bridge, area=" << bridgeable.front().area();
+                } else {
+                    BOOST_LOG_TRIVIAL(info) << "counterbore:   No bridgeable area after intersection.";
                 }
             } 
             else if (object_config->counterbore_hole_bridging == chbFilled) {
                 // Sacrificial layer - bridge the entire counterbore
                 ExPolygons filled = offset_ex(counterbore, bridged_margin);
-                
                 if (!filled.empty()) {
                     // Create a new bridge surface
                     Surface bridge_surface(stInternalBridge, filled.front());
                     bridge_surface.bridge_angle = detector.angle;
-                    
                     // Add bridge to surfaces and subtract it from the original surface
                     all_surfaces.push_back(bridge_surface);
                     surface.expolygon = diff_ex(surface.expolygon, filled).front();
+                    BOOST_LOG_TRIVIAL(info) << "counterbore:   Created sacrificial bridge, area=" << filled.front().area();
+                } else {
+                    BOOST_LOG_TRIVIAL(info) << "counterbore:   No filled area after offset.";
                 }
             }
         }
@@ -2207,7 +2222,7 @@ void PerimeterGenerator::process_arachne()
 
         ExPolygons infill_exp = offset2_ex(
             not_filled_exp,
-            float(-min_perimeter_infill_spacing / 2.),
+            float(-inset - min_perimeter_infill_spacing / 2.),
             float(inset + min_perimeter_infill_spacing / 2.));
         // append infill areas to fill_surfaces
         if (!top_fills.empty()) {
