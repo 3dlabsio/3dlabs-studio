@@ -835,11 +835,12 @@ void PerimeterGenerator::apply_counterbore_bridging(Surfaces &all_surfaces, coor
 // === Port of Orca-Slicer's 2024-04 implementation (commit 3b7b10f72) ===
 void PerimeterGenerator::process_counterbore_no_bridge(Surfaces& all_surfaces, coord_t perimeter_spacing, coord_t ext_perimeter_width)
 {
+    // Debug entry log – helps to identify long-running layers.
+    BOOST_LOG_TRIVIAL(info) << "[counterbore] enter – surfaces=" << all_surfaces.size() << ", mode=" << int(this->config->counterbore_hole_bridging.value);
+
     // Ensure we have sufficient spare capacity so that push_back operations
     // executed deeper in this routine do not invalidate references / pointers
-    // to elements of `all_surfaces`.  A generous head-room prevents the class
-    // of use-after-reallocation bugs that manifests as random access-violations
-    // later inside Eigen when the corrupted Surface objects are accessed.
+    // to elements of `all_surfaces`.
     if (all_surfaces.capacity() < all_surfaces.size() + 128)
         all_surfaces.reserve(all_surfaces.size() + 128);
 
@@ -983,14 +984,20 @@ void PerimeterGenerator::process_counterbore_no_bridge(Surfaces& all_surfaces, c
                                     coordf_t offset_to_do = bridged_infill_margin;
                                     bool first = true;
                                     unbridgeable = diff_ex(unbridgeable, offset_ex(bridges_temp, ext_perimeter_width));
-                                    while (offset_to_do > ext_perimeter_width * 1.5) {
+                                    // guard against endless looping in case ext_perimeter_width == 0
+                                    int  _guard_iter = 0;
+                                    const int _guard_max = 4096; // arbitrary large but finite
+                                    while (offset_to_do > ext_perimeter_width * 1.5 && _guard_iter < _guard_max) {
                                         unbridgeable = offset2_ex(unbridgeable, -ext_perimeter_width / 4, ext_perimeter_width * 2.25, ClipperLib::jtSquare);
                                         bridges_temp = diff_ex(bridges_temp, unbridgeable);
                                         bridges_temp = offset_ex(bridges_temp, ext_perimeter_width, ClipperLib::jtMiter, 6.);
                                         unbridgeable = diff_ex(unbridgeable, offset_ex(bridges_temp, ext_perimeter_width));
                                         offset_to_do -= ext_perimeter_width;
                                         first = false;
+                                        ++_guard_iter;
                                     }
+                                    if (_guard_iter == _guard_max)
+                                        BOOST_LOG_TRIVIAL(warning) << "[counterbore] while-loop guard reached – ext_perimeter_width=" << ext_perimeter_width << ", offset_to_do=" << offset_to_do;
                                     unbridgeable = offset_ex(unbridgeable, ext_perimeter_width + offset_to_do, ClipperLib::jtSquare);
                                     bridges_temp = diff_ex(bridges_temp, unbridgeable);
                                     unsupported_filtered = offset_ex(bridges_temp, offset_to_do);
@@ -1050,6 +1057,16 @@ void PerimeterGenerator::process_counterbore_no_bridge(Surfaces& all_surfaces, c
             }
         }
     }
+    // Final safety-net: Clipper can choke on self-intersections produced by the
+    // aggressive offset2_ex calls above.  Clean every surface polygon before
+    // returning so the later wall generator doesn't spin forever.
+    for (Surface &s : all_surfaces) {
+        ExPolygons cleaned = union_ex(ExPolygons{ s.expolygon });
+        if (!cleaned.empty())
+            s.expolygon = cleaned.front();
+    }
+
+    BOOST_LOG_TRIVIAL(info) << "[counterbore] finished surface loop – now surfaces=" << all_surfaces.size();
 }
 
 // Port "extra perimeters on overhangs" from PrusaSlicer. Original author: PavelMikus pavel.mikus.mail@seznam.cz
@@ -1923,6 +1940,9 @@ void PerimeterGenerator::process_classic()
         }
 
     } // for each island
+
+    // --- Finished processing one island (classic) ---
+    BOOST_LOG_TRIVIAL(info) << "[classic] layer=" << this->layer_id << " all islands finished";
 }
 
 // Thanks, Cura developers, for implementing an algorithm for generating perimeters with variable width (Arachne) that is based on the paper
@@ -2350,7 +2370,7 @@ void PerimeterGenerator::process_arachne()
             ex.simplify_p(m_scaled_resolution, &pp);
         ExPolygons not_filled_exp = union_ex(pp);
         // collapse too narrow infill areas
-        const auto    min_perimeter_infill_spacing = coord_t(solid_infill_spacing * (1. - INSET_OVERLAP_TOLERANCE));
+        coord_t min_perimeter_infill_spacing = coord_t(solid_infill_spacing * (1. - INSET_OVERLAP_TOLERANCE));
 
         ExPolygons infill_exp = offset2_ex(
             not_filled_exp,
@@ -2380,6 +2400,8 @@ void PerimeterGenerator::process_arachne()
             this->fill_no_overlap->insert(this->fill_no_overlap->end(), polyWithoutOverlap.begin(), polyWithoutOverlap.end());
         }
     }
+    // --- Finished processing one island (arachne) ---
+    BOOST_LOG_TRIVIAL(info) << "[arachne] layer=" << this->layer_id << " all islands finished";
 }
 
 bool PerimeterGeneratorLoop::is_internal_contour() const
