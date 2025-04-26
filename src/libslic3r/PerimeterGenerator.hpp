@@ -68,6 +68,7 @@ public:
 
     void        process_classic();
     void        process_arachne();
+    void        process_counterbore_no_bridge(Surfaces &all_surfaces, coord_t perimeter_spacing, coord_t ext_perimeter_width);
 
     double      ext_mm3_per_mm()        const { return m_ext_mm3_per_mm; }
     double      mm3_per_mm()            const { return m_mm3_per_mm; }
