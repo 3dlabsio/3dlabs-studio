@@ -704,7 +704,6 @@ PRINT_CONFIG_CLASS_DEFINE(
     // BBS
     //((ConfigOptionBool,                independent_support_layer_height))
     ((ConfigOptionBool,                thick_bridges))
-    ((ConfigOptionEnum<CounterboreHoleBridgingOption>, counterbore_hole_bridging))
     // Overhang angle threshold.
     ((ConfigOptionInt,                 support_threshold_angle))
     ((ConfigOptionFloat,               support_object_xy_distance))
@@ -836,6 +835,7 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionBool,                 hole_to_polyhole))
     ((ConfigOptionFloatOrPercent,       hole_to_polyhole_threshold))
     ((ConfigOptionBool,                 hole_to_polyhole_twisted))
+    ((ConfigOptionEnum<CounterboreHoleBridgingOption>, counterbore_hole_bridging))
 )
 
 PRINT_CONFIG_CLASS_DEFINE(
@@ -1092,7 +1092,6 @@ PRINT_CONFIG_CLASS_DERIVED_DEFINE(
     ((ConfigOptionString,             printer_notes))
 
     // BBS
-    ((ConfigOptionEnum<CounterboreHoleBridgingOption>, counterbore_hole_bridging))
 )
 
 // This object is mapped to Perl as Slic3r::Config::Full.

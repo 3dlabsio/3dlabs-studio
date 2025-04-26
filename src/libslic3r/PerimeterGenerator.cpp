@@ -11,6 +11,9 @@
 #include "Arachne/WallToolPaths.hpp"
 #include "Geometry/ConvexHull.hpp"
 
+#include "ExPolygonCollection.hpp"
+#include "Geometry.hpp"
+
 #include <cmath>
 #include <cassert>
 #include <boost/log/trivial.hpp>
@@ -830,107 +833,222 @@ void PerimeterGenerator::apply_counterbore_bridging(Surfaces &all_surfaces, coor
 }
 
 // === Port of Orca-Slicer's 2024-04 implementation (commit 3b7b10f72) ===
-void PerimeterGenerator::process_counterbore_no_bridge(Surfaces &all_surfaces, coord_t perimeter_spacing, coord_t ext_perimeter_width)
+void PerimeterGenerator::process_counterbore_no_bridge(Surfaces& all_surfaces, coord_t perimeter_spacing, coord_t ext_perimeter_width)
 {
-    if (this->config->counterbore_hole_bridging == chbNone || this->lower_slices == nullptr || this->lower_slices->empty())
-        return;
+    // Ensure we have sufficient spare capacity so that push_back operations
+    // executed deeper in this routine do not invalidate references / pointers
+    // to elements of `all_surfaces`.  A generous head-room prevents the class
+    // of use-after-reallocation bugs that manifests as random access-violations
+    // later inside Eigen when the corrupted Surface objects are accessed.
+    if (all_surfaces.capacity() < all_surfaces.size() + 128)
+        all_surfaces.reserve(all_surfaces.size() + 128);
 
-    const coordf_t bridged_infill_margin = scale_(BRIDGE_INFILL_MARGIN);
+    //store surface for bridge infill to avoid unsupported perimeters (but the first one, this one is always good)
+    if (this->config->counterbore_hole_bridging != chbNone
+        && this->lower_slices != NULL && !this->lower_slices->empty()) {
+        const coordf_t bridged_infill_margin = scale_(BRIDGE_INFILL_MARGIN);
 
-    for (size_t surface_idx = 0; surface_idx < all_surfaces.size(); /* increment inside */) {
-        Surface &surface = all_surfaces[surface_idx];
-        ExPolygons island = { surface.expolygon };
+        for (size_t surface_idx = 0; surface_idx < all_surfaces.size(); surface_idx++) {
+            Surface* surface = &all_surfaces[surface_idx];
+            ExPolygons last = { surface->expolygon };
+            //compute our unsupported surface
+            ExPolygons unsupported = diff_ex(last, *this->lower_slices, ApplySafetyOffset::Yes);
+            if (!unsupported.empty()) {
+                //remove small overhangs
+                ExPolygons unsupported_filtered = offset2_ex(unsupported, double(-perimeter_spacing), double(perimeter_spacing));
+                if (!unsupported_filtered.empty()) {
+                    //to_draw.insert(to_draw.end(), last.begin(), last.end());
+                    //extract only the useful part of the lower layer. The safety offset is really needed here.
+                    ExPolygons support = diff_ex(last, unsupported, ApplySafetyOffset::Yes);
+                    if (!unsupported.empty()) {
+                        //only consider the part that can be bridged (really, by the bridge algorithm)
+                        //first, separate into islands (ie, each ExPlolygon)
+                        int numploy = 0;
+                        //only consider the bottom layer that intersect unsupported, to be sure it's only on our island.
+                        ExPolygonCollection lower_island(support);
+                        //a detector per island
+                        ExPolygons bridgeable;
+                        for (ExPolygon unsupported : unsupported_filtered) {
+                            BridgeDetector detector{ unsupported,
+                                                    lower_island.expolygons,
+                                                    perimeter_spacing };
+                            if (detector.detect_angle(Geometry::deg2rad(this->config->bridge_angle.value)))
+                                expolygons_append(bridgeable, union_ex(detector.coverage(-1, true)));
+                        }
+                        if (!bridgeable.empty()) {
+                            //check if we get everything or just the bridgeable area
+                            if (/*this->config->counterbore_hole_bridging.value == chbNoPeri || */this->config->counterbore_hole_bridging.value == chbFilled) {
+                                //we bridge everything, even the not-bridgeable bits
+                                for (size_t i = 0; i < unsupported_filtered.size();) {
+                                    ExPolygon& poly_unsupp = *(unsupported_filtered.begin() + i);
+                                    Polygons contour_simplified = poly_unsupp.contour.simplify(perimeter_spacing);
+                                    ExPolygon poly_unsupp_bigger = poly_unsupp;
+                                    Polygons contour_bigger = offset(poly_unsupp_bigger.contour, bridged_infill_margin);
+                                    if (contour_bigger.size() == 1) poly_unsupp_bigger.contour = contour_bigger[0];
 
-        // Unsupported portion of the surface.
-        ExPolygons unsupported = diff_ex(island, *this->lower_slices, ApplySafetyOffset::Yes);
-        if (unsupported.empty()) { ++surface_idx; continue; }
+                                    //check convex, has some bridge, not overhang
+                                    if (contour_simplified.size() == 1 && contour_bigger.size() == 1 && contour_simplified[0].concave_points().size() == 0
+                                        && intersection_ex(bridgeable, ExPolygons{ poly_unsupp }).size() > 0
+                                        && diff_ex(ExPolygons{ poly_unsupp_bigger }, union_ex(last, offset_ex(bridgeable, bridged_infill_margin + perimeter_spacing / 2)), ApplySafetyOffset::Yes).size() == 0
+                                    ) {
+                                        //ok, keep it
+                                        i++;
+                                    } else {
+                                        unsupported_filtered.erase(unsupported_filtered.begin() + i);
+                                    }
+                                }
+                                unsupported_filtered = intersection_ex(last,
+                                                                       offset2_ex(unsupported_filtered, double(-perimeter_spacing / 2), double(bridged_infill_margin + perimeter_spacing / 2)));
+                                if (this->config->counterbore_hole_bridging.value == chbFilled) {
+                                    for (ExPolygon& expol : unsupported_filtered) {
+                                        //check if the holes won't be covered by the upper layer
+                                        //TODO: if we want to do that, we must modify the geometry before making perimeters.
+                                        //if (this->upper_slices != nullptr && !this->upper_slices->expolygons.empty()) {
+                                        //    for (Polygon &poly : expol.holes) poly.make_counter_clockwise();
+                                        //    float perimeterwidth = this->config->perimeters == 0 ? 0 : (this->ext_perimeter_flow.scaled_width() + (this->config->perimeters - 1) + this->perimeter_flow.scaled_spacing());
+                                        //    std::cout << "test upper slices with perimeterwidth=" << perimeterwidth << "=>" << offset_ex(this->upper_slices->expolygons, -perimeterwidth).size();
+                                        //    if (intersection(Polygons() = { expol.holes }, to_polygons(offset_ex(this->upper_slices->expolygons, -this->ext_perimeter_flow.scaled_width() / 2))).empty()) {
+                                        //        std::cout << " EMPTY";
+                                        //        expol.holes.clear();
+                                        //    } else {
+                                        //    }
+                                        //    std::cout << "\n";
+                                        //} else {
+                                        expol.holes.clear();
+                                        //}
 
-        // Remove tiny overhang nibs that are not worth bridging.
-        ExPolygons unsupported_filtered = offset2_ex(unsupported, double(-perimeter_spacing), double(perimeter_spacing));
-        if (unsupported_filtered.empty()) { ++surface_idx; continue; }
+                                        //detect inside volume
+                                        for (size_t surface_idx_other = 0; surface_idx_other < all_surfaces.size(); surface_idx_other++) {
+                                            if (surface_idx == surface_idx_other) continue;
+                                            if (intersection_ex(ExPolygons() = { expol }, ExPolygons() = { all_surfaces[surface_idx_other].expolygon }).size() > 0) {
+                                                //this means that other_surf was inside an expol holes
+                                                //as we removed them, we need to add a new one
+                                                ExPolygons new_poly = offset2_ex(ExPolygons{ all_surfaces[surface_idx_other].expolygon }, double(-bridged_infill_margin - perimeter_spacing), double(perimeter_spacing));
+                                                if (new_poly.size() == 1) {
+                                                    all_surfaces[surface_idx_other].expolygon = new_poly[0];
+                                                    expol.holes.push_back(new_poly[0].contour);
+                                                    expol.holes.back().make_clockwise();
+                                                } else {
+                                                    for (size_t idx = 0; idx < new_poly.size(); idx++) {
+                                                        Surface new_surf = all_surfaces[surface_idx_other];
+                                                        new_surf.expolygon = new_poly[idx];
+                                                        all_surfaces.push_back(new_surf);
+                                                        expol.holes.push_back(new_poly[idx].contour);
+                                                        expol.holes.back().make_clockwise();
+                                                    }
+                                                    all_surfaces.erase(all_surfaces.begin() + surface_idx_other);
+                                                    if (surface_idx_other < surface_idx) {
+                                                        surface_idx--;
+                                                        surface = &all_surfaces[surface_idx];
+                                                    }
+                                                    surface_idx_other--;
+                                                }
+                                            }
+                                        }
+                                    }
 
-        // Extract the slice-below island that matches this surface to limit BridgeDetector.
-        ExPolygons support = diff_ex(island, unsupported, ApplySafetyOffset::Yes);
-        if (support.empty()) { ++surface_idx; continue; }
-        ExPolygonCollection lower_island(support);
+                                }
+                                //TODO: add other polys as holes inside this one (-margin)
+                            } else if (/*this->config->counterbore_hole_bridging.value == chbBridgesOverhangs || */this->config->counterbore_hole_bridging.value == chbBridges) {
+                                //simplify to avoid most of artefacts from printing lines.
+                                ExPolygons bridgeable_simplified;
+                                for (ExPolygon& poly : bridgeable) {
+                                    poly.simplify(perimeter_spacing, &bridgeable_simplified);
+                                }
+                                bridgeable_simplified = offset2_ex(bridgeable_simplified, -ext_perimeter_width, ext_perimeter_width);
+                                //bridgeable_simplified = intersection_ex(bridgeable_simplified, unsupported_filtered);
+                                //offset by perimeter spacing because the simplify may have reduced it a bit.
+                                //it's not dangerous as it will be intersected by 'unsupported' later
+                                //FIXME: add overlap in this->fill_surfaces->append
+                                //FIXME: it overlap inside unsuppported not-bridgeable area!
 
-        // Detect bridgeable area on each unsupported blob.
-        ExPolygons bridgeable;
-        for (const ExPolygon &unsup : unsupported_filtered) {
-            BridgeDetector detector(unsup, lower_island.expolygons, perimeter_spacing);
-            if (detector.detect_angle(Geometry::deg2rad(this->config->bridge_angle.value)))
-                expolygons_append(bridgeable, union_ex(detector.coverage(-1, true)));
-        }
-        if (bridgeable.empty()) { ++surface_idx; continue; }
+                                //bridgeable_simplified = offset2_ex(bridgeable_simplified, (double)-perimeter_spacing, (double)perimeter_spacing * 2);
+                                //ExPolygons unbridgeable = offset_ex(diff_ex(unsupported, bridgeable_simplified), perimeter_spacing * 3 / 2);
+                                //ExPolygons unbridgeable = intersection_ex(unsupported, diff_ex(unsupported_filtered, offset_ex(bridgeable_simplified, ext_perimeter_width / 2)));
+                                //unbridgeable = offset2_ex(unbridgeable, -ext_perimeter_width, ext_perimeter_width);
 
-        if (this->config->counterbore_hole_bridging == chbFilled) {
-            // Sacrificial layer: bridge *everything* inside unsupported_filtered.
-            // Keep only blobs that fulfil Orca's convexity checks.
-            for (size_t i = 0; i < unsupported_filtered.size();) {
-                ExPolygon &poly_unsupp = unsupported_filtered[i];
-                Polygons simplified = poly_unsupp.contour.simplify(perimeter_spacing);
-                ExPolygon poly_bigger = poly_unsupp;
-                Polygons contour_bigger = offset(poly_bigger.contour, bridged_infill_margin);
-                if (contour_bigger.size() == 1) poly_bigger.contour = contour_bigger[0];
 
-                bool convex_and_ok = simplified.size() == 1 && contour_bigger.size() == 1 && simplified[0].concave_points().empty() &&
-                                      !intersection_ex(bridgeable, ExPolygons{ poly_unsupp }).empty() &&
-                                      diff_ex(ExPolygons{ poly_bigger }, union_ex(island, offset_ex(bridgeable, bridged_infill_margin + perimeter_spacing / 2)), ApplySafetyOffset::Yes).empty();
-                if (!convex_and_ok)
-                    unsupported_filtered.erase(unsupported_filtered.begin() + i);
-                else
-                    ++i;
-            }
-            unsupported_filtered = intersection_ex(island,
-                                                    offset2_ex(unsupported_filtered,
-                                                               double(-perimeter_spacing / 2),
-                                                               double(bridged_infill_margin + perimeter_spacing / 2)));
-            // Convert holes to new internal surfaces & clear holes in sacrificial layer.
-            for (ExPolygon &expol : unsupported_filtered) {
-                expol.holes.clear();
-                for (size_t other_idx = 0; other_idx < all_surfaces.size(); /* increment inside */) {
-                    if (other_idx == surface_idx) { ++other_idx; continue; }
-                    if (!intersection_ex(ExPolygons{ expol }, ExPolygons{ all_surfaces[other_idx].expolygon }).empty()) {
-                        ExPolygons new_poly = offset2_ex(ExPolygons{ all_surfaces[other_idx].expolygon },
-                                                         double(-bridged_infill_margin - perimeter_spacing),
-                                                         double(perimeter_spacing));
-                        if (new_poly.size() == 1) {
-                            all_surfaces[other_idx].expolygon = new_poly[0];
-                            expol.holes.push_back(new_poly[0].contour); expol.holes.back().make_clockwise();
-                        } else if (!new_poly.empty()) {
-                            for (const ExPolygon &np : new_poly) {
-                                Surface nsurf = all_surfaces[other_idx];
-                                nsurf.expolygon = np;
-                                all_surfaces.push_back(nsurf);
-                                expol.holes.push_back(np.contour); expol.holes.back().make_clockwise();
+                                // if (this->config->counterbore_hole_bridging.value == chbBridges) {
+                                    ExPolygons unbridgeable = unsupported_filtered;
+                                    for (ExPolygon& expol : unbridgeable)
+                                        expol.holes.clear();
+                                    unbridgeable = diff_ex(unbridgeable, bridgeable_simplified);
+                                    unbridgeable = offset2_ex(unbridgeable, -ext_perimeter_width * 2, ext_perimeter_width * 2);
+                                    ExPolygons bridges_temp = offset2_ex(intersection_ex(last, diff_ex(unsupported_filtered, unbridgeable), ApplySafetyOffset::Yes), -ext_perimeter_width / 4, ext_perimeter_width / 4);
+                                    //remove the overhangs section from the surface polygons
+                                    ExPolygons reference = last;
+                                    last = diff_ex(last, unsupported_filtered);
+                                    //ExPolygons no_bridge = diff_ex(offset_ex(unbridgeable, ext_perimeter_width * 3 / 2), last);
+                                    //bridges_temp = diff_ex(bridges_temp, no_bridge);
+                                    coordf_t offset_to_do = bridged_infill_margin;
+                                    bool first = true;
+                                    unbridgeable = diff_ex(unbridgeable, offset_ex(bridges_temp, ext_perimeter_width));
+                                    while (offset_to_do > ext_perimeter_width * 1.5) {
+                                        unbridgeable = offset2_ex(unbridgeable, -ext_perimeter_width / 4, ext_perimeter_width * 2.25, ClipperLib::jtSquare);
+                                        bridges_temp = diff_ex(bridges_temp, unbridgeable);
+                                        bridges_temp = offset_ex(bridges_temp, ext_perimeter_width, ClipperLib::jtMiter, 6.);
+                                        unbridgeable = diff_ex(unbridgeable, offset_ex(bridges_temp, ext_perimeter_width));
+                                        offset_to_do -= ext_perimeter_width;
+                                        first = false;
+                                    }
+                                    unbridgeable = offset_ex(unbridgeable, ext_perimeter_width + offset_to_do, ClipperLib::jtSquare);
+                                    bridges_temp = diff_ex(bridges_temp, unbridgeable);
+                                    unsupported_filtered = offset_ex(bridges_temp, offset_to_do);
+                                    unsupported_filtered = intersection_ex(unsupported_filtered, reference);
+                                // } else {
+                                //     ExPolygons unbridgeable = intersection_ex(unsupported, diff_ex(unsupported_filtered, offset_ex(bridgeable_simplified, ext_perimeter_width / 2)));
+                                //     unbridgeable = offset2_ex(unbridgeable, -ext_perimeter_width, ext_perimeter_width);
+                                //     unsupported_filtered = unbridgeable;
+
+                                //     ////put the bridge area inside the unsupported_filtered variable
+                                //     //unsupported_filtered = intersection_ex(last,
+                                //     //    diff_ex(
+                                //     //    offset_ex(bridgeable_simplified, (double)perimeter_spacing / 2),
+                                //     //    unbridgeable
+                                //     //    )
+                                //     //    );
+                                // }
+                            } else {
+                                unsupported_filtered.clear();
                             }
-                            all_surfaces.erase(all_surfaces.begin() + other_idx);
-                            if (other_idx < surface_idx) { --surface_idx; /* surface reference remains valid */ }
-                            continue; // skip ++other_idx
+                        } else {
+                            unsupported_filtered.clear();
                         }
                     }
-                    ++other_idx;
+
+                    if (!unsupported_filtered.empty()) {
+
+                        //add this directly to the infill list.
+                        // this will avoid to throw wrong offsets into a good polygons
+                        this->fill_surfaces->append(
+                            unsupported_filtered,
+                            stInternal);
+
+                        // store the results
+                        last = diff_ex(last, unsupported_filtered, ApplySafetyOffset::Yes);
+                        //remove "thin air" polygons (note: it assumes that all polygons below will be extruded)
+                        for (int i = 0; i < last.size(); i++) {
+                            if (intersection_ex(support, ExPolygons() = { last[i] }).empty()) {
+                                this->fill_surfaces->append(
+                                    ExPolygons() = { last[i] },
+                                    stInternal);
+                                last.erase(last.begin() + i);
+                                i--;
+                            }
+                        }
+                    }
                 }
             }
-        } else if (this->config->counterbore_hole_bridging == chbBridges) {
-            // Partial bridge mode – replicate Orca's long routine is out-of-scope here.
-            // For now fall back to old heuristic (acts like filled-with-holes).
-        }
-
-        // Append new bridge surfaces and subtract from original.
-        if (!unsupported_filtered.empty()) {
-            for (const ExPolygon &b : unsupported_filtered) {
-                Surface bridge_surf(stInternalBridge, b);
-                bridge_surf.bridge_angle = 0.0; // the actual angle will be set downstream by Fill.
-                all_surfaces.push_back(bridge_surf);
-            }
-            surface.expolygon = diff_ex(surface.expolygon, unsupported_filtered).empty() ? ExPolygon() : diff_ex(surface.expolygon, unsupported_filtered).front();
-            if (surface.expolygon.empty()) {
+            if (last.size() == 0) {
                 all_surfaces.erase(all_surfaces.begin() + surface_idx);
-                continue; // do NOT ++surface_idx in this branch
+                surface_idx--;
+            } else {
+                surface->expolygon = last[0];
+                for (size_t idx = 1; idx < last.size(); idx++) {
+                    all_surfaces.emplace_back(*surface, last[idx]);
+                }
             }
         }
-        ++surface_idx;
     }
 }
 
