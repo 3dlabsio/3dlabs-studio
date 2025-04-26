@@ -824,11 +824,17 @@ void PerimeterGenerator::split_top_surfaces(const ExPolygons &orig_polygons, ExP
 void PerimeterGenerator::apply_counterbore_bridging(Surfaces &all_surfaces, coord_t perimeter_spacing, coord_t ext_perimeter_width)
 {
     // Debug: Entry and config value
-    BOOST_LOG_TRIVIAL(info) << "counterbore: Entered apply_counterbore_bridging, config=" << (int)object_config->counterbore_hole_bridging;
+    BOOST_LOG_TRIVIAL(info) << "counterbore: Entered apply_counterbore_bridging, object_config=" << (int)object_config->counterbore_hole_bridging << ", print_config=" << (int)print_config->counterbore_hole_bridging;
 
-    // Skip if feature is disabled
-    if (object_config->counterbore_hole_bridging == chbNone) {
-        BOOST_LOG_TRIVIAL(info) << "counterbore: Feature disabled, skipping.";
+    // Determine which config to use - use object_config if set, otherwise fall back to print_config
+    CounterboreHoleBridgingOption active_option = 
+        (object_config->counterbore_hole_bridging != chbNone) ? 
+        object_config->counterbore_hole_bridging : 
+        print_config->counterbore_hole_bridging;
+
+    // Skip if feature is disabled in both configs
+    if (active_option == chbNone) {
+        BOOST_LOG_TRIVIAL(info) << "counterbore: Feature disabled in both configs, skipping.";
         return;
     }
 
@@ -886,7 +892,7 @@ void PerimeterGenerator::apply_counterbore_bridging(Surfaces &all_surfaces, coor
                 continue;
             }
             BOOST_LOG_TRIVIAL(info) << "counterbore:   BridgeDetector: angle=" << detector.angle;
-            if (object_config->counterbore_hole_bridging == chbBridges) {
+            if (active_option == chbBridges) {
                 // Partial bridging - only bridge areas that can be fully supported
                 ExPolygons bridgeable = intersection_ex(counterbore, detector.coverage(-1));
                 if (!bridgeable.empty()) {
@@ -900,8 +906,8 @@ void PerimeterGenerator::apply_counterbore_bridging(Surfaces &all_surfaces, coor
                 } else {
                     BOOST_LOG_TRIVIAL(info) << "counterbore:   No bridgeable area after intersection.";
                 }
-            } 
-            else if (object_config->counterbore_hole_bridging == chbFilled) {
+            }
+            else if (active_option == chbFilled) {
                 // Sacrificial layer - bridge the entire counterbore
                 ExPolygons filled = offset_ex(counterbore, bridged_margin);
                 if (!filled.empty()) {

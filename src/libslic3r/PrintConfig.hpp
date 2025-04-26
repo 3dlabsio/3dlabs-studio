@@ -1091,8 +1091,8 @@ PRINT_CONFIG_CLASS_DERIVED_DEFINE(
     ((ConfigOptionString,             notes))
     ((ConfigOptionString,             printer_notes))
 
-
-
+    // BBS
+    ((ConfigOptionEnum<CounterboreHoleBridgingOption>, counterbore_hole_bridging))
 )
 
 // This object is mapped to Perl as Slic3r::Config::Full.
