@@ -1,7 +1,7 @@
 # ADR 0006: Counterbore-hole-bridging GUI crash on start-up
 
 ## Status
-Proposed (2024-04-16)
+Proposed (2024-04-16) - In progress
 
 ---
 
@@ -72,20 +72,48 @@ Negative / Risks:
   instantiated.
 * Approach A touches core normalisation logic—ensure no performance regressions.
 
+## Implementation Status and Roadblocks
+
+### Current Status
+- ✅ Feature code integration is complete (see ADR-0005 for implementation details)
+- ⚠️ Build system integration has faced challenges:
+  - Issues with libnoise dependency integration (addressed through graceful fallback)
+  - Environment variable resolution in Windows batch scripts causing problems with NLopt and wxWidgets dependencies
+  - Build order changes affecting dependency resolution
+
+### Recent Fixes
+- 🔄 Reverted libnoise integration changes to restore build stability
+- 🛠️ Fixed environment variable expansion in build_release.bat
+- 📝 Documented dependency issues for future reference
+
+### Next Steps
+1. Re-approach libnoise integration with better isolation from core build processes
+2. Implement the missing-option guard in normalize_fdm() to prevent nullptr crashes
+3. Complete the unit tests for the counterbore-bridging functionality
+4. Refine build scripts to be more resilient to environment variable issues
+
 ## Implementation Checklist
-- [ ] Add missing-option guard in `normalize_fdm()` (or equivalent for SLA).
-- [ ] (Optional) Patch `OptionsGroup.cpp` as fallback guard.
+- [ ] Add missing-option guard in `normalize_fdm()` (or equivalent for SLA) to prevent nullptr crash on startup
+- [ ] (Optional) Patch `OptionsGroup.cpp` as fallback guard
+- [ ] Fix build system to correctly handle dependency integration:
+  - [ ] Resolve CMAKE_PREFIX_PATH variable expansion in build scripts
+  - [x] Update dependency resolution order to prevent build failures
+  - [x] Fixed PressureEqualizer.cpp build error (variable name issue in assert statement)
+  - [ ] Create more robust detection for third-party libraries
 - [ ] Re-run full GUI smoke test with:
   * factory defaults,
   * an old user profile,
-  * a 3MF slice project.
-- [ ] Add regression unit-test `ProfileBackwardCompatTest.CounterboreBridgingKey`.
-- [ ] Update release notes (section *Bug fixes*).
+  * a 3MF slice project
+- [ ] Add regression unit-test `ProfileBackwardCompatTest.CounterboreBridgingKey`
+- [ ] Update release notes (section *Bug fixes*)
 
 ## References
-* ADR-0005 – original counterbore-hole-bridging feature design
+* [ADR-0005](0005-counterbore-bridging-implementation.md) – original counterbore-hole-bridging feature design
 * Crash analysis conversation (2024-04-16)
+* Build dependency issues (2024-05-03)
 * Source files involved:
   * `src/libslic3r/PrintConfig.cpp` (enum registration)
   * `src/libslic3r/Config.hpp` (`DynamicPrintConfig::option` helpers)
-  * `src/slic3r/GUI/OptionsGroup.cpp` (GUI dereference site) 
+  * `src/slic3r/GUI/OptionsGroup.cpp` (GUI dereference site)
+  * `build_release.bat` (Build script with environment variable issues)
+  * `deps/CMakeLists.txt` (Dependencies resolution) 

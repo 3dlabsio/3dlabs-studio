@@ -142,8 +142,8 @@ static std::vector<std::pair<TreeSupportSettings, std::vector<size_t>>> group_me
         const PrintObjectConfig &object_config = print_object.config();
 #endif // NDEBUG
         // Support must be enabled and set to Tree style.
-        assert(object_config.support_material || object_config.support_material_enforce_layers > 0);
-        assert(object_config.support_material_style == smsTree || object_config.support_material_style == smsOrganic);
+        assert(object_config.enable_support || object_config.enforce_support_layers > 0);
+        assert(object_config.support_style == smsTreeHybrid || object_config.support_style == smsOrganic);
 
         bool found_existing_group = false;
         TreeSupportSettings next_settings{ TreeSupportMeshGroupSettings{ print_object }, print_object.slicing_parameters() };
@@ -1729,7 +1729,7 @@ struct SupportElementMerging {
  *
  * \param to_bp_areas[out] Influence areas that can reach the buildplate
  * \param to_model_areas[out] Influence areas that do not have to reach the buildplate. This has overlap with new_layer_data, as areas that can reach the buildplate are also considered valid areas to the model.
- * This redundancy is required if a to_buildplate influence area is allowed to merge with a to model influence area.
+ * Value is the influence area where the center of a circle of support may be placed.
  * \param influence_areas[out] Area than can reach all further up support points. No assurance is made that the buildplate or the model can be reached in accordance to the user-supplied settings.
  * \param bypass_merge_areas[out] Influence areas ready to be added to the layer below that do not need merging.
  * \param last_layer[in] Influence areas of the current layer.
@@ -3537,7 +3537,7 @@ static void generate_support_areas(Print &print, const BuildVolume &build_volume
                 draw_areas(*print.get_object(processing.second.front()), volumes, config, overhangs, move_bounds, 
                     bottom_contacts, top_contacts, intermediate_layers, layer_storage, throw_on_cancel);
             else {
-                assert(print_object.config().support_material_style == smsOrganic);
+                assert(print_object.config().support_style == smsOrganic);
                 organic_draw_branches(
                     *print.get_object(processing.second.front()), volumes, config, move_bounds, 
                     bottom_contacts, top_contacts, interface_placer, intermediate_layers, layer_storage, 
