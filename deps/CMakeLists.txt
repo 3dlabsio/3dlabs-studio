@@ -238,6 +238,7 @@ include(TIFF/TIFF.cmake)
 include(wxWidgets/wxWidgets.cmake)
 include(OCCT/OCCT.cmake)
 include(FREETYPE/FREETYPE.cmake)
+include(libnoise/libnoise.cmake)
 
 set(_dep_list
     dep_Boost
@@ -254,6 +255,7 @@ set(_dep_list
     ${PNG_PKG}
     ${ZLIB_PKG}
     ${EXPAT_PKG}
+    dep_libnoise
     )
 
 if (MSVC)

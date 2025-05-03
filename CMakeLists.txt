@@ -509,6 +509,16 @@ find_package(glfw3 REQUIRED)
 
 # Find the Cereal serialization library
 find_package(cereal REQUIRED)
+
+# Find libnoise but handle it gracefully if not found
+find_package(libnoise)
+if(libnoise_FOUND)
+    add_definitions(-DHAVE_LIBNOISE)
+    message(STATUS "libnoise found - fuzzy skin features will be enabled")
+else()
+    message(STATUS "libnoise NOT found - fuzzy skin features will use fallback implementation")
+endif()
+
 set_target_properties(cereal PROPERTIES IMPORTED_GLOBAL TRUE)
 if (NOT TARGET cereal::cereal)
     add_library(cereal::cereal ALIAS cereal)
