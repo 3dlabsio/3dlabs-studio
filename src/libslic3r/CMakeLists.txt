@@ -484,17 +484,7 @@ if (MSVC AND "${CMAKE_SIZEOF_VOID_P}" STREQUAL "4") # 32 bit MSVC workaround
     target_compile_definitions(libslic3r_cgal PRIVATE CGAL_DO_NOT_USE_MPZF)
 endif ()
 
-# Enable encoding check but exclude libnoise files
 encoding_check(libslic3r)
-set_property(
-  TARGET encoding-check-libslic3r
-  APPEND PROPERTY EXCLUDE_FROM_ALL 
-  "${CMAKE_SOURCE_DIR}/deps/libnoise/src/*"
-  "${CMAKE_BINARY_DIR}/deps/dep_libnoise-prefix/src/dep_libnoise/*"
-  "${CMAKE_SOURCE_DIR}/build/deps/dep_libnoise-prefix/src/dep_libnoise/*"
-  "${CMAKE_BINARY_DIR}/deps/dep_libnoise-prefix/src/dep_libnoise-build/*"
-  "${CMAKE_SOURCE_DIR}/build/deps/dep_libnoise-prefix/src/dep_libnoise-build/*"
-)
 
 target_compile_definitions(libslic3r PUBLIC -DUSE_TBB -DTBB_USE_CAPTURED_EXCEPTION=0)
 target_include_directories(libslic3r PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
@@ -569,12 +559,6 @@ target_link_libraries(libslic3r
     Clipper2
     mcut
     )
-
-# Conditionally link with libnoise if found
-if(TARGET libnoise::libnoise)
-    target_link_libraries(libslic3r libnoise::libnoise)
-    add_dependencies(libslic3r dep_libnoise)
-endif()
 
 # Directly link GMP and MPFR to libslic3r on Windows
 if(WIN32)
