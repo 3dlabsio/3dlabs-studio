@@ -1104,6 +1104,15 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(false));
 
+    def = this->add("bridge_counterbored_holes", coBool);
+    def->label = L("Bridge counterbored holes");
+    def->category = L("Quality");
+    def->tooltip = L("Enable automatic bridge detection for counterbored holes and similar small overhangs. "
+                     "When enabled, the slicer will detect optimal bridging directions for small holes and voids "
+                     "to eliminate the need for support material.");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(false));
+
     def = this->add("thick_bridges", coBool);
     def->label = L("Thick bridges");
     def->category = L("Quality");

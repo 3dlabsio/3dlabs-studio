@@ -651,6 +651,7 @@ PRINT_CONFIG_CLASS_DEFINE(
     ((ConfigOptionFloat,               brim_ears_detection_length))
     ((ConfigOptionFloat,               brim_ears_max_angle))
     ((ConfigOptionBool,                bridge_no_support))
+    ((ConfigOptionBool,                bridge_counterbored_holes))
     ((ConfigOptionFloat,               elephant_foot_compensation))
     ((ConfigOptionInt,                 elephant_foot_compensation_layers))
     ((ConfigOptionFloat,               max_bridge_length))
