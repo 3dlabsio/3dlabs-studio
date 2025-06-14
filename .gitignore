@@ -27,3 +27,6 @@ src/OrcaSlicer-doc/
 .idea/
 /.cache/
 *.mo
+
+# Claude Code context file
+CLAUDE.md
