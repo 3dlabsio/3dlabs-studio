@@ -505,6 +505,7 @@ void PrintObject::prepare_infill()
     this->bridge_over_infill();
     m_print->throw_if_canceled();
 
+
     // combine fill surfaces to honor the "infill every N layers" option
     this->combine_infill();
     m_print->throw_if_canceled();
@@ -1255,6 +1256,21 @@ void PrintObject::detect_surfaces_type()
                     // collapse very narrow parts (using the safety offset in the diff is not enough)
                     float        offset = layerm->flow(frExternalPerimeter).scaled_width() / 10.f;
 
+                    // Apply counterbored holes sacrificial layer - exactly like OrcaSlicer chbFilled
+                    if (this->config().bridge_counterbored_holes) {
+                        ExPolygons layerm_slices_surfaces = to_expolygons(layerm->slices.surfaces);
+                        ExPolygons fill_surfaces_polygons = to_expolygons(layerm->fill_surfaces.surfaces);
+                        
+                        if (!fill_surfaces_polygons.empty()) {
+                            // Union slice surfaces with fill surfaces (exact OrcaSlicer implementation)
+                            layerm_slices_surfaces = union_ex(layerm_slices_surfaces, fill_surfaces_polygons);
+                            
+                            // Replace the layer slices with the merged result
+                            layerm->slices.clear();
+                            layerm->slices.append(layerm_slices_surfaces, stInternal);
+                        }
+                    }
+
                     // find top surfaces (difference between current surfaces
                     // of current layer and upper one)
                     Surfaces top;
@@ -1390,6 +1406,8 @@ void PrintObject::detect_surfaces_type()
                     m_print->throw_if_canceled();
                     LayerRegion *layerm = m_layers[idx_layer]->m_regions[region_id];
                     layerm->slices_to_fill_surfaces_clipped();
+                    
+                    
 #ifdef SLIC3R_DEBUG_SLICE_PROCESSING
                     layerm->export_region_fill_surfaces_to_svg_debug("1_detect_surfaces_type-final");
 #endif /* SLIC3R_DEBUG_SLICE_PROCESSING */
@@ -1984,14 +2002,31 @@ void PrintObject::bridge_over_infill()
                             
                             // Calculate optimal bridge angle for counterbored holes if enabled
                             double bridge_angle = 0;
-                            if (this->print()->config().bridge_counterbored_holes && !worth_bridging.empty()) {
+                            if (po->config().bridge_counterbored_holes && !worth_bridging.empty()) {
                                 // Get the flow for bridge detection
                                 Flow bridge_flow = region->flow(FlowRole::frInfill, true);
                                 
                                 // Use BridgeDetector to find optimal angle for bridging counterbored holes
-                                BridgeDetector bd(worth_bridging, get_infill_polygons(lidx), bridge_flow.scaled_spacing());
-                                if (bd.detect_angle()) {
-                                    bridge_angle = bd.angle;
+                                // Use lower layer infill polygons for anchor detection
+                                Polygons infill_polygons;
+                                if (layer->lower_layer) {
+                                    for (const LayerRegion *lr : layer->lower_layer->regions()) {
+                                        for (const Surface &surface : lr->fill_surfaces) {
+                                            if (surface.surface_type == stInternal) {
+                                                Polygons sp = to_polygons(surface.expolygon);
+                                                infill_polygons.insert(infill_polygons.end(), sp.begin(), sp.end());
+                                            }
+                                        }
+                                    }
+                                }
+                                // Convert polygons to expolygons for BridgeDetector
+                                ExPolygons worth_bridging_ex = union_ex(worth_bridging);
+                                ExPolygons infill_polygons_ex = union_ex(infill_polygons);
+                                if (!worth_bridging_ex.empty()) {
+                                    BridgeDetector bd(worth_bridging_ex[0], infill_polygons_ex, bridge_flow.scaled_spacing());
+                                    if (bd.detect_angle()) {
+                                        bridge_angle = bd.angle;
+                                    }
                                 }
                             }
                             
@@ -2746,6 +2781,7 @@ void PrintObject::bridge_over_infill()
     BOOST_LOG_TRIVIAL(info) << "Bridge over infill - End" << log_memory_info();
 
 } // void PrintObject::bridge_over_infill()
+
 
 static void clamp_exturder_to_default(ConfigOptionInt &opt, size_t num_extruders)
 {

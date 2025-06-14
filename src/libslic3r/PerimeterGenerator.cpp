@@ -1360,9 +1360,13 @@ void PerimeterGenerator::process_classic()
     // we need to process each island separately because we might have different
     // extra perimeters for each one
 
+    // Process counterbored holes bridging before main perimeter processing
+    Surfaces all_surfaces = this->slices->surfaces;
+    this->process_no_bridge(all_surfaces, perimeter_spacing, ext_perimeter_width);
+
     // BBS: don't simplify too much which influence arc fitting when export gcode if arc_fitting is enabled
     double surface_simplify_resolution = (print_config->enable_arc_fitting && this->config->fuzzy_skin == FuzzySkinType::None) ? 0.2 * m_scaled_resolution : m_scaled_resolution;
-    for (const Surface &surface : this->slices->surfaces) {
+    for (const Surface &surface : all_surfaces) {
         // detect how many perimeters must be generated for this island
         int        loop_number = this->config->wall_loops + surface.extra_perimeters - 1;  // 0-indexed loops
         if (this->layer_id == 0 && this->config->only_one_wall_first_layer)
@@ -1702,6 +1706,8 @@ void PerimeterGenerator::process_classic()
         if (!top_fills.empty()) {
             infill_exp = union_ex(infill_exp, offset_ex(top_infill_exp, double(infill_peri_overlap)));
         }
+
+
         this->fill_surfaces->append(infill_exp, stInternal);
 
         apply_extra_perimeters(infill_exp);
@@ -1755,11 +1761,15 @@ void PerimeterGenerator::process_arachne()
     }
 
 
+    // Process counterbored holes bridging before main perimeter processing
+    Surfaces all_surfaces = this->slices->surfaces;
+    this->process_no_bridge(all_surfaces, perimeter_spacing, ext_perimeter_width);
+
     // BBS: don't simplify too much which influence arc fitting when export gcode if arc_fitting is enabled
     double surface_simplify_resolution = (print_config->enable_arc_fitting && this->config->fuzzy_skin == FuzzySkinType::None) ? 0.2 * m_scaled_resolution : m_scaled_resolution;
     // we need to process each island separately because we might have different
     // extra perimeters for each one
-    for (const Surface& surface : this->slices->surfaces) {
+    for (const Surface& surface : all_surfaces) {
         coord_t bead_width_0 = ext_perimeter_spacing;
         if (config->precise_outer_wall)
             bead_width_0 = ext_perimeter_width + this->perimeter_flow.scaled_width() - perimeter_spacing;
@@ -2161,6 +2171,8 @@ void PerimeterGenerator::process_arachne()
         if (!top_fills.empty()) {
             infill_exp = union_ex(infill_exp, offset_ex(top_fills, double(inset)));
         }
+
+
         this->fill_surfaces->append(infill_exp, stInternal);
 
         apply_extra_perimeters(infill_exp);
@@ -2218,6 +2230,72 @@ std::map<int, Polygons> PerimeterGenerator::generate_lower_polygons_series(float
         lower_polygons_series.insert(std::pair<int, Polygons>(i, offset(*this->lower_slices, float(scale_(offset_series[i])))));
     }
     return lower_polygons_series;
+}
+
+
+void PerimeterGenerator::process_no_bridge(Surfaces& all_surfaces, coord_t perimeter_spacing, coord_t ext_perimeter_width)
+{
+    // Only process if counterbored holes bridging is enabled
+    if (!this->object_config->bridge_counterbored_holes || !this->lower_slices || this->lower_slices->empty()) {
+        return;
+    }
+
+    // Bridge margin constant (like OrcaSlicer BRIDGE_INFILL_MARGIN)
+    const coord_t bridged_infill_margin = scale_(1.0); // 1mm
+
+    // Convert lower slices to ExPolygons for comparison
+    ExPolygons lower_slices_ex = *this->lower_slices;
+
+    Surfaces new_surfaces;
+    
+    for (Surface& surface : all_surfaces) {
+        // Find unsupported areas in this surface
+        ExPolygons unsupported = diff_ex(surface.expolygon, lower_slices_ex);
+        
+        if (unsupported.empty()) {
+            // No unsupported areas, keep original surface
+            new_surfaces.push_back(surface);
+            continue;
+        }
+
+        // Filter out tiny unsupported areas
+        ExPolygons unsupported_filtered;
+        for (const ExPolygon& unsp : unsupported) {
+            double area_mm2 = unscale_(unscale_(std::abs(unsp.area())));
+            if (area_mm2 > 0.1 && area_mm2 < 1000.0) { // Size range for counterbored holes
+                unsupported_filtered.push_back(unsp);
+            }
+        }
+
+        if (unsupported_filtered.empty()) {
+            // No significant unsupported areas
+            new_surfaces.push_back(surface);
+            continue;
+        }
+
+
+        // For chbFilled (sacrificial) mode: create solid bridge areas
+        ExPolygons sacrificial_areas;
+        for (ExPolygon expol : unsupported_filtered) {
+            // Clear holes to create solid sacrificial layer (like OrcaSlicer chbFilled)
+            expol.holes.clear();
+            sacrificial_areas.push_back(expol);
+        }
+
+        // Add sacrificial areas to fill_surfaces as stInternal
+        if (!sacrificial_areas.empty()) {
+            this->fill_surfaces->append(sacrificial_areas, stInternal);
+        }
+
+        // Keep the original surface (the supported parts)
+        ExPolygons supported_parts = diff_ex(surface.expolygon, unsupported_filtered);
+        for (const ExPolygon& supported : supported_parts) {
+            new_surfaces.emplace_back(surface, supported);
+        }
+    }
+
+    // Replace all_surfaces with processed surfaces
+    all_surfaces = std::move(new_surfaces);
 }
 
 }
