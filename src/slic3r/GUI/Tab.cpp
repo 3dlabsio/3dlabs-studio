@@ -1883,6 +1883,9 @@ void TabPrint::build()
 
         optgroup = page->new_optgroup(L("Wall generator"), L"param_wall");
         optgroup->append_single_option_line("wall_generator");
+        optgroup->append_single_option_line("wall_sequence");
+        optgroup->append_single_option_line("is_infill_first");
+        optgroup->append_single_option_line("wall_direction");
         optgroup->append_single_option_line("wall_transition_angle");
         optgroup->append_single_option_line("wall_transition_filter_deviation");
         optgroup->append_single_option_line("wall_transition_length");
@@ -1892,7 +1895,6 @@ void TabPrint::build()
         optgroup->append_single_option_line("min_feature_size");
 
         optgroup = page->new_optgroup(L("Advanced"), L"param_advanced");
-        optgroup->append_single_option_line("wall_infill_order");
         optgroup->append_single_option_line("print_flow_ratio");
         optgroup->append_single_option_line("bridge_flow");
         optgroup->append_single_option_line("bridge_density");
@@ -1910,6 +1912,9 @@ void TabPrint::build()
         optgroup->append_single_option_line("reduce_crossing_wall");
         optgroup->append_single_option_line("max_travel_detour_distance");
         optgroup->append_single_option_line("extra_perimeters_on_overhangs");
+        optgroup->append_single_option_line("overhang_reverse");
+        optgroup->append_single_option_line("overhang_reverse_internal_only");
+        optgroup->append_single_option_line("overhang_reverse_threshold");
 
     page = add_options_page(L("Strength"), "empty");
         optgroup = page->new_optgroup(L("Walls"), L"param_wall");

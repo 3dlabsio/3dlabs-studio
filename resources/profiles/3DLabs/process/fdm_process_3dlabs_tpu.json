@@ -28,7 +28,6 @@
     "elefant_foot_compensation": "0.2",
     "outer_wall_line_width": "0.4",
     "only_one_wall_top": "1",
-    "wall_infill_order": "inner wall/outer wall/infill",
     "line_width": "0.4",
     "infill_direction": "45",
     "sparse_infill_density": "25%",
