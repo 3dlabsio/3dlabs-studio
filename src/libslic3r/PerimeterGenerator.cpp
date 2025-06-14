@@ -1426,7 +1426,9 @@ void PerimeterGenerator::process_classic()
 {
     // Debug: Check config at the very start
     const WallDirection wall_direction_debug = this->config->wall_direction;
+    const WallSequence wall_sequence_debug = this->config->wall_sequence;
     printf("WALL_DIRECTION_DEBUG: process_classic() started, config->wall_direction = %d\n", (int)wall_direction_debug);
+    printf("WALL_SEQUENCE_DEBUG: process_classic() started, config->wall_sequence = %d\n", (int)wall_sequence_debug);
     fflush(stdout);
     
     // other perimeters
@@ -1744,6 +1746,10 @@ void PerimeterGenerator::process_classic()
             // we continue inwards after having finished the brim
             // TODO: add test for perimeter order
             bool is_outer_wall_first = this->config->wall_sequence == WallSequence::OuterInner;
+            const WallSequence wall_sequence_here = this->config->wall_sequence;
+            printf("WALL_SEQUENCE_DEBUG: Classic wall_sequence=%d (0=InnerOuter, 1=OuterInner, 2=InnerOuterInner)\n", (int)wall_sequence_here);
+            fflush(stdout);
+            BOOST_LOG_TRIVIAL(error) << "WALL_SEQUENCE_DEBUG: Classic wall_sequence=" << (int)wall_sequence_here << " (0=InnerOuter, 1=OuterInner, 2=InnerOuterInner)";
             if (is_outer_wall_first ||
                 //BBS: always print outer wall first when there indeed has brim.
                 (this->layer_id == 0 &&
@@ -1752,8 +1758,10 @@ void PerimeterGenerator::process_classic()
                 entities.reverse();
             // Orca: sandwich mode. Apply after 1st layer.
             else if ((this->config->wall_sequence == WallSequence::InnerOuterInner) && layer_id > 0){
+                BOOST_LOG_TRIVIAL(error) << "WALL_SEQUENCE_DEBUG: Classic InnerOuterInner mode, layer_id=" << layer_id << ", entities=" << entities.entities.size();
                 entities.reverse(); // reverse all entities - order them from external to internal
                 if(entities.entities.size()>2){ // 3 walls minimum needed to do inner outer inner ordering
+                    BOOST_LOG_TRIVIAL(error) << "WALL_SEQUENCE_DEBUG: Classic processing InnerOuterInner with " << entities.entities.size() << " walls";
                     int position = 0; // index to run the re-ordering for multiple external perimeters in a single island.
                     int arr_i, arr_j = 0;    // indexes to run through the walls in the for loops
                     int outer, first_internal, second_internal, max_internal, current_perimeter; // allocate index values
@@ -1970,12 +1978,30 @@ void PerimeterGenerator::process_classic()
     } // for each island
 }
 
+/**
+ * @brief Reorders the vector to bring external perimeter (i.e. paths with inset index 0) that are also contours (i.e. external facing lines) to the front.
+ *
+ * This function uses a stable partition to move all external perimeter contour elements to the front of the vector,
+ * while maintaining the relative order of non-contour elements.
+ *
+ * @param ordered_extrusions The vector of PerimeterGeneratorArachneExtrusion to reorder.
+ */
+void bringContoursToFront(std::vector<PerimeterGeneratorArachneExtrusion>& ordered_extrusions) {
+    std::stable_partition(ordered_extrusions.begin(), ordered_extrusions.end(), [](const PerimeterGeneratorArachneExtrusion& extrusion) {
+        return (extrusion.extrusion->is_contour() && extrusion.extrusion->inset_idx==0);
+    });
+}
+
 // Thanks, Cura developers, for implementing an algorithm for generating perimeters with variable width (Arachne) that is based on the paper
 // "A framework for adaptive width control of dense contour-parallel toolpaths in fused deposition modeling"
 void PerimeterGenerator::process_arachne()
 {
     // Debug: Check config at the very start
     const WallDirection wall_direction_debug = this->config->wall_direction;
+    const WallSequence wall_sequence_debug = this->config->wall_sequence;
+    printf("WALL_DIRECTION_DEBUG: process_arachne() started, config->wall_direction = %d\n", (int)wall_direction_debug);
+    printf("WALL_SEQUENCE_DEBUG: process_arachne() started, config->wall_sequence = %d\n", (int)wall_sequence_debug);
+    fflush(stdout);
     BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: process_arachne() started, config->wall_direction = " << (int)wall_direction_debug;
     
     // other perimeters
@@ -2266,7 +2292,15 @@ void PerimeterGenerator::process_arachne()
 
        // printf("New Layer: Layer ID %d\n",layer_id); //debug - new layer
         if (this->config->wall_sequence == WallSequence::InnerOuterInner && layer_id > 0) { // only enable inner outer inner algorithm after first layer
+            BOOST_LOG_TRIVIAL(error) << "WALL_SEQUENCE_DEBUG: Arachne InnerOuterInner mode, layer_id=" << layer_id << ", ordered_extrusions=" << ordered_extrusions.size();
             if (ordered_extrusions.size() > 2) { // 3 walls minimum needed to do inner outer inner ordering
+                BOOST_LOG_TRIVIAL(error) << "WALL_SEQUENCE_DEBUG: Arachne processing InnerOuterInner with " << ordered_extrusions.size() << " walls";
+                
+                // To address any remaining scenarios where the outer perimeter contour is not first on the list as arachne sometimes reorders the perimeters when clustering
+                // for OI mode that is used the basis for IOI
+                bringContoursToFront(ordered_extrusions);
+                BOOST_LOG_TRIVIAL(error) << "WALL_SEQUENCE_DEBUG: Applied bringContoursToFront()";
+                
                 int position = 0; // index to run the re-ordering for multiple external perimeters in a single island.
                 int arr_i, arr_j = 0;    // indexes to run through the walls in the for loops
                 int outer, first_internal, second_internal, max_internal, current_perimeter; // allocate index values
