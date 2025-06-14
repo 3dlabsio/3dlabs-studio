@@ -516,7 +516,7 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
     
     bool have_perimeters = config->opt_int("wall_loops") > 0;
     for (auto el : { "extra_perimeters_on_overhangs", "ensure_vertical_shell_thickness", "detect_thin_wall", "detect_overhang_wall",
-                    "seam_position", "staggered_inner_seams", "wall_infill_order", "outer_wall_line_width",
+                    "seam_position", "staggered_inner_seams", "outer_wall_line_width",
                     "inner_wall_speed", "outer_wall_speed", "small_perimeter_speed", "small_perimeter_threshold" })
         toggle_field(el, have_perimeters);
 
@@ -660,6 +660,11 @@ void ConfigManipulation::toggle_print_fff_options(DynamicPrintConfig *config, co
     toggle_field("standby_temperature_delta", have_ooze_prevention);
     toggle_field("ooze_prevention_purge_buckets", have_ooze_prevention);
     toggle_field("ooze_prevention_scrub_every_layer", have_ooze_prevention); 
+
+    // Overhang reversal dependencies
+    bool has_overhang_reverse = config->opt_bool("overhang_reverse");
+    toggle_line("overhang_reverse_internal_only", has_overhang_reverse);
+    toggle_line("overhang_reverse_threshold", has_overhang_reverse);
 
     bool have_prime_tower = config->opt_bool("enable_prime_tower");
     for (auto el : { "prime_tower_width", "prime_volume", "prime_tower_brim_width"})

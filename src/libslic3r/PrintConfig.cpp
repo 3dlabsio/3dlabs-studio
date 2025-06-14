@@ -147,16 +147,6 @@ static t_config_enum_values s_keys_map_IroningType {
 };
 CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(IroningType)
 
-//BBS
-static t_config_enum_values s_keys_map_WallInfillOrder {
-    { "inner wall/outer wall/infill",     int(WallInfillOrder::InnerOuterInfill) },
-    { "outer wall/inner wall/infill",     int(WallInfillOrder::OuterInnerInfill) },
-    { "inner-outer-inner wall/infill",     int(WallInfillOrder::InnerOuterInnerInfill) },
-    { "infill/inner wall/outer wall",     int(WallInfillOrder::InfillInnerOuter) },
-    { "infill/outer wall/inner wall",     int(WallInfillOrder::InfillOuterInner) },
-    { "inner-outer-inner wall/infill",     int(WallInfillOrder::InnerOuterInnerInfill)}
-};
-CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(WallInfillOrder)
 
 //BBS
 static t_config_enum_values s_keys_map_PrintSequence {
@@ -326,6 +316,20 @@ static const t_config_enum_values s_keys_map_RetractLiftEnforceType = {
     {"Top and Bottom",      rletTopAndBottom}
 };
 CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(RetractLiftEnforceType)
+
+static const t_config_enum_values s_keys_map_WallSequence = {
+    {"inner wall/outer wall",    int(WallSequence::InnerOuter)},
+    {"outer wall/inner wall",    int(WallSequence::OuterInner)},
+    {"inner-outer-inner wall",   int(WallSequence::InnerOuterInner)}
+};
+CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(WallSequence)
+
+static const t_config_enum_values s_keys_map_WallDirection = {
+    {"auto",    int(WallDirection::Auto)},
+    {"ccw",     int(WallDirection::CounterClockwise)},
+    {"cw",      int(WallDirection::Clockwise)}
+};
+CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(WallDirection)
 
 static void assign_printer_technology_to_unknown(t_optiondef_map &options, PrinterTechnology printer_technology)
 {
@@ -810,6 +814,70 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionBool(false));
 
+    def = this->add("overhang_reverse", coBool);
+    def->label = L("Reverse on even");
+    def->full_label = L("Overhang reversal");
+    def->category = L("Quality");
+    def->tooltip = L("Extrude perimeters that have a part over an overhang in the reverse direction on even layers. This alternating pattern can drastically improve steep overhangs.\n\nThis setting can also help reduce part warping due to the reduction of stresses in the part walls.");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(false));
+
+    def = this->add("overhang_reverse_internal_only", coBool);
+    def->label = L("Reverse only internal perimeters");
+    def->full_label = L("Reverse only internal perimeters");
+    def->category = L("Quality");
+    def->tooltip = L("Apply the reverse perimeters logic only on internal perimeters.\n\n"
+                     "This setting greatly reduces part stresses as they are now distributed in alternating directions. "
+                     "These stresses would otherwise occur when both the external and internal walls would have the same winding.");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(false));
+
+    def = this->add("overhang_reverse_threshold", coFloatOrPercent);
+    def->label = L("Reverse threshold");
+    def->full_label = L("Overhang reversal threshold");
+    def->category = L("Quality");
+    // xgettext:no-c-format, no-boost-format
+    def->tooltip = L("Number of mm the overhang need to be for the reversal to be considered useful. Can be a % of the perimeter width.");
+    def->mode = comAdvanced;
+    def->ratio_over = "wall_generator";
+    def->min = 0;
+    def->set_default_value(new ConfigOptionFloatOrPercent(50, true));
+
+    def = this->add("wall_sequence", coEnum);
+    def->label = L("Wall sequence");
+    def->category = L("Quality");
+    def->tooltip = L("Print order of wall loops. This feature allows you to alter the order in which walls are printed. Choose Inner/Outer/Inner for improved external wall quality.");
+    def->enum_keys_map = &ConfigOptionEnum<WallSequence>::get_enum_values();
+    def->enum_values.push_back("inner wall/outer wall");
+    def->enum_values.push_back("outer wall/inner wall");
+    def->enum_values.push_back("inner-outer-inner wall");
+    def->enum_labels.push_back(L("Inner/Outer"));
+    def->enum_labels.push_back(L("Outer/Inner"));
+    def->enum_labels.push_back(L("Inner/Outer/Inner"));
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionEnum<WallSequence>(WallSequence::InnerOuter));
+
+    def = this->add("is_infill_first", coBool);
+    def->label = L("Print infill first");
+    def->tooltip = L("Order of wall/infill. When the tickbox is unchecked the walls are printed first, which works best in most cases.\n\nPrinting infill first may help with extreme overhangs as the walls have the neighbouring infill to adhere to. However, the infill will slightly push out the printed walls where it is attached to them, resulting in a worse external surface finish. It can also cause the infill to shine through the external surfaces of the part.");
+    def->category = L("Quality");
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionBool(false));
+
+    def = this->add("wall_direction", coEnum);
+    def->label = L("Wall direction");
+    def->category = L("Quality");
+    def->tooltip = L("Direction of wall loops. Auto allows algorithms to decide the optimal direction.");
+    def->enum_keys_map = &ConfigOptionEnum<WallDirection>::get_enum_values();
+    def->enum_values.push_back("auto");
+    def->enum_values.push_back("ccw");
+    def->enum_values.push_back("cw");
+    def->enum_labels.push_back(L("Auto"));
+    def->enum_labels.push_back(L("Counter clockwise"));
+    def->enum_labels.push_back(L("Clockwise"));
+    def->mode = comAdvanced;
+    def->set_default_value(new ConfigOptionEnum<WallDirection>(WallDirection::Auto));
+
     def = this->add("overhang_speed_classic", coBool);
     def->label = L("Classic mode");
     def->category = L("Speed");
@@ -1240,23 +1308,6 @@ void PrintConfigDef::init_fff_params()
     def->mode = comAdvanced;
     def->set_default_value(new ConfigOptionFloat(6.5));
 
-    def = this->add("wall_infill_order", coEnum);
-    def->label = L("Order of inner wall/outer wall/infil");
-    def->category = L("Quality");
-    def->tooltip = L("Print sequence of inner wall, outer wall and infill. ");
-    def->enum_keys_map = &ConfigOptionEnum<WallInfillOrder>::get_enum_values();
-    def->enum_values.push_back("inner wall/outer wall/infill");
-    def->enum_values.push_back("outer wall/inner wall/infill");
-    def->enum_values.push_back("infill/inner wall/outer wall");
-    def->enum_values.push_back("infill/outer wall/inner wall");
-    def->enum_values.push_back("inner-outer-inner wall/infill");
-    def->enum_labels.push_back(L("inner/outer/infill"));
-    def->enum_labels.push_back(L("outer/inner/infill"));
-    def->enum_labels.push_back(L("infill/inner/outer"));
-    def->enum_labels.push_back(L("infill/outer/inner"));
-    def->enum_labels.push_back(L("inner-outer-inner/infill"));
-    def->mode = comAdvanced;
-    def->set_default_value(new ConfigOptionEnum<WallInfillOrder>(WallInfillOrder::InnerOuterInfill));
 
     def = this->add("extruder", coInt);
     def->gui_type = ConfigOptionDef::GUIType::i_enum_open;

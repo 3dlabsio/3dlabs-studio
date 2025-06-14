@@ -286,8 +286,7 @@ bool Print::invalidate_state_by_config_options(const ConfigOptionResolver & /* n
             || opt_key == "max_layer_height"
             //|| opt_key == "resolution"
             //BBS: when enable arc fitting, we must re-generate perimeter
-            || opt_key == "enable_arc_fitting"
-            || opt_key == "wall_infill_order") {
+            || opt_key == "enable_arc_fitting") {
             osteps.emplace_back(posPerimeters);
             osteps.emplace_back(posEstimateCurledExtrusions);
             osteps.emplace_back(posInfill);

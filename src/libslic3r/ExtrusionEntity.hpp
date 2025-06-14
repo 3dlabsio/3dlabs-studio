@@ -43,10 +43,15 @@ enum ExtrusionRole : uint8_t {
 };
 
 // Special flags describing loop
-enum ExtrusionLoopRole {
-    elrDefault,
-    elrContourInternalPerimeter,
-    elrSkirt,
+enum ExtrusionLoopRole : uint8_t {
+    elrDefault=0x0,
+    // Loop for the hole, not for the contour
+    elrHole=0x1,
+    // Loop that is the most closest to infill
+    elrInternal = 0x2,
+    elrSkirt=0x4,
+    // Backward compatibility
+    elrContourInternalPerimeter = elrInternal,
 };
 
 
@@ -134,6 +139,9 @@ public:
     virtual Polylines as_polylines() const { Polylines dst; this->collect_polylines(dst); return dst; }
     virtual double length() const = 0;
     virtual double total_volume() const = 0;
+    
+    // Orca: Used for inner/outer/inner mode - classic perimeter generator
+    int inset_idx = -1;
 
     static std::string role_to_string(ExtrusionRole role);
     static ExtrusionRole string_to_role(const std::string_view role);
