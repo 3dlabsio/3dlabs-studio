@@ -10,6 +10,7 @@
 #include "Exception.hpp"
 #include "Print.hpp"
 #include "BoundingBox.hpp"
+#include "BridgeDetector.hpp"
 #include "ClipperUtils.hpp"
 #include "ElephantFootCompensation.hpp"
 #include "Geometry.hpp"
@@ -1980,7 +1981,21 @@ void PrintObject::bridge_over_infill()
                                 }
                             }
                             worth_bridging = intersection(closing(worth_bridging, float(SCALED_EPSILON)), s->expolygon);
-                            candidate_surfaces.push_back(CandidateSurface(s, lidx, worth_bridging, region, 0));
+                            
+                            // Calculate optimal bridge angle for counterbored holes if enabled
+                            double bridge_angle = 0;
+                            if (this->print()->config().bridge_counterbored_holes && !worth_bridging.empty()) {
+                                // Get the flow for bridge detection
+                                Flow bridge_flow = region->flow(FlowRole::frInfill, true);
+                                
+                                // Use BridgeDetector to find optimal angle for bridging counterbored holes
+                                BridgeDetector bd(worth_bridging, get_infill_polygons(lidx), bridge_flow.scaled_spacing());
+                                if (bd.detect_angle()) {
+                                    bridge_angle = bd.angle;
+                                }
+                            }
+                            
+                            candidate_surfaces.push_back(CandidateSurface(s, lidx, worth_bridging, region, bridge_angle));
 
 #ifdef DEBUG_BRIDGE_OVER_INFILL
                             debug_draw(std::to_string(lidx) + "_candidate_surface_" + std::to_string(area(s->expolygon)),
