@@ -267,12 +267,8 @@ static bool detect_steep_overhang(const PrintRegionConfig *config,
 
 static void reorient_perimeters(ExtrusionEntityCollection &entities, bool steep_overhang_contour, bool steep_overhang_hole, bool reverse_internal_only, WallDirection wall_direction)
 {
-    BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: reorient_perimeters called with wall_direction=" << (int)wall_direction << ", entities=" << entities.entities.size();
-    
     for (auto entity : entities) {
-        BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: Checking entity, is_loop=" << entity->is_loop();
         if (entity->is_loop()) {
-            BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: Processing loop entity";
             ExtrusionLoop *eloop = static_cast<ExtrusionLoop *>(entity);
             
             bool isExternal = false;
@@ -291,24 +287,14 @@ static void reorient_perimeters(ExtrusionEntityCollection &entities, bool steep_
             if (wall_direction == WallDirection::Clockwise) {
                 // Force clockwise direction
                 need_reverse = true;
-                BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: Clockwise mode - forcing reverse";
             } else if (wall_direction == WallDirection::Auto) {
                 // Only reverse for detected overhangs, differentiate between holes and contours
                 need_reverse = ((eloop->loop_role() & elrHole) == elrHole) ? steep_overhang_hole : steep_overhang_contour;
-                printf("WALL_DIRECTION_DEBUG: Auto mode - loop_role=%d, need_reverse=%d\n", (int)eloop->loop_role(), need_reverse);
-                fflush(stdout);
             }
             // WallDirection::CounterClockwise keeps default counter-clockwise (no reversal)
             
-            BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: need_reverse=" << need_reverse << ", reverse_internal_only=" << reverse_internal_only << ", isExternal=" << isExternal;
             if (need_reverse && (!reverse_internal_only || !isExternal)) {
-                bool was_clockwise_before = eloop->is_clockwise();
-                BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: Before make_clockwise(), is_clockwise=" << was_clockwise_before;
                 eloop->make_clockwise();
-                bool is_clockwise_after = eloop->is_clockwise();
-                BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: After make_clockwise(), is_clockwise=" << is_clockwise_after;
-            } else {
-                BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: Skipping make_clockwise() due to conditions";
             }
         }
     }
@@ -1424,12 +1410,6 @@ void PerimeterGenerator::apply_extra_perimeters(ExPolygons &infill_area)
 
 void PerimeterGenerator::process_classic()
 {
-    // Debug: Check config at the very start
-    const WallDirection wall_direction_debug = this->config->wall_direction;
-    const WallSequence wall_sequence_debug = this->config->wall_sequence;
-    printf("WALL_DIRECTION_DEBUG: process_classic() started, config->wall_direction = %d\n", (int)wall_direction_debug);
-    printf("WALL_SEQUENCE_DEBUG: process_classic() started, config->wall_sequence = %d\n", (int)wall_sequence_debug);
-    fflush(stdout);
     
     // other perimeters
     m_mm3_per_mm               		= this->perimeter_flow.mm3_per_mm();
@@ -1723,15 +1703,10 @@ void PerimeterGenerator::process_classic()
             bool steep_overhang_contour = false;
             bool steep_overhang_hole    = false;
             const WallDirection wall_direction = config->wall_direction;
-            // Debug: Print wall direction setting
-            printf("WALL_DIRECTION_DEBUG: Classic generator wall_direction = %d (0=Auto, 1=CounterClockwise, 2=Clockwise)\n", (int)wall_direction);
-            fflush(stdout);
             if (wall_direction == WallDirection::Clockwise) {
                 // Force clockwise for all loops
                 steep_overhang_contour = true;
                 steep_overhang_hole    = true;
-                printf("WALL_DIRECTION_DEBUG: Classic generator setting clockwise mode\n");
-                fflush(stdout);
             }
             ExtrusionEntityCollection entities = traverse_loops(*this, contours.front(), thin_walls, steep_overhang_contour, steep_overhang_hole);
             // Apply wall direction (only call when not CounterClockwise)
@@ -1996,13 +1971,6 @@ void bringContoursToFront(std::vector<PerimeterGeneratorArachneExtrusion>& order
 // "A framework for adaptive width control of dense contour-parallel toolpaths in fused deposition modeling"
 void PerimeterGenerator::process_arachne()
 {
-    // Debug: Check config at the very start
-    const WallDirection wall_direction_debug = this->config->wall_direction;
-    const WallSequence wall_sequence_debug = this->config->wall_sequence;
-    printf("WALL_DIRECTION_DEBUG: process_arachne() started, config->wall_direction = %d\n", (int)wall_direction_debug);
-    printf("WALL_SEQUENCE_DEBUG: process_arachne() started, config->wall_sequence = %d\n", (int)wall_sequence_debug);
-    fflush(stdout);
-    BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: process_arachne() started, config->wall_direction = " << (int)wall_direction_debug;
     
     // other perimeters
     m_mm3_per_mm = this->perimeter_flow.mm3_per_mm();
@@ -2408,13 +2376,10 @@ void PerimeterGenerator::process_arachne()
         bool steep_overhang_contour = false;
         bool steep_overhang_hole    = false;
         const WallDirection wall_direction = config->wall_direction;
-        // Debug: Print wall direction setting
-        BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: Arachne generator wall_direction = " << (int)wall_direction << " (0=Auto, 1=CounterClockwise, 2=Clockwise)";
         if (wall_direction == WallDirection::Clockwise) {
             // Force clockwise for all loops
             steep_overhang_contour = true;
             steep_overhang_hole    = true;
-            BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: Arachne generator setting clockwise mode";
         }
         if (ExtrusionEntityCollection extrusion_coll = traverse_extrusions(*this, ordered_extrusions, steep_overhang_contour, steep_overhang_hole); !extrusion_coll.empty()) {
             // Apply wall direction (only call when not CounterClockwise)

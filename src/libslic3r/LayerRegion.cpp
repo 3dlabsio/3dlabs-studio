@@ -110,13 +110,9 @@ void LayerRegion::make_perimeters(const SurfaceCollection &slices, SurfaceCollec
     g.overhang_flow         = this->bridging_flow(frPerimeter, object_config.thick_bridges);
     g.solid_infill_flow     = this->flow(frSolidInfill);
 
-    BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: LayerRegion choosing perimeter generator, wall_generator=" << (int)this->layer()->object()->config().wall_generator.value << ", spiral_mode=" << spiral_mode;
-    
     if (this->layer()->object()->config().wall_generator.value == PerimeterGeneratorType::Arachne && !spiral_mode) {
-        BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: Using Arachne generator";
         g.process_arachne();
     } else {
-        BOOST_LOG_TRIVIAL(error) << "WALL_DIRECTION_DEBUG: Using Classic generator";
         g.process_classic();
     }
 }
