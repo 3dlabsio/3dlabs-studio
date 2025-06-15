@@ -39,6 +39,7 @@
     "reduce_infill_retraction": "0",
     "filename_format": "{input_filename_base}.gcode",
     "wall_loops": "3",
+    "alternate_extra_wall": "0",
     "inner_wall_line_width": "0.45",
     "inner_wall_speed": "40",
     "print_settings_id": "",
