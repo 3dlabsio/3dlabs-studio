@@ -902,6 +902,7 @@ bool PrintObject::invalidate_state_by_config_options(
             }
         } else if (
                opt_key == "wall_loops"
+            || opt_key == "alternate_extra_wall"
             || opt_key == "only_one_wall_top"
             || opt_key == "only_one_wall_first_layer"
             || opt_key == "extra_perimeters_on_overhangs"

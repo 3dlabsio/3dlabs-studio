@@ -1484,6 +1484,9 @@ void PerimeterGenerator::process_classic()
     for (const Surface &surface : all_surfaces) {
         // detect how many perimeters must be generated for this island
         int        loop_number = this->config->wall_loops + surface.extra_perimeters - 1;  // 0-indexed loops
+        int sparse_infill_density = this->config->sparse_infill_density.value;
+        if (this->config->alternate_extra_wall && this->layer_id % 2 == 1 && !m_spiral_vase && sparse_infill_density > 0) // add alternating extra wall
+            loop_number++;
         if (this->layer_id == 0 && this->config->only_one_wall_first_layer)
             loop_number = 0;
         //BBS: set the topmost layer to be one wall
@@ -2011,6 +2014,9 @@ void PerimeterGenerator::process_arachne()
             bead_width_0 = ext_perimeter_width + this->perimeter_flow.scaled_width() - perimeter_spacing;
         // detect how many perimeters must be generated for this island
         int        loop_number = this->config->wall_loops + surface.extra_perimeters - 1; // 0-indexed loops
+        int sparse_infill_density = this->config->sparse_infill_density.value;
+        if (this->config->alternate_extra_wall && this->layer_id % 2 == 1 && !m_spiral_vase && sparse_infill_density > 0) // add alternating extra wall
+            loop_number++;
         if (this->layer_id == 0 && this->config->only_one_wall_first_layer)
             loop_number = 0;
         // BBS: set the topmost layer to be one wall
